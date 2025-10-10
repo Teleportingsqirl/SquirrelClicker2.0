@@ -7,6 +7,9 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_crmfy")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(578, 327)
+
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -18,10 +21,10 @@ script = ExtResource("1_upo0g")
 
 [node name="TextureButton" type="TextureButton" parent="Control"]
 layout_mode = 0
-offset_left = 311.0
-offset_top = 117.0
-offset_right = 778.0
-offset_bottom = 543.0
+offset_left = 334.0
+offset_top = 99.0
+offset_right = 801.0
+offset_bottom = 525.0
 texture_normal = ExtResource("3_crmfy")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control"]
@@ -31,7 +34,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 277.0
 offset_top = 21.0
-offset_right = -334.0
+offset_right = -233.0
 offset_bottom = -448.0
 grow_horizontal = 2
 grow_vertical = 2
