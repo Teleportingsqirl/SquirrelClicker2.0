@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=5 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://duaa17davi0f5" path="res://squirrelclicker.gd" id="1_crmfy"]
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://cwxjbxe5gbvs4" path="res://Sprite-squirrel.png" id="3_crmfy"]
+[ext_resource type="Texture2D" uid="uid://t7axdm54swgp" path="res://sprite-background.png" id="3_sjpgo"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_crmfy")
@@ -16,12 +17,18 @@ offset_right = 1157.0
 offset_bottom = 668.0
 script = ExtResource("1_upo0g")
 
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_right = 1162.0
+offset_bottom = 659.0
+texture = ExtResource("3_sjpgo")
+
 [node name="CenterContainer" type="CenterContainer" parent="Control"]
 layout_mode = 0
-offset_left = 315.0
-offset_top = 157.0
-offset_right = 826.0
-offset_bottom = 583.0
+offset_left = 356.0
+offset_top = 105.0
+offset_right = 867.0
+offset_bottom = 531.0
 
 [node name="TextureButton" type="TextureButton" parent="Control/CenterContainer"]
 layout_mode = 2
@@ -29,10 +36,10 @@ texture_normal = ExtResource("3_crmfy")
 
 [node name="Label" type="Label" parent="Control"]
 layout_mode = 0
-offset_left = 361.0
-offset_top = 100.0
-offset_right = 793.0
-offset_bottom = 235.0
+offset_left = 387.0
+offset_top = 27.0
+offset_right = 819.0
+offset_bottom = 162.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "Click The Squirrel!"
