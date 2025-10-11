@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=8 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://duaa17davi0f5" path="res://squirrelclicker.gd" id="1_crmfy"]
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://cwxjbxe5gbvs4" path="res://Sprite-squirrel.png" id="3_crmfy"]
 [ext_resource type="Texture2D" uid="uid://t7axdm54swgp" path="res://sprite-background.png" id="3_sjpgo"]
+[ext_resource type="Texture2D" uid="uid://ifbfaa0on23c" path="res://Sprite-singlebutton.png" id="5_uijhn"]
+[ext_resource type="Texture2D" uid="uid://d2anliwsajs2b" path="res://Sprite-buttonpressedsingle.png" id="6_f44b8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sjpgo"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_crmfy")
@@ -31,6 +35,7 @@ offset_right = 867.0
 offset_bottom = 531.0
 
 [node name="TextureButton" type="TextureButton" parent="Control/CenterContainer"]
+material = SubResource("ShaderMaterial_sjpgo")
 layout_mode = 2
 texture_normal = ExtResource("3_crmfy")
 
@@ -44,5 +49,21 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "Click The Squirrel!"
 horizontal_alignment = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="Control"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 108.0
+offset_right = 166.0
+offset_bottom = 158.0
+scale = Vector2(1.9611735, 2.4724774)
+
+[node name="TextureButton" type="TextureButton" parent="Control/CenterContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("5_uijhn")
+texture_pressed = ExtResource("6_f44b8")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(570, 324)
 
 [connection signal="pressed" from="Control/CenterContainer/TextureButton" to="Control" method="_on_texture_button_pressed"]
