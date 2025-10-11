@@ -22,7 +22,7 @@ offset_right = 1157.0
 offset_bottom = 668.0
 script = ExtResource("1_upo0g")
 
-[node name="TextureRect" type="TextureRect" parent="Control"]
+[node name="background" type="TextureRect" parent="Control"]
 layout_mode = 0
 offset_right = 1162.0
 offset_bottom = 659.0
