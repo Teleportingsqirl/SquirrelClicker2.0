@@ -2,8 +2,8 @@ extends Control
 
 var count = 0
 # IMPORTANT: Update these paths to match your new scene tree!
-@onready var label = $Label
-@onready var texture_button = $CenterContainer/TextureButton
+@onready var label = $clicksqrltext
+@onready var texture_button = $sqrlcontainer/sqrlbutton
 
 func _ready():
 	# Set the button's pivot to its center at the start of the game.

@@ -28,19 +28,19 @@ offset_right = 1162.0
 offset_bottom = 659.0
 texture = ExtResource("3_sjpgo")
 
-[node name="CenterContainer" type="CenterContainer" parent="Control"]
+[node name="sqrlcontainer" type="CenterContainer" parent="Control"]
 layout_mode = 0
 offset_left = 356.0
 offset_top = 105.0
 offset_right = 867.0
 offset_bottom = 531.0
 
-[node name="TextureButton" type="TextureButton" parent="Control/CenterContainer"]
+[node name="sqrlbutton" type="TextureButton" parent="Control/sqrlcontainer"]
 material = SubResource("ShaderMaterial_sjpgo")
 layout_mode = 2
 texture_normal = ExtResource("3_crmfy")
 
-[node name="Label" type="Label" parent="Control"]
+[node name="clicksqrltext" type="Label" parent="Control"]
 layout_mode = 0
 offset_left = 369.0
 offset_top = 29.0
@@ -54,10 +54,10 @@ horizontal_alignment = 1
 
 [node name="CenterContainer2" type="CenterContainer" parent="Control"]
 layout_mode = 0
-offset_left = -5.0
-offset_top = 9.0
-offset_right = 295.0
-offset_bottom = 109.0
+offset_left = -3.0
+offset_top = 13.0
+offset_right = 297.0
+offset_bottom = 113.0
 scale = Vector2(1.0952858, 1.3862662)
 
 [node name="TextureButton" type="TextureButton" parent="Control/CenterContainer2"]
@@ -68,4 +68,4 @@ texture_pressed = ExtResource("6_f44b8")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(570, 324)
 
-[connection signal="pressed" from="Control/CenterContainer/TextureButton" to="Control" method="_on_texture_button_pressed"]
+[connection signal="pressed" from="Control/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
