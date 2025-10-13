@@ -1,0 +1,199 @@
+[gd_scene load_steps=12 format=3 uid="uid://cbgo8w4iuodo"]
+
+[ext_resource type="Script" uid="uid://dmxyv1u1h2jbu" path="res://mainmenu.gd" id="1_igs2m"]
+[ext_resource type="Texture2D" uid="uid://db6g6o8vnayua" path="res://Sprite-menubackground.png" id="1_wgsso"]
+[ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://poco/Poco.ttf" id="2_igs2m"]
+[ext_resource type="Texture2D" uid="uid://bghbnvy1vvlfi" path="res://Sprite-menutitle.png" id="3_3pujl"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7uvds"]
+texture = ExtResource("1_wgsso")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_at6rn"]
+bg_color = Color(6.635, 6.635, 6.635, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 8
+shadow_offset = Vector2(0, 8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgsso"]
+bg_color = Color(0.30692276, 0.30692267, 0.3069227, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 8
+shadow_offset = Vector2(0, 8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_igs2m"]
+bg_color = Color(0.66656864, 0.6665687, 0.66656864, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 8
+shadow_offset = Vector2(0, 8)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wgsso"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_igs2m"]
+color = Color(1, 1, 1, 1)
+thickness = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_3pujl"]
+color = Color(0.74310255, 0.8283504, 0.9979088, 1)
+thickness = 5
+
+[node name="mainmenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_igs2m")
+
+[node name="background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_7uvds")
+
+[node name="mainbuttons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -161.0
+offset_top = -125.0
+offset_right = 161.0
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="start" type="Button" parent="mainbuttons"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_igs2m")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxFlat_at6rn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wgsso")
+theme_override_styles/hover = SubResource("StyleBoxFlat_igs2m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wgsso")
+text = "START GAME
+"
+
+[node name="options" type="Button" parent="mainbuttons"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_igs2m")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxFlat_at6rn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wgsso")
+theme_override_styles/hover = SubResource("StyleBoxFlat_igs2m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wgsso")
+text = "OPTIONS"
+
+[node name="exit" type="Button" parent="mainbuttons"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_igs2m")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxFlat_at6rn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wgsso")
+theme_override_styles/hover = SubResource("StyleBoxFlat_igs2m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wgsso")
+text = "EXIT"
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -248.0
+offset_right = 248.0
+offset_bottom = 180.0
+grow_horizontal = 2
+
+[node name="title" type="TextureRect" parent="CenterContainer"]
+layout_mode = 2
+texture = ExtResource("3_3pujl")
+
+[node name="options" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -261.0
+offset_top = -156.5
+offset_right = 261.0
+offset_bottom = 271.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="options titel" type="Label" parent="options"]
+layout_mode = 0
+offset_left = 70.0
+offset_top = -4.5
+offset_right = 463.0
+offset_bottom = 70.5
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_igs2m")
+theme_override_font_sizes/font_size = 61
+text = "OPTIONS"
+horizontal_alignment = 1
+
+[node name="back" type="Button" parent="options"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 342.5
+offset_right = 455.0
+offset_bottom = 429.5
+scale = Vector2(1, 0.88)
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_igs2m")
+theme_override_font_sizes/font_size = 70
+theme_override_styles/normal = SubResource("StyleBoxFlat_at6rn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wgsso")
+theme_override_styles/hover = SubResource("StyleBoxFlat_igs2m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wgsso")
+text = "BACK"
+
+[node name="HSlider" type="HSlider" parent="options"]
+layout_mode = 0
+offset_left = 111.0
+offset_top = 91.5
+offset_right = 401.0
+offset_bottom = 157.5
+theme_override_styles/slider = SubResource("StyleBoxLine_igs2m")
+theme_override_styles/grabber_area = SubResource("StyleBoxLine_3pujl")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_3pujl")
+value = 50.0
+
+[connection signal="pressed" from="mainbuttons/start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="mainbuttons/options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="mainbuttons/exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="options/back" to="." method="_on_back_pressed"]
