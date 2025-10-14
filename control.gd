@@ -3,8 +3,9 @@ extends Control
 var count = 0
 @onready var label = $clicksqrltext
 @onready var texture_button = $sqrlcontainer/sqrlbutton
+@onready var upgrade_text: Label = $"upgrade text"
 
-# Storing tween references for management
+
 var idle_float_tween: Tween
 var idle_wobble_tween: Tween
 var click_tween: Tween
@@ -22,7 +23,6 @@ func _on_texture_button_pressed():
 func update_text():
 	label.text = "Squirrel Clicked:\n" + str(count)
 
-# This is the lively idle animation you liked. It remains unchanged.
 func create_idle_animation():
 	if idle_float_tween and idle_float_tween.is_valid():
 		idle_float_tween.kill()
@@ -40,24 +40,15 @@ func create_idle_animation():
 	idle_wobble_tween.tween_property(texture_button, "rotation_degrees", -8.0, 2.0)
 
 
-# --- REVISED: The Pop animation no longer stops the idle animation ---
+
 func create_click_animation():
-	# If a previous POP animation is still running, we'll stop it to start a new one.
 	if click_tween and click_tween.is_valid():
 		click_tween.kill()
-		
-	# --- CHANGE 1: The lines that killed the idle tweens have been REMOVED ---
-	# This allows the pop to play on top of the continuous idle motion.
 	
-	# --- CHANGE 2: The pop effect is now less extreme ---
 	var original_scale = Vector2(1, 1)
-	var pop_scale = Vector2(1.15, 1.15) # Changed from 1.2 to 1.15 for a subtler effect
+	var pop_scale = Vector2(1.15, 1.15) # change this for pop scale stuff
 	
-	# Create the simple pop animation
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
-
-	# --- CHANGE 3: The line that restarted the idle animation is REMOVED ---
-	# Since we never stop the idle animation, we don't need to restart it.
