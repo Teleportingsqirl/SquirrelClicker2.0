@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=9 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://duaa17davi0f5" path="res://squirrelclicker.gd" id="1_crmfy"]
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
@@ -7,6 +7,7 @@
 [ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://poco/Poco.ttf" id="5_f44b8"]
 [ext_resource type="Texture2D" uid="uid://uyo38kkfri1k" path="res://sqrlart/Sprite-menutemplates3.png" id="6_uijhn"]
 [ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/Sprite-arrows.png" id="7_f44b8"]
+[ext_resource type="Texture2D" uid="uid://djsmyugcdwgr3" path="res://sqrlart/Sprite-sqrladdnuts.png" id="7_s7qjs"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_crmfy")
@@ -31,17 +32,6 @@ offset_right = 1162.0
 offset_bottom = 659.0
 texture = ExtResource("3_sjpgo")
 
-[node name="sqrlcontainer" type="CenterContainer" parent="Control/sqirl base"]
-layout_mode = 0
-offset_left = 342.0
-offset_top = 109.0
-offset_right = 853.0
-offset_bottom = 535.0
-
-[node name="sqrlbutton" type="TextureButton" parent="Control/sqirl base/sqrlcontainer"]
-layout_mode = 2
-texture_normal = ExtResource("3_crmfy")
-
 [node name="clicksqrltext" type="Label" parent="Control/sqirl base"]
 layout_mode = 0
 offset_left = 361.0
@@ -54,12 +44,23 @@ theme_override_font_sizes/font_size = 45
 text = "Click The Squirrel!"
 horizontal_alignment = 1
 
+[node name="sqrlcontainer" type="CenterContainer" parent="Control/sqirl base"]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 109.0
+offset_right = 853.0
+offset_bottom = 535.0
+
+[node name="sqrlbutton" type="TextureButton" parent="Control/sqirl base/sqrlcontainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_crmfy")
+
 [node name="sqirl buildings" type="Control" parent="Control"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="TextureRect" type="TextureRect" parent="Control/sqirl buildings"]
+[node name="building holder" type="TextureRect" parent="Control/sqirl buildings"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 53.0
@@ -67,23 +68,45 @@ offset_right = 293.0
 offset_bottom = 528.19336
 texture = ExtResource("6_uijhn")
 
-[node name="TextureButton" type="TextureButton" parent="Control/sqirl buildings"]
+[node name="buildingads" type="TextureButton" parent="Control/sqirl buildings"]
 layout_mode = 0
-offset_left = 195.0
-offset_top = 484.0
-offset_right = 243.0
-offset_bottom = 535.0
+offset_left = 71.00001
+offset_top = 171.0
+offset_right = 171.0
+offset_bottom = 371.0
+scale = Vector2(0.6, 0.6)
+texture_normal = ExtResource("7_s7qjs")
+stretch_mode = 0
+
+[node name="nextpagebuildings" type="TextureButton" parent="Control/sqirl buildings"]
+layout_mode = 0
+offset_left = 222.0
+offset_top = 519.0
+offset_right = 270.0
+offset_bottom = 570.0
 rotation = -1.5707964
 texture_normal = ExtResource("7_f44b8")
 
-[node name="TextureButton2" type="TextureButton" parent="Control/sqirl buildings"]
+[node name="lastpagebuildings" type="TextureButton" parent="Control/sqirl buildings"]
 layout_mode = 0
-offset_left = 126.0
-offset_top = 436.0
-offset_right = 174.0
-offset_bottom = 487.0
+offset_left = 99.0
+offset_top = 471.0
+offset_right = 147.0
+offset_bottom = 522.0
 rotation = -4.712389
 texture_normal = ExtResource("7_f44b8")
+
+[node name="building price" type="Label" parent="Control/sqirl buildings"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 99.0
+offset_right = 270.0
+offset_bottom = 132.0
+theme_override_fonts/font = ExtResource("5_f44b8")
+theme_override_font_sizes/font_size = 25
+text = "Cost : X Squirrels"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(570, 324)
