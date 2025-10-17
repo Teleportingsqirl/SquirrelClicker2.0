@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://db6g6o8vnayua"
-path="res://.godot/imported/Sprite-menubackground.png-b31410c54a5b9b194d0c4cb0bf922916.ctex"
+path="res://.godot/imported/Sprite-menubackground.png-6dfbd085ce069b60d1d413ab1d6b0282.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprite-menubackground.png"
-dest_files=["res://.godot/imported/Sprite-menubackground.png-b31410c54a5b9b194d0c4cb0bf922916.ctex"]
+source_file="res://sqrlart/Sprite-menubackground.png"
+dest_files=["res://.godot/imported/Sprite-menubackground.png-6dfbd085ce069b60d1d413ab1d6b0282.ctex"]
 
 [params]
 

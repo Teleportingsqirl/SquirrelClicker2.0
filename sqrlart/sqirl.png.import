@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2anliwsajs2b"
-path="res://.godot/imported/Sprite-buttonpressedsingle.png-2e67594464ea78f1aa016b87497da733.ctex"
+uid="uid://bqvmkmbgcwqxr"
+path="res://.godot/imported/sqirl.png-6b6ed85fa17f5b476de453240e74190e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/Sprite-buttonpressedsingle.png"
-dest_files=["res://.godot/imported/Sprite-buttonpressedsingle.png-2e67594464ea78f1aa016b87497da733.ctex"]
+source_file="res://sqrlart/sqirl.png"
+dest_files=["res://.godot/imported/sqirl.png-6b6ed85fa17f5b476de453240e74190e.ctex"]
 
 [params]
 
