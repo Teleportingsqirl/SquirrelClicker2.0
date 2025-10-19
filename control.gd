@@ -13,6 +13,7 @@ var click_tween: Tween
 @onready var next_button = $"sqirl buildings/nextpagebuildings"
 @onready var prev_button = $"sqirl buildings/lastpagebuildings"
 
+
 var buildings = []
 var current_building_index = 0
 var squirrels_per_second: float = 0.0
@@ -74,8 +75,8 @@ func create_click_animation():
 func setup_buildings():
 	buildings = [
 		# format is  name : nuts, base_cost, sps, owned, texturepath
-		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://path/to/nuts_image.png"},
-		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://path/to/trees_image.png"},
+		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/Sprite-sqrladdnuts.png"},
+		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://sqrlart/Sprite-adfortree.png"},
 		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://path/to/arboretums_image.png"}
 	]
 
@@ -84,6 +85,8 @@ func update_building_display():
 	var cost = calculate_cost(current_building)
 	
 	building_price_label.text = "Cost: " + str(cost)
+	var new_texture = load(current_building.texture_path)
+	building_ad_texture.texture_normal = new_texture
 
 func calculate_cost(building):
 	return int(ceil(building.base_cost * pow(1.1, building.owned)))
