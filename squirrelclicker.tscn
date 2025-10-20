@@ -1,6 +1,5 @@
 [gd_scene load_steps=9 format=3 uid="uid://ccb7sd6fvr4g6"]
 
-[ext_resource type="Script" uid="uid://duaa17davi0f5" path="res://squirrelclicker.gd" id="1_crmfy"]
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
 [ext_resource type="Texture2D" uid="uid://bkr75jyjbdc8r" path="res://sqrlart/sprite-background.png" id="3_sjpgo"]
@@ -8,17 +7,23 @@
 [ext_resource type="Texture2D" uid="uid://uyo38kkfri1k" path="res://sqrlart/Sprite-menutemplates3.png" id="6_uijhn"]
 [ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/Sprite-arrows.png" id="7_f44b8"]
 [ext_resource type="Texture2D" uid="uid://djsmyugcdwgr3" path="res://sqrlart/Sprite-sqrladdnuts.png" id="7_s7qjs"]
+[ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
 
-[node name="Node2D" type="Node2D"]
-script = ExtResource("1_crmfy")
+[node name="2D layout" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_left = -13.0
-offset_top = -2.0
-offset_right = 1157.0
-offset_bottom = 668.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_upo0g")
 
 [node name="sqirl base" type="Control" parent="Control"]
@@ -108,7 +113,6 @@ text = "Cost : X Squirrels"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(570, 324)
+[node name="AnimatedCursor" parent="." instance=ExtResource("8_s7qjs")]
 
 [connection signal="pressed" from="Control/sqirl base/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]

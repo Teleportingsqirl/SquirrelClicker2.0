@@ -1,0 +1,50 @@
+[gd_scene load_steps=9 format=3 uid="uid://py42h3wb5i88"]
+
+[ext_resource type="Texture2D" uid="uid://bke5wtqon62t5" path="res://sqrlart/cursorbigblankclicked.png" id="1_sbpo6"]
+[ext_resource type="Texture2D" uid="uid://bxpqxxvkn3tas" path="res://sqrlart/cursorbigblankclickeddownframe1-export.png" id="2_biv5e"]
+[ext_resource type="Texture2D" uid="uid://db63jpug4glco" path="res://sqrlart/cursorbigblankclickeddown.png" id="2_u7js5"]
+[ext_resource type="Texture2D" uid="uid://bvxl7jklprxo8" path="res://sqrlart/cursorbigblankframe2.png" id="3_biv5e"]
+[ext_resource type="Texture2D" uid="uid://c1y17m7e7vf27" path="res://sqrlart/cursorbigblankframe3.png" id="4_kvnb6"]
+[ext_resource type="Texture2D" uid="uid://dwmoaswxngk08" path="res://sqrlart/cursorbigblankframe4.png" id="5_wi8bk"]
+[ext_resource type="Script" uid="uid://bo1ycfum8rwyj" path="res://animated_cursor.gd" id="6_ssdvo"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cos0f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_sbpo6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_biv5e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_u7js5")
+}],
+"loop": false,
+"name": &"click",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_sbpo6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_biv5e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_kvnb6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_wi8bk")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="AnimatedCursor" type="AnimatedSprite2D"]
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_cos0f")
+animation = &"click"
+frame_progress = 1.0
+script = ExtResource("6_ssdvo")
