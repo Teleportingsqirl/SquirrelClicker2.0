@@ -1,7 +1,9 @@
 extends Control
-var count: float = 0.0
 @onready var label = $"sqirl base/clicksqrltext" 
 @onready var texture_button = $"sqirl base/sqrlcontainer/sqrlbutton"
+
+@onready var upgrades_button = $UpgradesButton
+@onready var upgrade_web = $"../UpgradeWeb"
 
 var idle_float_tween: Tween
 var idle_wobble_tween: Tween
@@ -27,23 +29,27 @@ func _ready():
 	next_button.pressed.connect(_on_next_building_pressed)
 	prev_button.pressed.connect(_on_prev_building_pressed)
 	building_ad_button.pressed.connect(_on_purchase_building_pressed)
-	
+
+
+	upgrades_button.pressed.connect(_on_upgrades_button_pressed)
+	upgrade_web.visible = false 
+
 	update_text()
 	update_building_display()
 
 func _process(delta):
 	if squirrels_per_second > 0:
-		count += squirrels_per_second * delta
+		GameState.squirrels += squirrels_per_second * delta
 		update_text()
 
 
 func _on_texture_button_pressed():
-	count += 1
+	GameState.squirrels += GameState.squirrels_per_click # Use the global click power
 	update_text()
 	create_click_animation()
 
 func update_text():
-	label.text = "Squirrels: " + str(int(count))
+	label.text = "Squirrels: " + str(int(GameState.squirrels))
 
 func create_idle_animation():
 	if idle_float_tween and idle_float_tween.is_valid():
@@ -96,6 +102,14 @@ func recalculate_sps():
 	for building in buildings:
 		squirrels_per_second += building.owned * building.sps
 
+func _on_upgrades_button_pressed():
+	# This line toggles the visibility of the upgrade web.
+	upgrade_web.visible = not upgrade_web.visible
+	
+	# If we just made the web visible, regenerate it to show the latest purchased upgrades.
+	if upgrade_web.visible:
+		upgrade_web.generate_web()
+		upgrade_web.queue_redraw() # This redraws the connecting lines
 
 func _on_next_building_pressed():
 	current_building_index = (current_building_index + 1) % buildings.size()
@@ -109,8 +123,8 @@ func _on_purchase_building_pressed():
 	var building = buildings[current_building_index]
 	var cost = calculate_cost(building)
 	
-	if count >= cost:
-		count -= cost
+	if GameState.squirrels >= cost:
+		GameState.squirrels -= cost
 		building.owned += 1
 		
 		recalculate_sps()

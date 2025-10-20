@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4au2ctfg2scl"]
+
+[ext_resource type="Script" uid="uid://dop4iju8ymbjs" path="res://upgrade_web.gd" id="1_j5u50"]
+[ext_resource type="PackedScene" uid="uid://cyqg05rnielln" path="res://upgrade_node.tscn" id="2_53snk"]
+
+[node name="UpgradeWeb" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_j5u50")
+
+[node name="UpgradeNode" parent="." instance=ExtResource("2_53snk")]
+layout_mode = 0

@@ -116,11 +116,8 @@ vertical_alignment = 1
 
 [node name="UpgradesButton" type="Button" parent="Control"]
 layout_mode = 0
-offset_left = 860.0
-offset_top = 435.0
-offset_right = 1160.0
-offset_bottom = 657.0
-text = "Upgrade Web"
+offset_right = 8.0
+offset_bottom = 8.0
 
 [node name="UpgradeWeb" parent="." instance=ExtResource("8_t3dcb")]
 visible = false
