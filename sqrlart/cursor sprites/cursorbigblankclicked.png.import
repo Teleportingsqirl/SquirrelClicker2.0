@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwmoaswxngk08"
-path="res://.godot/imported/cursorbigblankframe4.png-28ad6577b521483f8c09e5f98f3069e2.ctex"
+uid="uid://bke5wtqon62t5"
+path="res://.godot/imported/cursorbigblankclicked.png-d9d765fda26e647636c49c629e3866e1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/cursorbigblankframe4.png"
-dest_files=["res://.godot/imported/cursorbigblankframe4.png-28ad6577b521483f8c09e5f98f3069e2.ctex"]
+source_file="res://sqrlart/cursor sprites/cursorbigblankclicked.png"
+dest_files=["res://.godot/imported/cursorbigblankclicked.png-d9d765fda26e647636c49c629e3866e1.ctex"]
 
 [params]
 

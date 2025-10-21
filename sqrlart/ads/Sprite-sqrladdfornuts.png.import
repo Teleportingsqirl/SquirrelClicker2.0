@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpo0ppcfecmg5"
-path="res://.godot/imported/Sprite-arrows.png-012f9ecbf8beddda9c2f600c0ef6eb04.ctex"
+uid="uid://qwto8sjpcxfd"
+path="res://.godot/imported/Sprite-sqrladdfornuts.png-17acb4c8a5dcfdb5a744d73eb96d1406.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/Sprite-arrows.png"
-dest_files=["res://.godot/imported/Sprite-arrows.png-012f9ecbf8beddda9c2f600c0ef6eb04.ctex"]
+source_file="res://sqrlart/ads/Sprite-sqrladdfornuts.png"
+dest_files=["res://.godot/imported/Sprite-sqrladdfornuts.png-17acb4c8a5dcfdb5a744d73eb96d1406.ctex"]
 
 [params]
 

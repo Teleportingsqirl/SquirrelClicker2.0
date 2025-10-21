@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxpqxxvkn3tas"
-path="res://.godot/imported/cursorbigblankclickeddownframe1-export.png-6b0eb803e1c5da164dd1b11a2baa5f4f.ctex"
+uid="uid://c1y17m7e7vf27"
+path="res://.godot/imported/cursorbigblankframe3.png-ee56cd73c3afcc648282b015f19d2d04.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/cursorbigblankclickeddownframe1-export.png"
-dest_files=["res://.godot/imported/cursorbigblankclickeddownframe1-export.png-6b0eb803e1c5da164dd1b11a2baa5f4f.ctex"]
+source_file="res://sqrlart/cursor sprites/cursorbigblankframe3.png"
+dest_files=["res://.godot/imported/cursorbigblankframe3.png-ee56cd73c3afcc648282b015f19d2d04.ctex"]
 
 [params]
 
