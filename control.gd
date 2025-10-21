@@ -81,7 +81,7 @@ func create_click_animation():
 func setup_buildings():
 	buildings = [
 		# format is  name : nuts, base_cost, sps, owned, texturepath
-		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/Sprite-sqrladdnuts.png"},
+		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/Sprite-sqrladdfornuts.png"},
 		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://sqrlart/Sprite-adfortree.png"},
 		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://sqrlart/Sprite-arboretum.png"}
 	]
