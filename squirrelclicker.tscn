@@ -1,14 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=9 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
 [ext_resource type="Texture2D" uid="uid://bkr75jyjbdc8r" path="res://sqrlart/sprite-background.png" id="3_sjpgo"]
 [ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://poco/Poco.ttf" id="5_f44b8"]
+[ext_resource type="Texture2D" uid="uid://qwto8sjpcxfd" path="res://sqrlart/ads/Sprite-sqrladdfornuts.png" id="6_t3dcb"]
 [ext_resource type="Texture2D" uid="uid://uyo38kkfri1k" path="res://sqrlart/Sprite-menutemplates3.png" id="6_uijhn"]
-[ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/Sprite-arrows.png" id="7_f44b8"]
-[ext_resource type="Texture2D" uid="uid://qwto8sjpcxfd" path="res://sqrlart/Sprite-sqrladdfornuts.png" id="7_s7qjs"]
+[ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/ads/Sprite-arrows.png" id="7_t3dcb"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
-[ext_resource type="PackedScene" uid="uid://c4au2ctfg2scl" path="res://upgrade_web.tscn" id="8_t3dcb"]
 
 [node name="2D layout" type="Control"]
 layout_mode = 3
@@ -17,6 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
@@ -25,6 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_upo0g")
 
 [node name="sqirl base" type="Control" parent="Control"]
@@ -36,6 +37,7 @@ offset_bottom = 40.0
 layout_mode = 0
 offset_right = 1162.0
 offset_bottom = 659.0
+mouse_filter = 2
 texture = ExtResource("3_sjpgo")
 
 [node name="clicksqrltext" type="Label" parent="Control/sqirl base"]
@@ -81,7 +83,7 @@ offset_top = 171.0
 offset_right = 371.0
 offset_bottom = 771.0
 scale = Vector2(0.6, 0.6)
-texture_normal = ExtResource("7_s7qjs")
+texture_normal = ExtResource("6_t3dcb")
 stretch_mode = 0
 
 [node name="nextpagebuildings" type="TextureButton" parent="Control/sqirl buildings"]
@@ -91,7 +93,7 @@ offset_top = 519.0
 offset_right = 270.0
 offset_bottom = 570.0
 rotation = -1.5707964
-texture_normal = ExtResource("7_f44b8")
+texture_normal = ExtResource("7_t3dcb")
 
 [node name="lastpagebuildings" type="TextureButton" parent="Control/sqirl buildings"]
 layout_mode = 0
@@ -100,7 +102,7 @@ offset_top = 471.0
 offset_right = 147.0
 offset_bottom = 522.0
 rotation = -4.712389
-texture_normal = ExtResource("7_f44b8")
+texture_normal = ExtResource("7_t3dcb")
 
 [node name="building price" type="Label" parent="Control/sqirl buildings"]
 layout_mode = 0
@@ -113,18 +115,6 @@ theme_override_font_sizes/font_size = 25
 text = "Cost : X Squirrels"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="UpgradesButton" type="Button" parent="Control"]
-layout_mode = 0
-offset_left = 860.0
-offset_top = 435.0
-offset_right = 1160.0
-offset_bottom = 657.0
-text = "Upgrade Web"
-
-[node name="UpgradeWeb" parent="." instance=ExtResource("8_t3dcb")]
-visible = false
-layout_mode = 1
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("8_s7qjs")]
 position = Vector2(-69, -28)

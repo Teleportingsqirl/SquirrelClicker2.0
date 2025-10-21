@@ -2,9 +2,6 @@ extends Control
 @onready var label = $"sqirl base/clicksqrltext" 
 @onready var texture_button = $"sqirl base/sqrlcontainer/sqrlbutton"
 
-@onready var upgrades_button = $UpgradesButton
-@onready var upgrade_web = $"../UpgradeWeb"
-
 var idle_float_tween: Tween
 var idle_wobble_tween: Tween
 var click_tween: Tween
@@ -30,10 +27,6 @@ func _ready():
 	prev_button.pressed.connect(_on_prev_building_pressed)
 	building_ad_button.pressed.connect(_on_purchase_building_pressed)
 
-
-	upgrades_button.pressed.connect(_on_upgrades_button_pressed)
-	upgrade_web.visible = false 
-
 	update_text()
 	update_building_display()
 
@@ -49,7 +42,7 @@ func _on_texture_button_pressed():
 	create_click_animation()
 
 func update_text():
-	label.text = "Squirrels: " + str(int(GameState.squirrels))
+	label.text = "Squirrels: " + format_number(int(GameState.squirrels))
 
 func create_idle_animation():
 	if idle_float_tween and idle_float_tween.is_valid():
@@ -81,16 +74,16 @@ func create_click_animation():
 func setup_buildings():
 	buildings = [
 		# format is  name : nuts, base_cost, sps, owned, texturepath
-		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/Sprite-sqrladdfornuts.png"},
-		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://sqrlart/Sprite-adfortree.png"},
-		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://sqrlart/Sprite-arboretum.png"}
+		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-sqrladdfornuts.png"},
+		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png"},
+		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png"}
 	]
 
 func update_building_display():
 	var current_building = buildings[current_building_index]
 	var cost = calculate_cost(current_building)
 	
-	building_price_label.text = "Cost: " + str(cost)
+	building_price_label.text = "Cost: " + format_number(cost)
 	var new_texture = load(current_building.texture_path)
 	building_ad_texture.texture_normal = new_texture
 
@@ -101,15 +94,6 @@ func recalculate_sps():
 	squirrels_per_second = 0.0
 	for building in buildings:
 		squirrels_per_second += building.owned * building.sps
-
-func _on_upgrades_button_pressed():
-	# This line toggles the visibility of the upgrade web.
-	upgrade_web.visible = not upgrade_web.visible
-	
-	# If we just made the web visible, regenerate it to show the latest purchased upgrades.
-	if upgrade_web.visible:
-		upgrade_web.generate_web()
-		upgrade_web.queue_redraw() # This redraws the connecting lines
 
 func _on_next_building_pressed():
 	current_building_index = (current_building_index + 1) % buildings.size()
@@ -130,3 +114,25 @@ func _on_purchase_building_pressed():
 		recalculate_sps()
 		update_text()
 		update_building_display()
+		
+
+
+func format_number(number: float) -> String:
+	if number < 10000.0:
+		return str(int(number))
+	#suffixes
+	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
+	# how many groups of 1000 are in the number
+	var magnitude = int(floor(log(number) / log(1000)))
+	var divisor = pow(1000, magnitude)
+	var abbreviated_num = number / divisor
+	var suffix = SUFFIXES[magnitude]
+	var formatted_string: String
+	if abbreviated_num < 10:
+		formatted_string = "%.2f" % abbreviated_num
+	elif abbreviated_num < 100:
+		formatted_string = "%.1f" % abbreviated_num
+	else:
+		formatted_string = "%d" % abbreviated_num
+		
+	return formatted_string + suffix

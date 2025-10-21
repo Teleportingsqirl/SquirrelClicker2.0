@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db63jpug4glco"
-path="res://.godot/imported/cursorbigblankclickeddown.png-41cf1b15878dfb6680490a4e5fe52379.ctex"
+uid="uid://col564c7hixwn"
+path="res://.godot/imported/Sprite-adfortree.png-530745bb90f805f8b8fc45f9fd00369d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/cursorbigblankclickeddown.png"
-dest_files=["res://.godot/imported/cursorbigblankclickeddown.png-41cf1b15878dfb6680490a4e5fe52379.ctex"]
+source_file="res://sqrlart/ads/Sprite-adfortree.png"
+dest_files=["res://.godot/imported/Sprite-adfortree.png-530745bb90f805f8b8fc45f9fd00369d.ctex"]
 
 [params]
 

@@ -36,3 +36,5 @@ func _on_exit_pressed() -> void:
 func _on_back_pressed() -> void:
 	mainbuttons.visible = true
 	options.visible = false
+	
+	

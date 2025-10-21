@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cq265ejam4qn2"
-path="res://.godot/imported/Sprite-arboretum.png-b1532cec5ebd818096eac205827f1ae5.ctex"
+uid="uid://bvxl7jklprxo8"
+path="res://.godot/imported/cursorbigblankframe2.png-9292afca8a0a3716d9f67cd3db590414.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/Sprite-arboretum.png"
-dest_files=["res://.godot/imported/Sprite-arboretum.png-b1532cec5ebd818096eac205827f1ae5.ctex"]
+source_file="res://sqrlart/cursor sprites/cursorbigblankframe2.png"
+dest_files=["res://.godot/imported/cursorbigblankframe2.png-9292afca8a0a3716d9f67cd3db590414.ctex"]
 
 [params]
 
