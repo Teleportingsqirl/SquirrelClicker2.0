@@ -6,7 +6,7 @@
 [ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://poco/Poco.ttf" id="5_f44b8"]
 [ext_resource type="Texture2D" uid="uid://uyo38kkfri1k" path="res://sqrlart/Sprite-menutemplates3.png" id="6_uijhn"]
 [ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/Sprite-arrows.png" id="7_f44b8"]
-[ext_resource type="Texture2D" uid="uid://djsmyugcdwgr3" path="res://sqrlart/Sprite-sqrladdnuts.png" id="7_s7qjs"]
+[ext_resource type="Texture2D" uid="uid://qwto8sjpcxfd" path="res://sqrlart/Sprite-sqrladdfornuts.png" id="7_s7qjs"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
 [ext_resource type="PackedScene" uid="uid://c4au2ctfg2scl" path="res://upgrade_web.tscn" id="8_t3dcb"]
 
