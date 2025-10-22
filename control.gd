@@ -17,6 +17,9 @@ var buildings = []
 var current_building_index = 0
 var squirrels_per_second: float = 0.0
 
+func _on_3d_button_pressed():
+	get_tree().change_scene_to_file("res://3d squirrel.tscn")
+
 func _ready():
 	texture_button.pivot_offset = texture_button.size / 2
 	create_idle_animation()

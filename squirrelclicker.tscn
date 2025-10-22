@@ -116,7 +116,16 @@ text = "Cost : X Squirrels"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1103.0
+offset_top = 606.0
+offset_right = 1132.0
+offset_bottom = 637.0
+text = "3D"
+
 [node name="AnimatedCursor" parent="." instance=ExtResource("8_s7qjs")]
 position = Vector2(-69, -28)
 
 [connection signal="pressed" from="Control/sqirl base/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
+[connection signal="pressed" from="Button" to="Control" method="_on_3d_button_pressed"]
