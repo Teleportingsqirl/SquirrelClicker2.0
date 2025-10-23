@@ -1,13 +1,18 @@
-[gd_scene load_steps=9 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=11 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
 [ext_resource type="Texture2D" uid="uid://bkr75jyjbdc8r" path="res://sqrlart/sprite-background.png" id="3_sjpgo"]
-[ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://poco/Poco.ttf" id="5_f44b8"]
 [ext_resource type="Texture2D" uid="uid://qwto8sjpcxfd" path="res://sqrlart/ads/Sprite-sqrladdfornuts.png" id="6_t3dcb"]
 [ext_resource type="Texture2D" uid="uid://uyo38kkfri1k" path="res://sqrlart/Sprite-menutemplates3.png" id="6_uijhn"]
 [ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/ads/Sprite-arrows.png" id="7_t3dcb"]
+[ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://fonts/Poco.ttf" id="8_2wfyv"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
+[ext_resource type="FontFile" uid="uid://c0mptcymibc31" path="res://fonts/Sangyo-E4ywr.ttf" id="8_t3dcb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7qjs"]
+bg_color = Color(0.7737747, 0.49879366, 0.6672472, 1)
+corner_radius_bottom_left = 100
 
 [node name="2D layout" type="Control"]
 layout_mode = 3
@@ -47,7 +52,7 @@ offset_top = 31.0
 offset_right = 793.0
 offset_bottom = 166.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("5_f44b8")
+theme_override_fonts/font = ExtResource("8_2wfyv")
 theme_override_font_sizes/font_size = 45
 text = "Click The Squirrel!"
 horizontal_alignment = 1
@@ -110,11 +115,46 @@ offset_left = 51.0
 offset_top = 99.0
 offset_right = 270.0
 offset_bottom = 132.0
-theme_override_fonts/font = ExtResource("5_f44b8")
+theme_override_fonts/font = ExtResource("8_2wfyv")
 theme_override_font_sizes/font_size = 25
 text = "Cost : X Squirrels"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SPSLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 644.0
+offset_top = 66.0
+offset_right = 906.0
+offset_bottom = 165.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_2wfyv")
+theme_override_font_sizes/font_size = 30
+text = "SPS : 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToastPopup" type="PanelContainer" parent="Control"]
+layout_mode = 0
+offset_left = 875.0
+offset_top = 2.0
+offset_right = 1162.0
+offset_bottom = 73.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_s7qjs")
+
+[node name="ToastLabel" type="Label" parent="Control/ToastPopup"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_t3dcb")
+theme_override_font_sizes/font_size = 21
+text = "While you were away for X, 
+you earned X squirrels"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToastTimer" type="Timer" parent="Control"]
+wait_time = 3.0
+one_shot = true
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
@@ -128,4 +168,5 @@ text = "3D"
 position = Vector2(-69, -28)
 
 [connection signal="pressed" from="Control/sqirl base/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
+[connection signal="timeout" from="Control/ToastTimer" to="Control" method="_on_toast_timer_timeout"]
 [connection signal="pressed" from="Button" to="Control" method="_on_3d_button_pressed"]

@@ -7,7 +7,6 @@ func _ready():
 	animation_finished.connect(_on_animation_finished)
 
 func _process(delta):
-	# ADD THIS CHECK: Prevents a crash when the scene is changing
 	if not is_inside_tree():
 		return
 	
