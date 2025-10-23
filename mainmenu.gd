@@ -6,13 +6,13 @@ extends Control
 @onready var start_button = $mainbuttons/start
 @onready var animated_cursor = $AnimatedCursor
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	mainbuttons.visible = true
 	options.visible = false
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _process(_delta: float) -> void:
 	pass
 
