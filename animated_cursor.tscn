@@ -15,14 +15,14 @@ animations = [{
 "texture": ExtResource("1_sbpo6")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_u7js5")
+"texture": ExtResource("2_biv5e")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_biv5e")
+"texture": ExtResource("2_u7js5")
 }],
 "loop": false,
 "name": &"clickDown",
-"speed": 1.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -34,9 +34,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("1_sbpo6")
 }],
-"loop": true,
+"loop": false,
 "name": &"clickUp",
-"speed": 5.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
