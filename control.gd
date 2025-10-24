@@ -110,8 +110,8 @@ func format_seconds_to_string(total_seconds: int) -> String:
 		var days = total_seconds / 86400
 		return "%d days" % [days]
 
-# (Your existing helper functions below)
-func _on_3d_button_pressed(): get_tree().change_scene_to_file("res://3d squirrel.tscn")
+func _on_3d_button_pressed():
+	get_tree().change_scene_to_file("res://3d squirrel.tscn")
 func create_idle_animation():
 	if idle_float_tween and idle_float_tween.is_valid(): idle_float_tween.kill()
 	if idle_wobble_tween and idle_wobble_tween.is_valid(): idle_wobble_tween.kill()
@@ -154,3 +154,7 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 		formatted_string = "%d" % int(abbreviated_num)
 		
 	return formatted_string + suffix
+
+
+func _on_upgrade_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://upgrade_web.tscn")

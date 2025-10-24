@@ -1,99 +1,45 @@
-# upgrade_web.gd
-extends Control
+# UpgradeWeb.gd
+extends Node2D
 
-# --- THIS IS THE NEW, DIRECT METHOD ---
-# Instead of exporting, we load the scene directly.
-# This bypasses the editor bug. Make sure your file is named "upgrade_node.tscn".
-var upgrade_node_scene = load("res://upgrade_node.tscn")
-# ------------------------------------
+# We need to keep track of a few things while dragging.
+var is_dragging = false
+var drag_start_position = Vector2.ZERO
+var drag_start_node_position = Vector2.ZERO
 
-@export var strands: int = 3 # You can still change this in the Inspector
-
-# --- Layout Configuration ---
-const COLUMN_SPACING = 200
-const ROW_SPACING = 120
-
-var upgrade_data = UpgradeData.new().upgrades
-var node_instances = {} # Stores a reference to each created node instance
+@onready var back_button = %backButton
 
 func _ready():
-	generate_web()
+	# Configure the back button when the scene starts
+	back_button.text = "Back"
+	# Connect the button's "pressed" signal to our function
+	back_button.pressed.connect(_on_back_button_pressed)
 
-func _draw():
-	# This function draws the connecting lines
-	for id in upgrade_data:
-		var upgrade = upgrade_data[id]
-		if upgrade.purchased and node_instances.has(id):
-			var start_pos = node_instances[id].position
-			for next_id in upgrade.unlocks:
-				if node_instances.has(next_id):
-					var end_pos = node_instances[next_id].position
-					draw_line(start_pos, end_pos, Color.AQUAMARINE, 2.0, true)
+# This function is called for every input event (mouse, keyboard, etc.)
+func _input(event):
+	# Event 1: The user presses the left mouse button
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		is_dragging = true
+		# Record where the mouse was when the drag started
+		drag_start_position = get_global_mouse_position()
+		# Record where the node was when the drag started
+		drag_start_node_position = self.position
 
-func generate_web():
-	# Clear any existing nodes
-	for child in get_children():
-		child.queue_free()
-	node_instances.clear()
-	
-	var viewport_center = get_viewport_rect().size / 2
-	
-	# 1. Create the starting node
-	var start_node = create_upgrade_node("start_node", viewport_center + Vector2(0, -200))
-	
-	# 2. Create the first level of branching nodes
-	var first_level_ids = upgrade_data["start_node"].unlocks
-	for i in range(first_level_ids.size()):
-		var id = first_level_ids[i]
-		var angle = (PI * 2 / first_level_ids.size()) * i - (PI/2)
-		# Use the 'position' of the created start_node
-		var spawn_pos = start_node.position + Vector2(cos(angle), sin(angle)) * COLUMN_SPACING
-		create_upgrade_node(id, spawn_pos)
+	# Event 2: The user releases the left mouse button
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.is_pressed():
+		is_dragging = false
 
-# CORRECTED: Renamed 'position' to 'spawn_pos' to avoid the shadowing warning
-# In upgrade_web.gd
+	# Event 3: The mouse moves
+	if event is InputEventMouseMotion:
+		# Only do this if we are currently in a drag operation
+		if is_dragging:
+			# Calculate the difference between the current mouse position
+			# and where the drag started.
+			var mouse_delta = get_global_mouse_position() - drag_start_position
+			
+			# Set this node's position to be its original position plus the mouse movement
+			self.position = drag_start_node_position + mouse_delta
 
-func create_upgrade_node(id, spawn_pos):
-	if upgrade_node_scene:
-		var instance = upgrade_node_scene.instantiate()
-		
-		# --- THIS IS THE FIX ---
-		# 1. Add the node to the scene tree FIRST.
-		#    This will trigger its _ready() function, which sets up all its internal variables.
-		add_child(instance)
-		
-		# 2. NOW it is safe to call setup(), because we know _ready() has finished.
-		instance.setup(id, upgrade_data[id])
-		# --------------------
-
-		instance.position = spawn_pos - (instance.size / 2) # Center it
-		instance.purchase_attempted.connect(_on_purchase_attempted)
-		node_instances[id] = instance
-		return instance
-	return null
-
-func _on_purchase_attempted(id):
-	var upgrade = upgrade_data[id]
-	if GameState.squirrels >= upgrade.cost:
-		print("Purchasing: ", upgrade.name)
-		GameState.squirrels -= upgrade.cost
-		upgrade.purchased = true
-		_apply_upgrade_effect(id)
-		
-		# Refresh the visuals
-		generate_web()
-		queue_redraw() # Tells Godot to call _draw() again
-	else:
-		print("Not enough squirrels!")
-
-# THIS IS THE PLACEHOLDER FOR YOUR CUSTOM CODE
-func _apply_upgrade_effect(id):
-	match id:
-		"sharp_claws":
-			GameState.squirrels_per_click += 1
-		"better_nuts":
-			GameState.nut_sps_bonus += 0.1
-			# Now you need to make your control.gd use this bonus
-		"unlock_forest":
-			print("The Forest is now unlocked!")
-			# Here you would maybe set a global flag, e.g., GameState.forest_unlocked = true
+# This function is called when the BackButton is pressed
+func _on_back_button_pressed():
+	# Change this to the path of your main squirrel clicker scene
+	get_tree().change_scene_to_file("res://squirrelclicker.tscn")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=13 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
@@ -9,10 +9,13 @@
 [ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://fonts/Poco.ttf" id="8_2wfyv"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
 [ext_resource type="FontFile" uid="uid://c0mptcymibc31" path="res://fonts/Sangyo-E4ywr.ttf" id="8_t3dcb"]
+[ext_resource type="FontFile" uid="uid://bypmfwxpy3ccb" path="res://fonts/HomeVideo-BLG6G.ttf" id="10_2wfyv"]
+[ext_resource type="StyleBox" uid="uid://6e7welqbkqg4" path="res://upgradebutton layout.tres" id="11_l110m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7qjs"]
 bg_color = Color(0.7737747, 0.49879366, 0.6672472, 1)
 corner_radius_bottom_left = 100
+shadow_size = 15
 
 [node name="2D layout" type="Control"]
 layout_mode = 3
@@ -156,7 +159,7 @@ vertical_alignment = 1
 wait_time = 3.0
 one_shot = true
 
-[node name="Button" type="Button" parent="."]
+[node name="3DButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 1103.0
 offset_top = 606.0
@@ -164,9 +167,32 @@ offset_right = 1132.0
 offset_bottom = 637.0
 text = "3D"
 
+[node name="upgradeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1062.0
+offset_top = 253.0
+offset_right = 1163.0
+offset_bottom = 392.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("10_2wfyv")
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = ExtResource("11_l110m")
+theme_override_styles/normal_mirrored = ExtResource("11_l110m")
+theme_override_styles/pressed = ExtResource("11_l110m")
+theme_override_styles/pressed_mirrored = ExtResource("11_l110m")
+theme_override_styles/hover = ExtResource("11_l110m")
+theme_override_styles/hover_mirrored = ExtResource("11_l110m")
+theme_override_styles/hover_pressed = ExtResource("11_l110m")
+theme_override_styles/hover_pressed_mirrored = ExtResource("11_l110m")
+theme_override_styles/disabled = ExtResource("11_l110m")
+theme_override_styles/disabled_mirrored = ExtResource("11_l110m")
+theme_override_styles/focus = ExtResource("11_l110m")
+text = "Upgrades"
+
 [node name="AnimatedCursor" parent="." instance=ExtResource("8_s7qjs")]
 position = Vector2(-69, -28)
 
 [connection signal="pressed" from="Control/sqirl base/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
 [connection signal="timeout" from="Control/ToastTimer" to="Control" method="_on_toast_timer_timeout"]
-[connection signal="pressed" from="Button" to="Control" method="_on_3d_button_pressed"]
+[connection signal="pressed" from="3DButton" to="Control" method="_on_3d_button_pressed"]
+[connection signal="pressed" from="upgradeButton" to="Control" method="_on_upgrade_button_pressed"]
