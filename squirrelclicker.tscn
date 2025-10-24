@@ -135,11 +135,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ToastPopup" type="PanelContainer" parent="Control"]
+visible = false
 layout_mode = 0
 offset_left = 875.0
-offset_top = 2.0
 offset_right = 1162.0
-offset_bottom = 73.0
+offset_bottom = 71.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_s7qjs")
 
 [node name="ToastLabel" type="Label" parent="Control/ToastPopup"]

@@ -82,22 +82,22 @@ func update_building_display():
 	building_ad_texture.texture_normal = new_texture
 
 
-func show_offline_progress_toast(): # <-- NEW FUNCTION
+func show_offline_progress_toast():
 	var progress = GameState.get_and_clear_offline_progress()
-	if progress.squirrels > 1: # Only show if they earned at least 1 squirrel
+	
+	if progress.seconds > 1 and progress.squirrels > 0.1:
 		var time_text = format_seconds_to_string(progress.seconds)
 		var squirrels_text = format_number(progress.squirrels)
 		
-		toast_label.text = "While you were away for %s, \n you earned %s squirrels!" % [time_text, squirrels_text]
+		toast_label.text = "While you were away for %s \n you earned %s squirrels!" % [time_text, squirrels_text]
 		toast_popup.visible = true
 		toast_timer.start()
 
-func _on_toast_timer_timeout(): # <-- NEW FUNCTION (Godot created this for you)
+func _on_toast_timer_timeout():
 	toast_popup.visible = false
 
-# --- Helper & Animation Functions ---
 
-func format_seconds_to_string(total_seconds: int) -> String: # <-- NEW HELPER
+func format_seconds_to_string(total_seconds: int) -> String:
 	if total_seconds < 60:
 		return "%d seconds" % [total_seconds]
 	elif total_seconds < 3600:

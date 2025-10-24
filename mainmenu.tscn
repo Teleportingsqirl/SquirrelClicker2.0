@@ -110,6 +110,20 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_igs2m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_wgsso")
 text = "OPTIONS"
 
+[node name="reset save" type="Button" parent="mainbuttons"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_igs2m")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxFlat_at6rn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wgsso")
+theme_override_styles/hover = SubResource("StyleBoxFlat_igs2m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wgsso")
+text = "RESET SAVE"
+
 [node name="exit" type="Button" parent="mainbuttons"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -139,6 +153,7 @@ layout_mode = 2
 texture = ExtResource("3_3pujl")
 
 [node name="options" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -200,5 +215,6 @@ frame_progress = 0.0
 
 [connection signal="pressed" from="mainbuttons/start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="mainbuttons/options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="mainbuttons/reset save" to="." method="_on_reset_pressed"]
 [connection signal="pressed" from="mainbuttons/exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="options/back" to="." method="_on_back_pressed"]
