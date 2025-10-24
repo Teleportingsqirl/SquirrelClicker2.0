@@ -118,5 +118,7 @@ func reset_game_state():
 	print("Resetting game state to default values.")
 	squirrels = 0.0
 	squirrels_per_click = 1
+	offline_seconds_passed = 0
+	offline_squirrels_earned = 0.0
 	setup_buildings()
 	recalculate_sps()

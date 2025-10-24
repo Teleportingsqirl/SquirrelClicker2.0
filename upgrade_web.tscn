@@ -1,20 +1,34 @@
-[gd_scene load_steps=4 format=3 uid="uid://c4au2ctfg2scl"]
+[gd_scene load_steps=5 format=3 uid="uid://c4au2ctfg2scl"]
 
 [ext_resource type="Script" uid="uid://dop4iju8ymbjs" path="res://upgrade_web.gd" id="1_53snk"]
 [ext_resource type="Texture2D" uid="uid://ctbby0dm6jyc4" path="res://sqrlart/Sprite-upgradeweb.png" id="2_xwn6h"]
+[ext_resource type="StyleBox" uid="uid://civvgbnmo2w7p" path="res://upgrade_web_backbutton.tres" id="3_7p0gc"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="3_xwn6h"]
 
 [node name="UpgradeWeb" type="Node2D"]
 script = ExtResource("1_53snk")
 
 [node name="Background" type="Sprite2D" parent="."]
+position = Vector2(801, 601)
 texture = ExtResource("2_xwn6h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="backButton" type="Button" parent="CanvasLayer"]
 unique_name_in_owner = true
-offset_right = 8.0
-offset_bottom = 8.0
+offset_right = 69.0
+offset_bottom = 35.0
+theme_override_styles/normal = ExtResource("3_7p0gc")
+theme_override_styles/normal_mirrored = ExtResource("3_7p0gc")
+theme_override_styles/pressed = ExtResource("3_7p0gc")
+theme_override_styles/pressed_mirrored = ExtResource("3_7p0gc")
+theme_override_styles/hover_mirrored = ExtResource("3_7p0gc")
+theme_override_styles/hover_pressed = ExtResource("3_7p0gc")
+theme_override_styles/hover_pressed_mirrored = ExtResource("3_7p0gc")
+theme_override_styles/disabled = ExtResource("3_7p0gc")
+theme_override_styles/disabled_mirrored = ExtResource("3_7p0gc")
+theme_override_styles/focus = ExtResource("3_7p0gc")
+text = "BACK"
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("3_xwn6h")]
+top_level = true

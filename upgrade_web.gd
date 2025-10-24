@@ -1,7 +1,10 @@
 # UpgradeWeb.gd
 extends Node2D
 
-# We need to keep track of a few things while dragging.
+@export var zoom_level = 1.4
+var min_clamp = Vector2.ZERO
+var max_clamp = Vector2.ZERO
+
 var is_dragging = false
 var drag_start_position = Vector2.ZERO
 var drag_start_node_position = Vector2.ZERO
@@ -9,9 +12,21 @@ var drag_start_node_position = Vector2.ZERO
 @onready var back_button = %backButton
 
 func _ready():
-	# Configure the back button when the scene starts
+	self.scale = Vector2(zoom_level, zoom_level)
+
+
+	var viewport_size = get_viewport_rect().size
+
+	var background_texture = $Background.texture
+	if not background_texture: return # Safety check
+	
+	var scaled_size = background_texture.get_size() * self.scale
+
+	min_clamp.x = min(0, viewport_size.x - scaled_size.x)
+	min_clamp.y = min(0, viewport_size.y - scaled_size.y)
+	max_clamp.x = 0
+	max_clamp.y = 0
 	back_button.text = "Back"
-	# Connect the button's "pressed" signal to our function
 	back_button.pressed.connect(_on_back_button_pressed)
 
 # This function is called for every input event (mouse, keyboard, etc.)
@@ -37,7 +52,7 @@ func _input(event):
 			var mouse_delta = get_global_mouse_position() - drag_start_position
 			
 			# Set this node's position to be its original position plus the mouse movement
-			self.position = drag_start_node_position + mouse_delta
+			self.position = (drag_start_node_position + mouse_delta).clamp(min_clamp, max_clamp)
 
 # This function is called when the BackButton is pressed
 func _on_back_button_pressed():
