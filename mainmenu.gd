@@ -40,6 +40,7 @@ func _on_reset_pressed() -> void:
 			print("Save file deleted.")
 			reset_button.text = "Save Reset!"
 			reset_button.release_focus()
+			GameState.reset_game_state()
 		else:
 			print("No save file to delete.")
 			reset_button.text = "No Save Found"

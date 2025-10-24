@@ -127,15 +127,30 @@ func create_click_animation():
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
-func format_number(number: float) -> String:
-	if number < 10000.0: return str(int(number))
+func format_number(number: float, allow_decimals: bool = false) -> String:
+	if number < 1000.0:
+		if allow_decimals:
+			if fmod(number, 1.0) == 0:
+				return str(int(number))
+			else:
+				return "%.1f" % number
+		else:
+			return str(int(number))
 	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
 	var magnitude = int(floor(log(number) / log(1000)))
+	if magnitude >= SUFFIXES.size(): magnitude = SUFFIXES.size() - 1
+		
 	var divisor = pow(1000, magnitude)
 	var abbreviated_num = number / divisor
 	var suffix = SUFFIXES[magnitude]
 	var formatted_string: String
-	if abbreviated_num < 10: formatted_string = "%.2f" % abbreviated_num
-	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
-	else: formatted_string = "%d" % abbreviated_num
+	if fmod(abbreviated_num, 1.0) == 0:
+		formatted_string = "%d" % int(abbreviated_num)
+	elif abbreviated_num < 10:
+		formatted_string = "%.2f" % abbreviated_num
+	elif abbreviated_num < 100:
+		formatted_string = "%.1f" % abbreviated_num
+	else:
+		formatted_string = "%d" % int(abbreviated_num)
+		
 	return formatted_string + suffix

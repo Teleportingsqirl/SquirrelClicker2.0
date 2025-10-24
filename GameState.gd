@@ -36,7 +36,9 @@ func setup_buildings():
 		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-sqrladdfornuts.png"},
 		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png"},
 		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png"},
-		{"name": "Montreal", "base_cost": 10000, "sps": 100, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"}
+		{"name": "Montreal", "base_cost": 10000, "sps": 100, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"},
+		{"name": "Grandfather Paradox", "base_cost": 100000, "sps": 1000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png"},
+		{"name": "Free Healthcare", "base_cost": 1000000, "sps": 10000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"}
 	]
 
 func recalculate_sps():
@@ -111,3 +113,10 @@ func get_and_clear_offline_progress() -> Dictionary:
 	offline_seconds_passed = 0
 	offline_squirrels_earned = 0.0
 	return progress
+
+func reset_game_state():
+	print("Resetting game state to default values.")
+	squirrels = 0.0
+	squirrels_per_click = 1
+	setup_buildings()
+	recalculate_sps()
