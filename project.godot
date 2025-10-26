@@ -29,3 +29,9 @@ window/stretch/aspect="expand"
 [global]
 
 GameState=false
+
+[steam]
+
+initialization/app_id=0
+initialization/initialize_on_startup=false
+initialization/embed_callbacks=false
