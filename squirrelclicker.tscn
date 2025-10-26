@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
 [ext_resource type="Texture2D" uid="uid://bkr75jyjbdc8r" path="res://sqrlart/sprite-background.png" id="3_sjpgo"]
+[ext_resource type="Texture2D" uid="uid://bi0bnqbbfbdfj" path="res://sqrlart/Sprite-buildingmenu.png" id="5_l110m"]
 [ext_resource type="Texture2D" uid="uid://qwto8sjpcxfd" path="res://sqrlart/ads/Sprite-sqrladdfornuts.png" id="6_t3dcb"]
-[ext_resource type="Texture2D" uid="uid://uyo38kkfri1k" path="res://sqrlart/Sprite-menutemplates3.png" id="6_uijhn"]
 [ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/ads/Sprite-arrows.png" id="7_t3dcb"]
 [ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://fonts/Poco.ttf" id="8_2wfyv"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
@@ -78,11 +78,11 @@ offset_bottom = 40.0
 
 [node name="building holder" type="TextureRect" parent="Control/sqirl buildings"]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 53.0
-offset_right = 293.0
-offset_bottom = 528.19336
-texture = ExtResource("6_uijhn")
+offset_left = 36.0
+offset_top = 96.0
+offset_right = 286.0
+offset_bottom = 525.0
+texture = ExtResource("5_l110m")
 
 [node name="buildingads" type="TextureButton" parent="Control/sqirl buildings"]
 layout_mode = 0
