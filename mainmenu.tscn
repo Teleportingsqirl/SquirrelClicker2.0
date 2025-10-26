@@ -211,7 +211,6 @@ value = 50.0
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("5_3pujl")]
 position = Vector2(-47, -35)
-frame_progress = 0.0
 
 [connection signal="pressed" from="mainbuttons/start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="mainbuttons/options" to="." method="_on_options_pressed"]
