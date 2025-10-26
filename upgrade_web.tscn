@@ -7,9 +7,10 @@
 
 [node name="UpgradeWeb" type="Node2D"]
 script = ExtResource("1_53snk")
+zoom_level = 1.0
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(1202, 1502)
+position = Vector2(1201, 1501)
 texture = ExtResource("2_xwn6h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
