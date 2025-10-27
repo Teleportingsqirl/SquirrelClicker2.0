@@ -38,7 +38,9 @@ func setup_buildings():
 		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png"},
 		{"name": "Montreal", "base_cost": 10000, "sps": 100, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"},
 		{"name": "Grandfather Paradox", "base_cost": 100000, "sps": 1000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png"},
-		{"name": "Free Healthcare", "base_cost": 1000000, "sps": 10000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"}
+		{"name": "Free Healthcare", "base_cost": 1000000, "sps": 10000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"},
+		{"name": "thing", "base_cost": 10000000, "sps": 100000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
+		{"name": "thing", "base_cost": 100000000, "sps": 1000000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"}
 	]
 
 func recalculate_sps():
