@@ -72,7 +72,7 @@ func update_text():
 	label.text = "Squirrels: " + format_number(int(GameState.squirrels))
 
 func update_sps_display():
-	sps_label.text = "SPS: " + format_number(GameState.squirrels_per_second)
+	sps_label.text = "SPS: " + format_number(GameState.squirrels_per_second, true)
 
 func update_building_display():
 	var current_building = GameState.buildings[current_building_index]
@@ -127,6 +127,8 @@ func create_click_animation():
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
+# In control.gd
+
 func format_number(number: float, allow_decimals: bool = false) -> String:
 	if number < 1000.0:
 		if allow_decimals:
@@ -135,6 +137,7 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 			else:
 				return "%.1f" % number
 		else:
+
 			return str(int(number))
 	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
 	var magnitude = int(floor(log(number) / log(1000)))
@@ -154,7 +157,3 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 		formatted_string = "%d" % int(abbreviated_num)
 		
 	return formatted_string + suffix
-
-
-func _on_upgrade_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://upgrade_web.tscn")

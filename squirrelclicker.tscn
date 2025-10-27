@@ -169,10 +169,10 @@ text = "3D"
 
 [node name="upgradeButton" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 947.0
-offset_top = 193.0
-offset_right = 1153.0
-offset_bottom = 399.0
+offset_left = 961.0
+offset_top = 278.0
+offset_right = 1149.9565
+offset_bottom = 401.0
 texture_normal = ExtResource("9_2wfyv")
 texture_hover = ExtResource("10_l110m")
 ignore_texture_size = true
