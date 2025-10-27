@@ -1,7 +1,11 @@
 # UpgradeWeb.gd
 extends Node2D
 
+<<<<<<< Updated upstream
 @export var zoom_level = 1
+=======
+@export var zoom_level = 1.2
+>>>>>>> Stashed changes
 var min_clamp = Vector2.ZERO
 var max_clamp = Vector2.ZERO
 
