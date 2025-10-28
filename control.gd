@@ -112,6 +112,10 @@ func format_seconds_to_string(total_seconds: int) -> String:
 
 func _on_3d_button_pressed():
 	get_tree().change_scene_to_file("res://3d squirrel.tscn")
+
+func _on_upgrade_button_pressed():
+	get_tree().change_scene_to_file("res://upgrade_web.tscn")
+	
 func create_idle_animation():
 	if idle_float_tween and idle_float_tween.is_valid(): idle_float_tween.kill()
 	if idle_wobble_tween and idle_wobble_tween.is_valid(): idle_wobble_tween.kill()
@@ -127,7 +131,7 @@ func create_click_animation():
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
-# In control.gd
+
 
 func format_number(number: float, allow_decimals: bool = false) -> String:
 	if number < 1000.0:
