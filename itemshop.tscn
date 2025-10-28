@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://cdu3dvxxd7ywa"]
+
+[ext_resource type="Script" uid="uid://faf3ie1nhs1h" path="res://sqirlparts.gd" id="1_lyx6a"]
+[ext_resource type="Texture2D" uid="uid://bc10e3wngb55l" path="res://sqrlart/shopart/Sprite-shopbackground.png" id="1_xcdhy"]
+[ext_resource type="Texture2D" uid="uid://dohsgih271hdq" path="res://sqrlart/shopart/Sprite-shop.png" id="2_lyx6a"]
+[ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="4_alwex"]
+
+[node name="sqirlparts" type="Node2D"]
+script = ExtResource("1_lyx6a")
+
+[node name="background" type="Sprite2D" parent="."]
+position = Vector2(581.00006, 333)
+scale = Vector2(0.9674998, 0.96750003)
+texture = ExtResource("1_xcdhy")
+
+[node name="squirrel" type="Sprite2D" parent="background"]
+position = Vector2(-12.403168, -10.335911)
+scale = Vector2(1.9573402, 1.9573402)
+texture = ExtResource("2_lyx6a")
+
+[node name="ItemContainer" type="Node2D" parent="."]
+position = Vector2(597, 544)
+
+[node name="slot1" type="Marker2D" parent="ItemContainer"]
+position = Vector2(-298, -272)
+
+[node name="slot2" type="Marker2D" parent="ItemContainer"]
+position = Vector2(-204, -119)
+
+[node name="slot3" type="Marker2D" parent="ItemContainer"]
+position = Vector2(-42, -159)
+
+[node name="slot4" type="Marker2D" parent="ItemContainer"]
+position = Vector2(109, -357)
+
+[node name="slot5" type="Marker2D" parent="ItemContainer"]
+position = Vector2(296, -329)
+
+[node name="slot6" type="Marker2D" parent="ItemContainer"]
+position = Vector2(224, -158)
+
+[node name="Tooltip" type="PanelContainer" parent="."]
+visible = false
+offset_left = 741.0
+offset_top = 444.0
+offset_right = 882.0
+offset_bottom = 570.0
+
+[node name="Label" type="Label" parent="Tooltip"]
+layout_mode = 2
+
+[node name="AnimatedCursor" parent="." instance=ExtResource("4_alwex")]

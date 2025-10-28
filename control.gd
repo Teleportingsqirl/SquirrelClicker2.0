@@ -116,6 +116,9 @@ func _on_3d_button_pressed():
 func _on_upgrade_button_pressed():
 	get_tree().change_scene_to_file("res://upgrade_web.tscn")
 	
+func _on_sqirlparts_button_pressed():
+	get_tree().change_scene_to_file("res://itemshop.tscn")
+	
 func create_idle_animation():
 	if idle_float_tween and idle_float_tween.is_valid(): idle_float_tween.kill()
 	if idle_wobble_tween and idle_wobble_tween.is_valid(): idle_wobble_tween.kill()

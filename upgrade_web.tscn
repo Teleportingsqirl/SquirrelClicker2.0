@@ -9,7 +9,7 @@
 script = ExtResource("1_53snk")
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(1201, 1501)
+position = Vector2(799, 1000)
 texture = ExtResource("2_xwn6h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

@@ -181,7 +181,16 @@ stretch_mode = 0
 [node name="AnimatedCursor" parent="." instance=ExtResource("8_s7qjs")]
 position = Vector2(-69, -28)
 
+[node name="sqirlParts" type="Button" parent="."]
+layout_mode = 0
+offset_left = 996.0
+offset_top = 415.0
+offset_right = 1152.0
+offset_bottom = 483.0
+text = "itemshop"
+
 [connection signal="pressed" from="Control/sqirl base/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
 [connection signal="timeout" from="Control/ToastTimer" to="Control" method="_on_toast_timer_timeout"]
 [connection signal="pressed" from="3DButton" to="Control" method="_on_3d_button_pressed"]
 [connection signal="pressed" from="upgradeButton" to="Control" method="_on_upgrade_button_pressed"]
+[connection signal="pressed" from="sqirlParts" to="Control" method="_on_sqirlparts_button_pressed"]

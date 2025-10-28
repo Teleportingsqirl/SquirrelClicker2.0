@@ -1,16 +1,49 @@
-# GameState.gd
+
 extends Node
 
-# --- All persistent game data lives here ---
 var squirrels: float = 0.0
 var squirrels_per_click: int = 1
 var squirrels_per_second: float = 0.0
 var buildings: Array = []
 var autosave_timer: Timer
 
-# --- Variables to communicate offline progress to the UI ---
 var offline_seconds_passed: int = 0
 var offline_squirrels_earned: float = 0.0
+
+var all_items = {}
+var owned_item_ids = []
+
+func setup_items():
+	all_items = {
+		"tapeworm": {
+			"name": "Tapeworm",
+			"description": "A new friend! Boosts SPS by 20% for 60 seconds.",
+			"texture_path": "res://sqrlart/shopart/Sprite-wormshopitem.png",
+			"is_spawnable": true,
+			"type": "powerup"
+		},
+		"steroids": {
+			"name": "Squirrel Steroids",
+			"description": "Gain a surge of power. Doubles squirrels-per-click for 30 seconds.",
+			"texture_path": "res://sqrlart/shopart/Sprite-sqrlsteriods.png",
+			"is_spawnable": true,
+			"type": "powerup"
+		},
+		"washing_machine": {
+			"name": "Washing Machine Heart",
+			"description": "A purely cosmetic washing machine for your squirrel.",
+			"texture_path": "res://sqrlart/shopart/Sprite-washingmachineheart.png",
+			"is_spawnable": true,
+			"type": "cosmetic"
+		},
+		"mr_primal": {
+			"name": "Mr. Primal Instinct",
+			"description": "A mysterious gentleman who provides a permanent +5 SPS.",
+			"texture_path": "res://sqrlart/shopart/Sprite-mr.png", 
+			"is_spawnable": true, 
+			"type": "permanent"
+		}
+	}
 
 func _ready():
 	autosave_timer = Timer.new()
@@ -22,6 +55,7 @@ func _ready():
 	load_game()
 	if buildings.is_empty():
 		setup_buildings()
+	setup_items()
 	recalculate_sps()
 
 func _process(delta):
@@ -68,7 +102,8 @@ func save_game():
 			"squirrels": squirrels,
 			"squirrels_per_click": squirrels_per_click,
 			"buildings": buildings,
-			"save_timestamp": Time.get_unix_time_from_system() # <-- ADDED: Save current time
+			"save_timestamp": Time.get_unix_time_from_system(),
+			"owned_item_ids": owned_item_ids
 		}
 		file.store_var(save_data)
 		print("Game Saved!")
@@ -85,6 +120,7 @@ func load_game():
 				squirrels = loaded_data.get("squirrels", 0.0)
 				squirrels_per_click = loaded_data.get("squirrels_per_click", 1)
 				buildings = loaded_data.get("buildings", [])
+				owned_item_ids = loaded_data.get("owned_item_ids", [])
 				
 				recalculate_sps()
 				var saved_time = loaded_data.get("save_timestamp", 0)
@@ -122,5 +158,6 @@ func reset_game_state():
 	squirrels_per_click = 1
 	offline_seconds_passed = 0
 	offline_squirrels_earned = 0.0
+	owned_item_ids = []
 	setup_buildings()
 	recalculate_sps()
