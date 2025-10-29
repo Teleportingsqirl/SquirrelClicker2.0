@@ -71,9 +71,7 @@ func _handle_sps_change(old_sps, new_sps):
 	tween.parallel().tween_property(sps_change_label, "modulate:a", 0.0, 2.5) # Fade out while moving
 	
 	await tween.finished
-	sps_change_label.position.y = start_pos_y # Reset position for next time
-
-# --- Toast Logic ---
+	sps_change_label.position.y = start_pos_y
 
 func _show_toast(message: String):
 	toast_label.text = message

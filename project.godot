@@ -24,11 +24,14 @@ GameState="*res://GameState.gd"
 window/size/mode=3
 window/size/borderless=true
 window/stretch/mode="viewport"
-window/stretch/aspect="expand"
 
 [global]
 
 GameState=false
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
 
 [steam]
 
