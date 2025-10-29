@@ -186,9 +186,9 @@ text = "3D"
 [node name="upgradeButton" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 961.0
-offset_top = 278.0
+offset_top = 351.0
 offset_right = 1149.9565
-offset_bottom = 401.0
+offset_bottom = 474.0
 texture_normal = ExtResource("9_2wfyv")
 texture_hover = ExtResource("10_l110m")
 ignore_texture_size = true
@@ -196,10 +196,10 @@ stretch_mode = 0
 
 [node name="sqirlParts" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 840.0
-offset_top = 407.0
-offset_right = 1152.5
-offset_bottom = 487.0
+offset_left = 838.0
+offset_top = 266.0
+offset_right = 1150.5
+offset_bottom = 346.0
 texture_normal = ExtResource("12_tyo7n")
 texture_pressed = ExtResource("13_61pn2")
 texture_hover = ExtResource("14_74l45")
