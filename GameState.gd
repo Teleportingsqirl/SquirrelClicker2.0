@@ -1,4 +1,3 @@
-
 extends Node
 
 var squirrels: float = 0.0
@@ -6,6 +5,12 @@ var squirrels_per_click: int = 1
 var squirrels_per_second: float = 0.0
 var buildings: Array = []
 var autosave_timer: Timer
+var sps_multiplier = 1.0
+var click_multiplier = 1.0
+var temporary_sps_debuff = 1.0
+
+var steroid_timer: Timer
+var tapeworm_timer: Timer
 
 var offline_seconds_passed: int = 0
 var offline_squirrels_earned: float = 0.0
@@ -13,35 +18,88 @@ var offline_squirrels_earned: float = 0.0
 var all_items = {}
 var owned_item_ids = []
 
+var toast_mailbox = []
+var sps_change_mailbox = []
+
+
 func setup_items():
 	all_items = {
 		"tapeworm": {
-			"name": "Tapeworm",
-			"description": "A new friend! Boosts SPS by 20% for 60 seconds.",
+			"name": "A Tapeworm",
+			"description": "It appears your squirrel was attempting to lose some weight. Gives you an hour of offline earnings instantly, but -20% sps for 30 seconds.",
 			"texture_path": "res://sqrlart/shopart/Sprite-wormshopitem.png",
 			"is_spawnable": true,
 			"type": "powerup"
 		},
 		"steroids": {
 			"name": "Squirrel Steroids",
-			"description": "Gain a surge of power. Doubles squirrels-per-click for 30 seconds.",
+			"description": "Taking steroids is just like pretending to be handicapped at the Special Olympics. Quadruples squirrels-per-click for 30 seconds.",
 			"texture_path": "res://sqrlart/shopart/Sprite-sqrlsteriods.png",
 			"is_spawnable": true,
 			"type": "powerup"
 		},
 		"washing_machine": {
-			"name": "Washing Machine Heart",
-			"description": "A purely cosmetic washing machine for your squirrel.",
+			"name": "A Washing Machine Heart",
+			"description": "it seems to have a pair of dirty shoes in it. its all banged up inside.",
 			"texture_path": "res://sqrlart/shopart/Sprite-washingmachineheart.png",
+			"is_spawnable": true,
+			"type": "cosmetic"
+		},
+		"Clock": {
+			"name": "A Ticking Clock",
+			"description": "It seems this squirrel has swallowed a ticking clock, and potentially developed a taste for human. Gives 2 hours of offline earnings instantly.",
+			"texture_path": "res://sqrlart/shopart/Sprite-clockitem.png",
+			"is_spawnable": true,
+			"type": "powerup"
+		},
+		"pill": {
+			"name": "A Pill",
+			"description": "a strange blue pill that accentuates your squirrel's favorite features. x2 current sps permanantly due to gender euphoria.",
+			"texture_path": "res://sqrlart/shopart/Sprite-pillshopitem.png",
+			"is_spawnable": true,
+			"type": "powerup"
+		},
+		"brain": {
+			"name": "A Brain",
+			"description": "Maybe a little inteligence would help your squirrels make the most of themselves. +10% permenant sps due to self actualisation. ",
+			"texture_path": "res://sqrlart/shopart/Sprite-sqrlbrain.png",
+			"is_spawnable": true,
+			"type": "powerup"
+		},
+		"A Single Rose": {
+			"name": "A Single Rose",
+			"description": "A perfect looking single rose, sitting alone in the gaping cavity of the squirrel. It's beauty rivals that of the stars.",
+			"texture_path": "res://sqrlart/shopart/Sprite-roseshopitem.png",
+			"is_spawnable": true,
+			"type": "permanent"
+		},
+		"3D Glasses": {
+			"name": "3D Glasses",
+			"description": "experience the wonder of squirrel clicker in 3D (3D Effects not included)",
+			"texture_path": "res://sqrlart/shopart/Sprite-3dglassesitem.png",
+			"is_spawnable": true,
+			"type": "cosmetic"
+		},
+		"Letter From Dad": {
+			"name": "A Letter From Your Father.",
+			"description": "Seems to do nothing, but you feel a stir in your file directory.",
+			"texture_path": "res://sqrlart/shopart/Sprite-letterfromdad.png",
+			"is_spawnable": true,
+			"type": "permanent"
+		},
+		"Christmas tree": {
+			"name": "Christmas Tree",
+			"description": "Celebrate your holiday cheer! Base of tree is appropriately flared so as to prevent injury or loss.",
+			"texture_path": "res://sqrlart/shopart/Sprite-christmas tree.png",
 			"is_spawnable": true,
 			"type": "cosmetic"
 		},
 		"mr_primal": {
 			"name": "Mr. Primal Instinct",
-			"description": "A mysterious gentleman who provides a permanent +5 SPS.",
+			"description": "A mysterious gentleman. He offers you +5% sps. Surely nothing will come of his involvement.",
 			"texture_path": "res://sqrlart/shopart/Sprite-mr.png", 
 			"is_spawnable": true, 
-			"type": "permanent"
+			"type": "permanent",
 		}
 	}
 
@@ -73,14 +131,18 @@ func setup_buildings():
 		{"name": "Montreal", "base_cost": 10000, "sps": 100, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"},
 		{"name": "Grandfather Paradox", "base_cost": 100000, "sps": 1000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png"},
 		{"name": "Free Healthcare", "base_cost": 1000000, "sps": 10000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"},
-		{"name": "thing", "base_cost": 10000000, "sps": 100000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
-		{"name": "thing", "base_cost": 100000000, "sps": 1000000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"}
+		{"name": "Persona", "base_cost": 10000000, "sps": 100000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
+		{"name": "Foxes", "base_cost": 100000000, "sps": 1000000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"}
 	]
 
 func recalculate_sps():
-	squirrels_per_second = 0.0
+	var old_sps = squirrels_per_second
+	var base_sps = 0.0
 	for building in buildings:
-		squirrels_per_second += building.owned * building.sps
+		base_sps += building.owned * building.sps
+	squirrels_per_second = base_sps * sps_multiplier * temporary_sps_debuff
+	if not is_equal_approx(old_sps, squirrels_per_second):
+		sps_change_mailbox.append({"old": old_sps, "new": squirrels_per_second})
 
 func calculate_building_cost(building_index: int) -> int:
 	if building_index >= 0 and building_index < buildings.size():
@@ -106,7 +168,6 @@ func save_game():
 			"owned_item_ids": owned_item_ids
 		}
 		file.store_var(save_data)
-		print("Game Saved!")
 	else:
 		print("Error writing save file: ", file_path)
 
@@ -139,7 +200,6 @@ func load_game():
 			
 
 func _on_autosave_timer_timeout():
-	print("Autosaving game...")
 	save_game()
 
 
@@ -153,7 +213,6 @@ func get_and_clear_offline_progress() -> Dictionary:
 	return progress
 
 func reset_game_state():
-	print("Resetting game state to default values.")
 	squirrels = 0.0
 	squirrels_per_click = 1
 	offline_seconds_passed = 0
@@ -161,3 +220,94 @@ func reset_game_state():
 	owned_item_ids = []
 	setup_buildings()
 	recalculate_sps()
+	
+func format_number(number: float, allow_decimals: bool = false) -> String:
+	if number < 1000.0:
+		if allow_decimals:
+			if fmod(number, 1.0) == 0:
+				return str(int(number))
+			else:
+				return "%.1f" % number
+		else:
+
+			return str(int(number))
+	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
+	var magnitude = int(floor(log(number) / log(1000)))
+	if magnitude >= SUFFIXES.size(): magnitude = SUFFIXES.size() - 1
+		
+	var divisor = pow(1000, magnitude)
+	var abbreviated_num = number / divisor
+	var suffix = SUFFIXES[magnitude]
+	var formatted_string: String
+	if fmod(abbreviated_num, 1.0) == 0:
+		formatted_string = "%d" % int(abbreviated_num)
+	elif abbreviated_num < 10:
+		formatted_string = "%.2f" % abbreviated_num
+	elif abbreviated_num < 100:
+		formatted_string = "%.1f" % abbreviated_num
+	else:
+		formatted_string = "%d" % int(abbreviated_num)
+		
+	return formatted_string + suffix
+
+func _apply_steroid_buff():
+	if not is_instance_valid(steroid_timer):
+		steroid_timer = Timer.new()
+		steroid_timer.one_shot = true
+		steroid_timer.timeout.connect(_on_steroid_timer_timeout)
+		add_child(steroid_timer)
+	click_multiplier = 1.0 
+	
+	click_multiplier = 4.0
+	steroid_timer.start(30)
+
+func _on_steroid_timer_timeout():
+	click_multiplier = 1.0
+
+func _apply_tapeworm_debuff():
+	if not is_instance_valid(tapeworm_timer):
+		tapeworm_timer = Timer.new()
+		tapeworm_timer.one_shot = true
+		tapeworm_timer.timeout.connect(_on_tapeworm_timer_timeout)
+		add_child(tapeworm_timer)
+
+	temporary_sps_debuff = 0.8
+	tapeworm_timer.start(30)
+	recalculate_sps()
+
+func _on_tapeworm_timer_timeout():
+	temporary_sps_debuff = 1.0
+	recalculate_sps()
+
+func apply_item_effect(item_id: String):
+	if not all_items.has(item_id):
+		print("Error: Tried to apply effect for unknown item: ", item_id)
+		return
+
+	var item_data = all_items[item_id]
+	match item_id:
+		"tapeworm":
+			var earnings = squirrels_per_second * 3600
+			squirrels += earnings
+			var message = "You gained %s squirrels from the tapeworm!" % format_number(earnings, true)
+			toast_mailbox.append(message)
+			_apply_tapeworm_debuff()
+		"Clock":
+			var earnings = squirrels_per_second * 7200
+			squirrels += earnings
+			var message = "You gained %s squirrels from the clock!" % format_number(earnings, true)
+			toast_mailbox.append(message)
+		"steroids":
+			_apply_steroid_buff()
+		"pill":
+			sps_multiplier *= 2.0
+		"brain":
+			sps_multiplier += 0.10
+		"mr_primal":
+			sps_multiplier += 0.05
+	if item_data.type != "powerup":
+		if not owned_item_ids.has(item_id):
+			owned_item_ids.append(item_id)
+	recalculate_sps()
+	
+	

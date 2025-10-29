@@ -1,0 +1,150 @@
+[gd_scene load_steps=15 format=3 uid="uid://cdu3dvxxd7ywa"]
+
+[ext_resource type="Script" uid="uid://faf3ie1nhs1h" path="res://sqirlparts.gd" id="1_lyx6a"]
+[ext_resource type="Texture2D" uid="uid://bc10e3wngb55l" path="res://sqrlart/shopart/Sprite-shopbackground.png" id="1_xcdhy"]
+[ext_resource type="Texture2D" uid="uid://b688wyex4lxfg" path="res://sqrlart/shopart/Sprite-shop-Sheet-Sheet.png" id="3_pjo5j"]
+[ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="4_alwex"]
+[ext_resource type="FontFile" uid="uid://ct05u5ry02d8e" path="res://fonts/Ichigayamincho-9MAv0.ttf" id="4_bsmgd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tdp86"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(3360, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hvrma"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(2880, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_md46f"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(2400, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2fevj"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(1920, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_um6v8"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(1440, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rx142"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(960, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d6a7k"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(480, 0, 480, 270)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bsmgd"]
+atlas = ExtResource("3_pjo5j")
+region = Rect2(0, 0, 480, 270)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_oh1e5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tdp86")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hvrma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_md46f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fevj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_um6v8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rx142")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6a7k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bsmgd")
+}],
+"loop": false,
+"name": &"close_slots",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bsmgd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6a7k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rx142")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_um6v8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fevj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_md46f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hvrma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tdp86")
+}],
+"loop": false,
+"name": &"open_slots",
+"speed": 12.0
+}]
+
+[node name="sqirlparts" type="Node2D"]
+script = ExtResource("1_lyx6a")
+
+[node name="background" type="Sprite2D" parent="."]
+position = Vector2(581.00006, 333)
+scale = Vector2(0.9674998, 0.96750003)
+texture = ExtResource("1_xcdhy")
+
+[node name="SlotsAnimation" type="AnimatedSprite2D" parent="background"]
+position = Vector2(-16.53754, -28.94057)
+scale = Vector2(1.8415643, 1.5652214)
+sprite_frames = SubResource("SpriteFrames_oh1e5")
+animation = &"open_slots"
+
+[node name="ItemContainer" type="Node2D" parent="."]
+position = Vector2(559.3333, 524.5)
+
+[node name="slot1" type="Marker2D" parent="ItemContainer"]
+position = Vector2(-247.33331, -259.5)
+
+[node name="slot2" type="Marker2D" parent="ItemContainer"]
+position = Vector2(-158.33331, -138.5)
+
+[node name="slot3" type="Marker2D" parent="ItemContainer"]
+position = Vector2(-5.333313, -166.5)
+
+[node name="slot4" type="Marker2D" parent="ItemContainer"]
+position = Vector2(133.66669, -329.5)
+
+[node name="slot5" type="Marker2D" parent="ItemContainer"]
+position = Vector2(311.6667, -306.5)
+
+[node name="slot6" type="Marker2D" parent="ItemContainer"]
+position = Vector2(243.66669, -170.5)
+
+[node name="Tooltip" type="PanelContainer" parent="."]
+offset_left = 712.0
+offset_top = 431.0
+offset_right = 934.0
+offset_bottom = 536.0
+
+[node name="Label" type="Label" parent="Tooltip"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_bsmgd")
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="AnimatedCursor" parent="." instance=ExtResource("4_alwex")]
