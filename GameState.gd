@@ -96,7 +96,7 @@ func setup_items():
 		"bandaid": { "name": "A Bandaid", "description": "Heals your wounded squirrels so they can be further injured at a later date. +10% of your sps permenantly.", "texture_path": "res://sqrlart/shopart/Sprite-bandaid.png", "is_spawnable": true, "type": "powerup" },
 		"ButtsPie": { "name": "A Pie", "description": "Butterscotch-cinnamon pie, one slice. The smell reminded SQUIRRELS of something. x2 sps for 10 minutes.", "texture_path": "res://sqrlart/shopart/Sprite-cinnamonbutterscotchpie.png", "is_spawnable": true, "type": "powerup" },
 		"Companion Cube": { "name": "A Companion", "description": "If it could talk - and the Enrichment Center takes this opportunity to remind you that it cannot - it would tell you to get more squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-companioncude.png", "is_spawnable": true, "type": "cosmetic" },
-		"Fazcoin": { "name": "A Fazcoin", "description": "Please deposit five coins.", "texture_path": "res://sqrlart/shopart/Sprite-fazcoin.png", "is_spawnable": true, "type": "powerup" },
+		"Fazcoin": { "name": "A Fazcoin", "description": "Please deposit five coins.", "texture_path": "res://sqrlart/shopart/Sprite-fazcoin.png", "is_spawnable": false, "type": "powerup" },
 		"HR": { "name": "Human Resources", "description": "A team of investigators has levied claims againts your squirrels for professional indecency and nudity in the workplace. They confiscated all your squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-humanresources.png", "is_spawnable": true, "type": "cosmetic" }
 	}
 
@@ -243,3 +243,10 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
 	else: formatted_string = "%d" % int(abbreviated_num)
 	return formatted_string + suffix
+	
+func update_spawnable_items():
+	if all_items.has("Fazcoin"):
+		if fazcoin_count < 5:
+			all_items.Fazcoin.is_spawnable = true
+		else:
+			all_items.Fazcoin.is_spawnable = false

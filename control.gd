@@ -2,10 +2,10 @@
 extends Control
 
 # --- Node References ---
-@onready var label = $"sqirl base/clicksqrltext"
+@onready var label = $clicksqrltext
 @onready var sps_label: Label = $SPSLabel
 @onready var sps_change_label: Label = $SpsChangeLabel
-@onready var texture_button = $"sqirl base/sqrlcontainer/sqrlbutton"
+@onready var texture_button = $"sqrlcontainer/sqrlbutton"
 @onready var building_price_label = $"sqirl buildings/building price"
 @onready var building_ad_button = $"sqirl buildings/buildingads"
 @onready var building_ad_texture = $"sqirl buildings/buildingads"
@@ -14,7 +14,6 @@ extends Control
 @onready var toast_popup = $ToastPopup
 @onready var toast_label = $ToastPopup/ToastLabel
 @onready var toast_timer = $ToastTimer
-# ... (and any other @onready vars like 3DButton, etc.)
 
 var current_building_index = 0
 var idle_float_tween: Tween
@@ -22,7 +21,6 @@ var idle_wobble_tween: Tween
 var click_tween: Tween
 
 func _ready():
-	# We don't need any signal connections here for the mailbox method.
 	
 	texture_button.pivot_offset = texture_button.size / 2
 	create_idle_animation()
@@ -30,8 +28,6 @@ func _ready():
 	next_button.pressed.connect(_on_next_building_pressed)
 	prev_button.pressed.connect(_on_prev_building_pressed)
 	building_ad_button.pressed.connect(_on_purchase_building_pressed)
-	
-	# Initial UI updates are still important.
 	update_text()
 	update_sps_display() 
 	update_building_display()
@@ -52,6 +48,7 @@ func _process(_delta):
 	# --- Regular UI updates ---
 	update_text()
 	update_sps_display()
+	texture_button.position = texture_button.position.round()
 
 # This function creates the animated SPS change text.
 func _handle_sps_change(old_sps, new_sps):
@@ -135,11 +132,16 @@ func _on_upgrade_button_pressed(): get_tree().change_scene_to_file("res://upgrad
 func _on_sqirlparts_button_pressed(): get_tree().change_scene_to_file("res://sqirlparts.tscn")
 	
 func create_idle_animation():
+	if (idle_float_tween and idle_float_tween.is_running()) or \
+	   (idle_wobble_tween and idle_wobble_tween.is_running()):
+		return
 	if idle_float_tween and idle_float_tween.is_valid(): idle_float_tween.kill()
 	if idle_wobble_tween and idle_wobble_tween.is_valid(): idle_wobble_tween.kill()
+
 	idle_float_tween = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	idle_float_tween.tween_property(texture_button, "position:y", texture_button.position.y + 15.0, 1.6)
 	idle_float_tween.tween_property(texture_button, "position:y", texture_button.position.y - 5.0, 1.4)
+	
 	idle_wobble_tween = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	idle_wobble_tween.tween_property(texture_button, "rotation_degrees", 8.0, 2.0)
 	idle_wobble_tween.tween_property(texture_button, "rotation_degrees", -8.0, 2.0)

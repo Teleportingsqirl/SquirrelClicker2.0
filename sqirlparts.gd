@@ -24,7 +24,7 @@ func _on_slots_animation_finished():
 	var anim_name = slots_animation.animation
 	if anim_name == "open_slots":
 		clear_shop(); populate_shop(); item_container.visible = true
-	elif anim_name == "slots_close": # Corrected animation name
+	elif anim_name == "close_slots": # Corrected animation name
 		get_tree().change_scene_to_file("res://squirrelclicker.tscn")
 
 func clear_shop():
@@ -81,7 +81,7 @@ func populate_shop():
 func _on_item_button_pressed(item_button):
 	var item_id = item_button.get_meta("id")
 	GameState.apply_item_effect(item_id)
-
+	GameState.update_spawnable_items()
 	if GameState.scene_change_mailbox != "":
 		var scene_to_load = GameState.scene_change_mailbox
 		GameState.scene_change_mailbox = ""

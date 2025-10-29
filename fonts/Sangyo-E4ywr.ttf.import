@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Sangyo-E4ywr.ttf-a712350e0f02c6e66f3fa1f143f2
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false

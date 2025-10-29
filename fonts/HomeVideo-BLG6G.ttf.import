@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/HomeVideo-BLG6G.ttf-b84e38d040ee0b22e2e99e63f
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false

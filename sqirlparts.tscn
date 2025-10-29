@@ -100,10 +100,12 @@ animations = [{
 }]
 
 [node name="sqirlparts" type="Node2D"]
+position = Vector2(0, -2)
+scale = Vector2(1.7132831, 1.7132831)
 script = ExtResource("1_lyx6a")
 
 [node name="background" type="Sprite2D" parent="."]
-position = Vector2(581.00006, 333)
+position = Vector2(566.16455, 313.43332)
 scale = Vector2(0.9674998, 0.96750003)
 texture = ExtResource("1_xcdhy")
 
@@ -112,9 +114,11 @@ position = Vector2(-16.53754, -28.94057)
 scale = Vector2(1.8415643, 1.5652214)
 sprite_frames = SubResource("SpriteFrames_oh1e5")
 animation = &"open_slots"
+frame = 7
+frame_progress = 1.0
 
 [node name="ItemContainer" type="Node2D" parent="."]
-position = Vector2(559.3333, 524.5)
+position = Vector2(544.74084, 505.23825)
 
 [node name="slot1" type="Marker2D" parent="ItemContainer"]
 position = Vector2(-247.33331, -259.5)
@@ -135,16 +139,21 @@ position = Vector2(311.6667, -306.5)
 position = Vector2(243.66669, -170.5)
 
 [node name="Tooltip" type="PanelContainer" parent="."]
-offset_left = 712.0
-offset_top = 431.0
-offset_right = 934.0
-offset_bottom = 536.0
+offset_left = 697.4082
+offset_top = 411.7388
+offset_right = 919.4082
+offset_bottom = 516.7388
 
 [node name="Label" type="Label" parent="Tooltip"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9764706)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("4_bsmgd")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 26
 horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("4_alwex")]
+position = Vector2(-745.7009, -143.68384)

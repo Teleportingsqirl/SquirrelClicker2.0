@@ -9,7 +9,8 @@
 script = ExtResource("1_53snk")
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(799, 1000)
+position = Vector2(1625.9999, 2033.7499)
+scale = Vector2(2.0337498, 2.0337498)
 texture = ExtResource("2_xwn6h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -33,6 +34,6 @@ theme_override_styles/disabled_mirrored = ExtResource("3_7p0gc")
 theme_override_styles/focus = ExtResource("3_7p0gc")
 text = "BACK"
 
-[node name="AnimatedCursor" parent="CanvasLayer" instance=ExtResource("3_xwn6h")]
+[node name="AnimatedCursor" parent="." instance=ExtResource("3_xwn6h")]
 top_level = true
 position = Vector2(0, 1)

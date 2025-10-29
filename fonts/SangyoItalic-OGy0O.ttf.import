@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/SangyoItalic-OGy0O.ttf-342eb466b7e7c72ca3d7b3
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
