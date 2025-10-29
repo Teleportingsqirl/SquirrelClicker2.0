@@ -58,7 +58,8 @@ func _ready():
 
 func _process(delta):
 	squirrels += squirrels_per_second * delta
-	if Input.is_action_just_pressed("ui_cancel"): get_tree().change_scene_to_file("res://mainmenu.tscn")
+	if Input.is_action_just_pressed("ui_cancel"):
+		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
 
 func save_settings():
 	config.set_value("audio", "volume_db", volume_db); config.set_value("graphics", "fullscreen", is_fullscreen)

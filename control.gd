@@ -128,8 +128,8 @@ func format_seconds_to_string(total_seconds: int) -> String:
 	else: return "%d days" % [int(total_seconds / 86400.0)]
 
 func _on_3d_button_pressed(): get_tree().change_scene_to_file("res://3d squirrel.tscn")
-func _on_upgrade_button_pressed(): get_tree().change_scene_to_file("res://upgrade_web.tscn")
-func _on_sqirlparts_button_pressed(): get_tree().change_scene_to_file("res://sqirlparts.tscn")
+func _on_upgrade_button_pressed(): SceneTransitioner.transition_to_scene("res://upgrade_web.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+func _on_sqirlparts_button_pressed(): SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 	
 func create_idle_animation():
 	if (idle_float_tween and idle_float_tween.is_running()) or \

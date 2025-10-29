@@ -88,7 +88,7 @@ func _on_language_selected(index):
 
 func _on_start_pressed() -> void:
 	start_button.disabled = true
-	get_tree().change_scene_to_file("res://squirrelclicker.tscn")
+	SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 
 func _on_reset_pressed() -> void:
 	if confirm_reset == true:

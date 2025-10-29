@@ -24,8 +24,8 @@ func _on_slots_animation_finished():
 	var anim_name = slots_animation.animation
 	if anim_name == "open_slots":
 		clear_shop(); populate_shop(); item_container.visible = true
-	elif anim_name == "close_slots": # Corrected animation name
-		get_tree().change_scene_to_file("res://squirrelclicker.tscn")
+	elif anim_name == "close_slots":
+		SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
 
 func clear_shop():
 	if is_instance_valid(item_container):
@@ -60,8 +60,6 @@ func populate_shop():
 		item_button.ignore_texture_size = true
 		item_button.custom_minimum_size = ITEM_DISPLAY_SIZE
 		item_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		
-		var texture_size = item_button.texture_normal.get_size()
 		item_button.position = slot_position - (ITEM_DISPLAY_SIZE / 2)
 		
 		var description = item_data.description
@@ -85,7 +83,7 @@ func _on_item_button_pressed(item_button):
 	if GameState.scene_change_mailbox != "":
 		var scene_to_load = GameState.scene_change_mailbox
 		GameState.scene_change_mailbox = ""
-		get_tree().change_scene_to_file(scene_to_load)
+		SceneTransitioner.transition_to_scene(scene_to_load)
 	else:
 		item_container.visible = false
 		tooltip.visible = false
@@ -103,9 +101,9 @@ func _adjust_tooltip_font_size():
 	tooltip_label.add_theme_font_size_override("font_size", current_font_size)
 
 func _on_item_mouse_entered(item_button):
-	var name = item_button.get_meta("name")
+	var item_name = item_button.get_meta("name")
 	var desc = item_button.get_meta("description")
-	tooltip_label.text = name + ": " + desc
+	tooltip_label.text = item_name + ": " + desc
 	_adjust_tooltip_font_size()
 	tooltip.visible = true
 

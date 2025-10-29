@@ -45,4 +45,4 @@ func _input(event):
 			self.position = (drag_start_node_position + mouse_delta).clamp(min_clamp, max_clamp)
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://squirrelclicker.tscn")
+	SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
