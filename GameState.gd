@@ -99,6 +99,11 @@ func setup_items():
 		"Fazcoin": { "name": "A Fazcoin", "description": "Please deposit five coins.", "texture_path": "res://sqrlart/shopart/Sprite-fazcoin.png", "is_spawnable": true, "type": "powerup" },
 		"HR": { "name": "Human Resources", "description": "A team of investigators has levied claims againts your squirrels for professional indecency and nudity in the workplace. They confiscated all your squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-humanresources.png", "is_spawnable": true, "type": "evil" },
 		"Wheat": { "name": "A bundle of wheat", "description": "A small bundle of wheat to be fed to the squirrels. This will put them in love mode, meaning even more squirrels. Doubles your current squirrel count.", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
+		"Gyoza": { "name": "A Gyoza", "description": "This tastes the same as what you have been eating for 15 years locked away. ", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
+		"The Plant": { "name": "The Plant", "description": " ", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
+		"Liquid Pain": { "name": "Liquid Pain", "description": "", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
+		"Loss": { "name": "A bundle of wheat", "description": "", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
+		"Pregnancy test": { "name": "A bundle of wheat", "description": "", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
 		"A NICE ICE KEY": { "name": "Ice Key", "description": "NOW YOU CAN SEE A NICE ICE KEY WHICH YOU CAN HAVE FOR FREE", "texture_path": "res://sqrlart/shopart/Sprite-icekey.png", "is_spawnable": true, "type": "cosmetic" }
 	}
 
