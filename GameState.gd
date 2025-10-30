@@ -1,7 +1,6 @@
-# GameState.gd (Complete, Final Version)
+# GameState.gd
 extends Node
 
-# --- Core Game Data ---
 var squirrels: float = 0.0
 var squirrels_per_click: int = 1
 var squirrels_per_second: float = 0.0
@@ -9,41 +8,40 @@ var buildings: Array = []
 var all_items = {}
 var owned_item_ids = []
 
-# --- Buff/Multiplier Variables ---
 var sps_multiplier = 1.0
 var click_multiplier = 1.0
 var temporary_sps_debuff = 1.0
-var temporary_sps_buff = 1.0 # For ButtsPie
-var fazcoin_count = 0        # For Fazcoin secret
+var temporary_sps_buff = 1.0
+var fazcoin_count = 0
 
-# --- Timers ---
+var steroid_end_time: int = 0
+var tapeworm_end_time: int = 0
+var pie_end_time: int = 0
+
 var steroid_timer: Timer
 var tapeworm_timer: Timer
-var pie_timer: Timer         # For ButtsPie
+var pie_timer: Timer
 var autosave_timer: Timer
 
-# --- Offline Progress ---
+var is_in_shop = false
+var current_shop_items = []
+
 var offline_seconds_passed: int = 0
 var offline_squirrels_earned: float = 0.0
 
-# --- "Mailbox" UI Communication System ---
 var toast_mailbox = []
 var sps_change_mailbox = []
-var scene_change_mailbox = "" # For Fazcoin secret
+var scene_change_mailbox = ""
 
-# --- Settings ---
 var config = ConfigFile.new()
 var config_path = "user://settings.cfg"
 var volume_db = 0.0
 var is_fullscreen = false
 var use_antialiasing = false
 
-# --- CONSTANTS ---
 const FAZCOIN_DESCRIPTIONS = [
-	"Please deposit five coins.",
-	"You are attempting to trick Freddy.",
-	"You are attempting to trick Freddy.",
-	"Freddy is the best. You are the best.",
+	"Please deposit five coins.", "You are attempting to trick Freddy.",
+	"You are attempting to trick Freddy.", "Freddy is the best. You are the best.",
 	"Thank you for depositing five coins."
 ]
 
@@ -54,11 +52,12 @@ func _ready():
 	setup_items()
 	load_game()
 	if buildings.is_empty(): setup_buildings()
+	_check_persistent_timers()
 	recalculate_sps()
 
 func _process(delta):
 	squirrels += squirrels_per_second * delta
-	if Input.is_action_just_pressed("ui_cancel"):
+	if Input.is_action_just_pressed("ui_cancel") and not is_in_shop:
 		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
 
 func save_settings():
@@ -97,8 +96,10 @@ func setup_items():
 		"bandaid": { "name": "A Bandaid", "description": "Heals your wounded squirrels so they can be further injured at a later date. +10% of your sps permenantly.", "texture_path": "res://sqrlart/shopart/Sprite-bandaid.png", "is_spawnable": true, "type": "powerup" },
 		"ButtsPie": { "name": "A Pie", "description": "Butterscotch-cinnamon pie, one slice. The smell reminded SQUIRRELS of something. x2 sps for 10 minutes.", "texture_path": "res://sqrlart/shopart/Sprite-cinnamonbutterscotchpie.png", "is_spawnable": true, "type": "powerup" },
 		"Companion Cube": { "name": "A Companion", "description": "If it could talk - and the Enrichment Center takes this opportunity to remind you that it cannot - it would tell you to get more squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-companioncude.png", "is_spawnable": true, "type": "cosmetic" },
-		"Fazcoin": { "name": "A Fazcoin", "description": "Please deposit five coins.", "texture_path": "res://sqrlart/shopart/Sprite-fazcoin.png", "is_spawnable": false, "type": "powerup" },
-		"HR": { "name": "Human Resources", "description": "A team of investigators has levied claims againts your squirrels for professional indecency and nudity in the workplace. They confiscated all your squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-humanresources.png", "is_spawnable": true, "type": "cosmetic" }
+		"Fazcoin": { "name": "A Fazcoin", "description": "Please deposit five coins.", "texture_path": "res://sqrlart/shopart/Sprite-fazcoin.png", "is_spawnable": true, "type": "powerup" },
+		"HR": { "name": "Human Resources", "description": "A team of investigators has levied claims againts your squirrels for professional indecency and nudity in the workplace. They confiscated all your squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-humanresources.png", "is_spawnable": true, "type": "evil" },
+		"Wheat": { "name": "A bundle of wheat", "description": "A small bundle of wheat to be fed to the squirrels. This will put them in love mode, meaning even more squirrels. Doubles your current squirrel count.", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
+		"A NICE ICE KEY": { "name": "Ice Key", "description": "NOW YOU CAN SEE A NICE ICE KEY WHICH YOU CAN HAVE FOR FREE", "texture_path": "res://sqrlart/shopart/Sprite-icekey.png", "is_spawnable": true, "type": "cosmetic" }
 	}
 
 func setup_buildings():
@@ -132,11 +133,11 @@ func apply_item_effect(item_id: String):
 	var item_data = all_items[item_id]
 	match item_id:
 		"tapeworm":
-			var earnings = squirrels_per_second * 10800 # 3 hours
-			squirrels += earnings; toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true)); _apply_tapeworm_debuff()
+			var earnings = squirrels_per_second * 10800; squirrels += earnings
+			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true)); _apply_tapeworm_debuff()
 		"Clock":
-			var earnings = squirrels_per_second * 3600 # 1 hour
-			squirrels += earnings; toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true))
+			var earnings = squirrels_per_second * 3600; squirrels += earnings
+			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true))
 		"steroids": _apply_steroid_buff()
 		"pill": sps_multiplier *= 2.0
 		"brain": sps_multiplier += 0.10
@@ -146,12 +147,12 @@ func apply_item_effect(item_id: String):
 		"HR": squirrels = 0
 		"Fazcoin":
 			fazcoin_count += 1
-			if fazcoin_count >= 5:
-				scene_change_mailbox = "res://3d squirrel.tscn"
+			if fazcoin_count >= 5: scene_change_mailbox = "res://3d squirrel.tscn"
+		"Wheat": squirrels += squirrels
+			
 
-	if item_data.type != "powerup" and item_id != "HR": # HR is a cosmetic that you don't "own"
-		if not owned_item_ids.has(item_id):
-			owned_item_ids.append(item_id)
+	if item_data.type == "permanent" or item_data.type == "cosmetic":
+		if not owned_item_ids.has(item_id): owned_item_ids.append(item_id)
 	recalculate_sps()
 
 func _notification(what):
@@ -164,7 +165,9 @@ func save_game():
 		var save_data = {
 			"squirrels": squirrels, "squirrels_per_click": squirrels_per_click, "buildings": buildings,
 			"save_timestamp": Time.get_unix_time_from_system(), "owned_item_ids": owned_item_ids,
-			"sps_multiplier": sps_multiplier, "fazcoin_count": fazcoin_count
+			"sps_multiplier": sps_multiplier, "fazcoin_count": fazcoin_count,
+			"is_in_shop": is_in_shop, "current_shop_items": current_shop_items,
+			"steroid_end_time": steroid_end_time, "tapeworm_end_time": tapeworm_end_time, "pie_end_time": pie_end_time
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -183,6 +186,10 @@ func load_game():
 				squirrels = loaded_data.get("squirrels", 0.0); squirrels_per_click = loaded_data.get("squirrels_per_click", 1)
 				owned_item_ids = loaded_data.get("owned_item_ids", []); sps_multiplier = loaded_data.get("sps_multiplier", 1.0)
 				fazcoin_count = loaded_data.get("fazcoin_count", 0)
+				is_in_shop = loaded_data.get("is_in_shop", false); current_shop_items = loaded_data.get("current_shop_items", [])
+				steroid_end_time = loaded_data.get("steroid_end_time", 0); tapeworm_end_time = loaded_data.get("tapeworm_end_time", 0)
+				pie_end_time = loaded_data.get("pie_end_time", 0)
+				
 				recalculate_sps()
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -197,6 +204,8 @@ func reset_game_state():
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
 	owned_item_ids = []; fazcoin_count = 0
 	temporary_sps_buff = 1.0; temporary_sps_debuff = 1.0
+	is_in_shop = false; current_shop_items = []
+	steroid_end_time = 0; tapeworm_end_time = 0; pie_end_time = 0
 	setup_buildings(); recalculate_sps()
 
 func get_and_clear_offline_progress() -> Dictionary:
@@ -208,25 +217,57 @@ func _apply_steroid_buff():
 	if not is_instance_valid(steroid_timer):
 		steroid_timer = Timer.new(); steroid_timer.one_shot = true
 		steroid_timer.timeout.connect(_on_steroid_timer_timeout); add_child(steroid_timer)
-	click_multiplier = 4.0; steroid_timer.start(30)
+	click_multiplier = 4.0
+	steroid_end_time = int(Time.get_unix_time_from_system()) + 30
+	steroid_timer.start(30.0)
 
-func _on_steroid_timer_timeout(): click_multiplier = 1.0
+func _on_steroid_timer_timeout():
+	click_multiplier = 1.0; steroid_end_time = 0
 
 func _apply_tapeworm_debuff():
 	if not is_instance_valid(tapeworm_timer):
 		tapeworm_timer = Timer.new(); tapeworm_timer.one_shot = true
 		tapeworm_timer.timeout.connect(_on_tapeworm_timer_timeout); add_child(tapeworm_timer)
-	temporary_sps_debuff = 0.8; tapeworm_timer.start(30); recalculate_sps()
+	temporary_sps_debuff = 0.8
+	tapeworm_end_time = int(Time.get_unix_time_from_system()) + 30
+	tapeworm_timer.start(30.0)
+	recalculate_sps()
 
-func _on_tapeworm_timer_timeout(): temporary_sps_debuff = 1.0; recalculate_sps()
+func _on_tapeworm_timer_timeout():
+	temporary_sps_debuff = 1.0; tapeworm_end_time = 0; recalculate_sps()
 
 func _apply_pie_buff():
 	if not is_instance_valid(pie_timer):
 		pie_timer = Timer.new(); pie_timer.one_shot = true
 		pie_timer.timeout.connect(_on_pie_timer_timeout); add_child(pie_timer)
-	temporary_sps_buff = 2.0; pie_timer.start(600); recalculate_sps()
+	temporary_sps_buff = 2.0
+	pie_end_time = int(Time.get_unix_time_from_system()) + 600
+	pie_timer.start(600.0)
+	recalculate_sps()
 
-func _on_pie_timer_timeout(): temporary_sps_buff = 1.0; recalculate_sps()
+func _on_pie_timer_timeout():
+	temporary_sps_buff = 1.0; pie_end_time = 0; recalculate_sps()
+	
+func _check_persistent_timers():
+	var current_time = Time.get_unix_time_from_system()
+	if steroid_end_time > current_time:
+		var remaining = steroid_end_time - current_time
+		if not is_instance_valid(steroid_timer):
+			steroid_timer = Timer.new(); steroid_timer.one_shot = true
+			steroid_timer.timeout.connect(_on_steroid_timer_timeout); add_child(steroid_timer)
+		click_multiplier = 4.0; steroid_timer.start(remaining)
+	if tapeworm_end_time > current_time:
+		var remaining = tapeworm_end_time - current_time
+		if not is_instance_valid(tapeworm_timer):
+			tapeworm_timer = Timer.new(); tapeworm_timer.one_shot = true
+			tapeworm_timer.timeout.connect(_on_tapeworm_timer_timeout); add_child(tapeworm_timer)
+		temporary_sps_debuff = 0.8; tapeworm_timer.start(remaining)
+	if pie_end_time > current_time:
+		var remaining = pie_end_time - current_time
+		if not is_instance_valid(pie_timer):
+			pie_timer = Timer.new(); pie_timer.one_shot = true
+			pie_timer.timeout.connect(_on_pie_timer_timeout); add_child(pie_timer)
+		temporary_sps_buff = 2.0; pie_timer.start(remaining)
 	
 func format_number(number: float, allow_decimals: bool = false) -> String:
 	if number < 1000.0:
@@ -235,19 +276,15 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 			else: return "%.1f" % number
 		else: return str(int(number))
 	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
-	var magnitude = int(floor(log(number) / log(1000)))
-	if magnitude >= SUFFIXES.size(): magnitude = SUFFIXES.size() - 1
-	var divisor = pow(1000, magnitude); var abbreviated_num = number / divisor
-	var suffix = SUFFIXES[magnitude]; var formatted_string: String
+	var magnitude = int(floor(log(number) / log(1000))); if magnitude >= SUFFIXES.size(): magnitude = SUFFIXES.size() - 1
+	var divisor = pow(1000, magnitude); var abbreviated_num = number / divisor; var suffix = SUFFIXES[magnitude]; var formatted_string: String
 	if fmod(abbreviated_num, 1.0) == 0: formatted_string = "%d" % int(abbreviated_num)
 	elif abbreviated_num < 10: formatted_string = "%.2f" % abbreviated_num
 	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
 	else: formatted_string = "%d" % int(abbreviated_num)
 	return formatted_string + suffix
-	
+
 func update_spawnable_items():
 	if all_items.has("Fazcoin"):
-		if fazcoin_count < 5:
-			all_items.Fazcoin.is_spawnable = true
-		else:
-			all_items.Fazcoin.is_spawnable = false
+		if fazcoin_count < 5: all_items.Fazcoin.is_spawnable = true
+		else: all_items.Fazcoin.is_spawnable = false

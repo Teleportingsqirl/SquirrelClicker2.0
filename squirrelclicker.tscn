@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=17 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
@@ -19,6 +19,8 @@
 bg_color = Color(0.7737747, 0.49879366, 0.6672472, 1)
 corner_radius_bottom_left = 100
 shadow_size = 15
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tyo7n"]
 
 [node name="2D layout" type="Control"]
 layout_mode = 3
@@ -174,6 +176,20 @@ autowrap_mode = 3
 [node name="ToastTimer" type="Timer" parent="Control"]
 wait_time = 3.0
 one_shot = true
+
+[node name="BuffsBox" type="PanelContainer" parent="Control"]
+layout_mode = 0
+offset_left = 870.7297
+offset_top = 79.983536
+offset_right = 1159.7612
+offset_bottom = 282.3661
+theme_override_styles/panel = SubResource("StyleBoxTexture_tyo7n")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/BuffsBox"]
+layout_mode = 2
+
+[node name="BuffContainer" type="VBoxContainer" parent="Control/BuffsBox/MarginContainer"]
+layout_mode = 2
 
 [node name="3DButton" type="Button" parent="."]
 layout_mode = 0

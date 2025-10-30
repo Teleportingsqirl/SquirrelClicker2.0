@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://bwr3phps3p7sg"]
+
+[ext_resource type="Script" uid="uid://coxeun56xosr5" path="res://buff_bar.gd" id="1_vcf7e"]
+[ext_resource type="Texture2D" uid="uid://cr027eofw53p4" path="res://sqrlart/Sprite-greenbar.png" id="2_vowqv"]
+[ext_resource type="Texture2D" uid="uid://cungp3ob15e2r" path="res://sqrlart/Sprite-timerbar.png" id="3_e23j7"]
+[ext_resource type="FontFile" uid="uid://c0mptcymibc31" path="res://fonts/Sangyo-E4ywr.ttf" id="4_vcf7e"]
+
+[node name="BuffBar" type="Control"]
+custom_minimum_size = Vector2(294, 36)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 294.0
+offset_bottom = 36.0
+script = ExtResource("1_vcf7e")
+
+[node name="FillRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6088435
+anchor_right = 0.60884356
+offset_left = -178.99998
+offset_right = 25.0
+offset_bottom = 40.0
+texture = ExtResource("2_vowqv")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="BackgroundRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("3_e23j7")
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 295.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_vcf7e")
+theme_override_font_sizes/font_size = 19
+text = "Steroids:                              50m"
+vertical_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 122.0
+offset_top = 9.0
+offset_right = 273.0526
+offset_bottom = 29.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_vcf7e")
+theme_override_font_sizes/font_size = 19
+text = "50m"
+horizontal_alignment = 1
+vertical_alignment = 1

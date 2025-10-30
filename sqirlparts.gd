@@ -1,4 +1,4 @@
-# sqirlparts.gd (Complete, Final Version)
+# sqirlparts.gd
 extends Node2D
 const ITEM_DISPLAY_SIZE = Vector2(48, 48)
 const MAX_TOOLTIP_FONT_SIZE = 16
@@ -12,6 +12,7 @@ const MIN_TOOLTIP_FONT_SIZE = 8
 var item_slots = []
 
 func _ready():
+	GameState.is_in_shop = true
 	item_container.visible = false
 	slots_animation.animation_finished.connect(_on_slots_animation_finished)
 	if not is_instance_valid(item_container): print("ERROR: ItemContainer node not found!"); return
@@ -33,27 +34,35 @@ func clear_shop():
 			if child is TextureButton: child.queue_free()
 
 func populate_shop():
-	var spawnable_items = []
+	if not GameState.current_shop_items.is_empty():
+		_generate_buttons_from_list(GameState.current_shop_items)
+		return
+
+
+	var good_items = []; var evil_items = []
 	for item_id in GameState.all_items:
 		var item_data = GameState.all_items[item_id]
-		var can_spawn = false
-		
-		# Special spawn logic
-		if item_id == "HR": can_spawn = true
-		elif item_id == "Fazcoin" and GameState.fazcoin_count < 5: can_spawn = true
-		elif item_data.type == "powerup": can_spawn = true
-		elif item_data.type == "permanent" or item_data.type == "cosmetic":
-			if not GameState.owned_item_ids.has(item_id): can_spawn = true
+		if not item_data.is_spawnable: continue
+		item_data["id"] = item_id
+		if item_data.type == "evil": evil_items.append(item_data)
+		elif item_data.type == "powerup" or not GameState.owned_item_ids.has(item_id):
+			good_items.append(item_data)
+	
+	good_items.shuffle()
+	var items_for_this_shop = []
+	items_for_this_shop.append_array(good_items.slice(0, 4))
+	if not evil_items.is_empty():
+		items_for_this_shop.append(evil_items[0]); items_for_this_shop.append(evil_items[0])
+	
+	items_for_this_shop.shuffle()
+	GameState.current_shop_items = items_for_this_shop
+	_generate_buttons_from_list(items_for_this_shop)
 
-		if item_data.is_spawnable and can_spawn:
-			item_data["id"] = item_id
-			spawnable_items.append(item_data)
-	
-	spawnable_items.shuffle(); item_slots.shuffle()
-	var num_items_to_spawn = min(6, spawnable_items.size(), item_slots.size())
-	
+func _generate_buttons_from_list(item_list: Array):
+	item_slots.shuffle()
+	var num_items_to_spawn = min(item_list.size(), item_slots.size())
 	for i in range(num_items_to_spawn):
-		var item_data = spawnable_items[i]
+		var item_data = item_list[i]
 		var slot_position = item_slots[i]
 		var item_button = TextureButton.new()
 		item_button.texture_normal = load(item_data.texture_path)
@@ -61,29 +70,28 @@ func populate_shop():
 		item_button.custom_minimum_size = ITEM_DISPLAY_SIZE
 		item_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		item_button.position = slot_position - (ITEM_DISPLAY_SIZE / 2)
-		
 		var description = item_data.description
 		if item_data.id == "Fazcoin":
 			description = GameState.FAZCOIN_DESCRIPTIONS[GameState.fazcoin_count]
-		
-		item_button.set_meta("description", description)
-		item_button.set_meta("name", item_data.name)
-		item_button.set_meta("id", item_data.id)
-		
+		item_button.set_meta("description", description); item_button.set_meta("name", item_data.name); item_button.set_meta("id", item_data.id)
 		item_button.mouse_entered.connect(_on_item_mouse_entered.bind(item_button))
 		item_button.mouse_exited.connect(_on_item_mouse_exited)
 		item_button.pressed.connect(_on_item_button_pressed.bind(item_button))
-		
 		item_container.add_child(item_button)
 
 func _on_item_button_pressed(item_button):
+	GameState.is_in_shop = false
+	GameState.current_shop_items = []
 	var item_id = item_button.get_meta("id")
 	GameState.apply_item_effect(item_id)
 	GameState.update_spawnable_items()
 	if GameState.scene_change_mailbox != "":
 		var scene_to_load = GameState.scene_change_mailbox
 		GameState.scene_change_mailbox = ""
-		SceneTransitioner.transition_to_scene(scene_to_load)
+		if GameState.scene_change_mailbox == "res://3d squirrel.tscn":
+			get_tree().change_scene_to_file(scene_to_load)
+		else:
+			SceneTransitioner.transition_to_scene(scene_to_load)
 	else:
 		item_container.visible = false
 		tooltip.visible = false
@@ -101,11 +109,9 @@ func _adjust_tooltip_font_size():
 	tooltip_label.add_theme_font_size_override("font_size", current_font_size)
 
 func _on_item_mouse_entered(item_button):
-	var item_name = item_button.get_meta("name")
-	var desc = item_button.get_meta("description")
+	var item_name = item_button.get_meta("name"); var desc = item_button.get_meta("description")
 	tooltip_label.text = item_name + ": " + desc
-	_adjust_tooltip_font_size()
-	tooltip.visible = true
+	_adjust_tooltip_font_size(); tooltip.visible = true
 
 func _on_item_mouse_exited():
 	tooltip.visible = false
