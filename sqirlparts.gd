@@ -37,23 +37,32 @@ func populate_shop():
 	if not GameState.current_shop_items.is_empty():
 		_generate_buttons_from_list(GameState.current_shop_items)
 		return
-
-
-	var good_items = []; var evil_items = []
+	var good_items = []
+	var evil_items = []
 	for item_id in GameState.all_items:
 		var item_data = GameState.all_items[item_id]
 		if not item_data.is_spawnable: continue
+		
 		item_data["id"] = item_id
-		if item_data.type == "evil": evil_items.append(item_data)
+		
+		if item_data.type == "evil":
+			evil_items.append(item_data)
 		elif item_data.type == "powerup" or not GameState.owned_item_ids.has(item_id):
 			good_items.append(item_data)
 	
 	good_items.shuffle()
-	var items_for_this_shop = []
-	items_for_this_shop.append_array(good_items.slice(0, 4))
-	if not evil_items.is_empty():
-		items_for_this_shop.append(evil_items[0]); items_for_this_shop.append(evil_items[0])
+	evil_items.shuffle()
 	
+	var items_for_this_shop = []
+	var num_evil_to_spawn = randi_range(2, 6)
+	num_evil_to_spawn = min(num_evil_to_spawn, evil_items.size())
+	var num_good_to_spawn = item_slots.size() - num_evil_to_spawn
+	num_good_to_spawn = min(num_good_to_spawn, good_items.size())
+	for i in range(num_good_to_spawn):
+		items_for_this_shop.append(good_items[i])
+	
+	for i in range(num_evil_to_spawn):
+		items_for_this_shop.append(evil_items[i % evil_items.size()])
 	items_for_this_shop.shuffle()
 	GameState.current_shop_items = items_for_this_shop
 	_generate_buttons_from_list(items_for_this_shop)

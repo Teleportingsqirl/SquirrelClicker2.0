@@ -223,11 +223,14 @@ ignore_texture_size = true
 stretch_mode = 0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-layer = 128
+layer = 127
 
 [node name="AnimatedCursor" parent="CanvasLayer" instance=ExtResource("8_s7qjs")]
 position = Vector2(1174, 717.99994)
 scale = Vector2(2.4755096, 2.4755096)
+
+[node name="EffectsLayer" type="CanvasLayer" parent="."]
+layer = 128
 
 [connection signal="pressed" from="Control/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
 [connection signal="timeout" from="Control/ToastTimer" to="Control" method="_on_toast_timer_timeout"]

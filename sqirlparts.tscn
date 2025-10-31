@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bc10e3wngb55l" path="res://sqrlart/shopart/Sprite-shopbackground.png" id="1_xcdhy"]
 [ext_resource type="Texture2D" uid="uid://b688wyex4lxfg" path="res://sqrlart/shopart/Sprite-shop-Sheet-Sheet.png" id="3_pjo5j"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="4_alwex"]
-[ext_resource type="FontFile" uid="uid://ct05u5ry02d8e" path="res://fonts/Ichigayamincho-9MAv0.ttf" id="4_bsmgd"]
+[ext_resource type="FontFile" uid="uid://15452jj17u7g" path="res://fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf" id="4_bsmgd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tdp86"]
 atlas = ExtResource("3_pjo5j")

@@ -16,6 +16,7 @@ const BuffBarScene = preload("res://BuffBar.tscn")
 @onready var toast_label = $ToastPopup/ToastLabel
 @onready var toast_timer = $ToastTimer
 @onready var buff_container = $BuffsBox/MarginContainer/BuffContainer
+@onready var effects_layer = $"../EffectsLayer"
 
 var current_building_index = 0
 var idle_float_tween: Tween; var idle_wobble_tween: Tween; var click_tween: Tween
@@ -31,6 +32,9 @@ func _ready():
 	show_offline_progress_toast() 
 
 func _process(_delta):
+	if GameState.death_mailbox:
+		_start_death_sequence()
+		return
 	if not GameState.toast_mailbox.is_empty(): _show_toast(GameState.toast_mailbox.pop_front())
 	if not GameState.sps_change_mailbox.is_empty():
 		var change = GameState.sps_change_mailbox.pop_front(); _handle_sps_change(change.old, change.new)
@@ -38,12 +42,46 @@ func _process(_delta):
 	update_text(); update_sps_display(); _update_buff_display()
 	texture_button.position = texture_button.position.round()
 
+func _start_death_sequence():
+	GameState.death_mailbox = false
+	var flash_rect = ColorRect.new()
+	flash_rect.color = Color(1.0, 0, 0, 0) 
+	flash_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	effects_layer.add_child(flash_rect)
+	var flash_tween = create_tween()
+	var chain = flash_tween.chain()
+	chain.tween_property(flash_rect, "color:a", 0.7, 0.1).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+	chain.tween_property(flash_rect, "color:a", 0.0, 0.4).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_IN)
+	await flash_tween.finished
+	flash_rect.queue_free()
+	var fade_rect = ColorRect.new()
+	fade_rect.color = Color(0, 0, 0, 0)
+	fade_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	effects_layer.add_child(fade_rect)
+	
+	var death_tween = create_tween()
+	death_tween.tween_property(fade_rect, "color:a", 1.0, 1.5).set_ease(Tween.EASE_IN)
+	await death_tween.finished
+	
+	GameState.save_game()
+	get_tree().quit()
+	
+	var tween = create_tween()
+	tween.tween_property(fade_rect, "color:a", 1.0, 1.5).set_ease(Tween.EASE_IN)
+	await tween.finished
+	
+	GameState.save_game()
+	get_tree().quit()
+
 func _update_buff_display():
 	var current_time = Time.get_unix_time_from_system()
 	
 	_update_single_buff("steroids", "Steroids", int(GameState.steroid_end_time - current_time), 30, Color.LIGHT_GREEN, false)
 	_update_single_buff("tapeworm", "Tapeworm", int(GameState.tapeworm_end_time - current_time), 30, Color.RED, false)
 	_update_single_buff("pie", "Nostalgia", int(GameState.pie_end_time - current_time), 600, Color.LIGHT_GREEN, true)
+	# --- NEW: Display for new evil items ---
+	_update_single_buff("gyoza", "Gyoza", int(GameState.gyoza_end_time - current_time), 900, Color.RED, true)
+	_update_single_buff("test", "Infertility", int(GameState.test_end_time - current_time), 300, Color.RED, true)
 
 func _update_single_buff(id: String, display_name: String, remaining: int, max_duration: int, color: Color, show_minutes: bool):
 	if remaining > 0:
