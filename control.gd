@@ -4,6 +4,8 @@ extends Control
 
 const BuffBarScene = preload("res://BuffBar.tscn")
 
+const SQUIRREL_CLICK_SFX = preload("res://audios/sqirlclick.wav")
+
 @onready var label = $clicksqrltext
 @onready var sps_label: Label = $SPSLabel
 @onready var sps_change_label: Label = $SpsChangeLabel
@@ -124,6 +126,12 @@ func _on_texture_button_pressed():
 	GameState.squirrels += GameState.squirrels_per_click * GameState.click_multiplier; GameState.total_clicks += 1
 	GameState.total_squirrels_earned += GameState.squirrels_per_click * GameState.click_multiplier
 	create_click_animation()
+	var sfx_player = AudioStreamPlayer.new()
+	sfx_player.stream = SQUIRREL_CLICK_SFX
+	sfx_player.volume_db = -45.0
+	add_child(sfx_player)
+	sfx_player.play()
+	sfx_player.finished.connect(sfx_player.queue_free)
 
 func _on_next_building_pressed():
 	current_building_index = (current_building_index + 1) % GameState.buildings.size(); update_building_display()

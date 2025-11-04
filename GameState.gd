@@ -139,7 +139,7 @@ func setup_buildings():
 		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png"},
 		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-0001.png"},
 		
-		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e90, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png"}
+		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e98, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png"}
 	]
 
 func recalculate_sps():
