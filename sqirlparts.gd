@@ -1,4 +1,4 @@
-# sqirlparts.gd
+# sqirlparts.gd (Complete, Final Version with Gamble Logic)
 extends Node2D
 const ITEM_DISPLAY_SIZE = Vector2(48, 48)
 const MAX_TOOLTIP_FONT_SIZE = 16
@@ -35,34 +35,31 @@ func clear_shop():
 
 func populate_shop():
 	if not GameState.current_shop_items.is_empty():
-		_generate_buttons_from_list(GameState.current_shop_items)
-		return
-	var good_items = []
-	var evil_items = []
+		_generate_buttons_from_list(GameState.current_shop_items); return
+
+	var good_items = []; var evil_items = []
 	for item_id in GameState.all_items:
 		var item_data = GameState.all_items[item_id]
 		if not item_data.is_spawnable: continue
-		
 		item_data["id"] = item_id
 		
 		if item_data.type == "evil":
 			evil_items.append(item_data)
-		elif item_data.type == "powerup" or not GameState.owned_item_ids.has(item_id):
+		elif item_data.type == "powerup" or ( (item_data.type == "permanent" or item_data.type == "cosmetic") and not GameState.owned_item_ids.has(item_id) ):
 			good_items.append(item_data)
 	
-	good_items.shuffle()
-	evil_items.shuffle()
-	
+	good_items.shuffle(); evil_items.shuffle()
 	var items_for_this_shop = []
-	var num_evil_to_spawn = randi_range(2, 6)
+	
+	var num_evil_to_spawn = randi_range(2, 4)
 	num_evil_to_spawn = min(num_evil_to_spawn, evil_items.size())
 	var num_good_to_spawn = item_slots.size() - num_evil_to_spawn
 	num_good_to_spawn = min(num_good_to_spawn, good_items.size())
-	for i in range(num_good_to_spawn):
-		items_for_this_shop.append(good_items[i])
 	
+	for i in range(num_good_to_spawn): items_for_this_shop.append(good_items[i])
 	for i in range(num_evil_to_spawn):
 		items_for_this_shop.append(evil_items[i % evil_items.size()])
+	
 	items_for_this_shop.shuffle()
 	GameState.current_shop_items = items_for_this_shop
 	_generate_buttons_from_list(items_for_this_shop)
@@ -75,13 +72,11 @@ func _generate_buttons_from_list(item_list: Array):
 		var slot_position = item_slots[i]
 		var item_button = TextureButton.new()
 		item_button.texture_normal = load(item_data.texture_path)
-		item_button.ignore_texture_size = true
-		item_button.custom_minimum_size = ITEM_DISPLAY_SIZE
+		item_button.ignore_texture_size = true; item_button.custom_minimum_size = ITEM_DISPLAY_SIZE
 		item_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		item_button.position = slot_position - (ITEM_DISPLAY_SIZE / 2)
 		var description = item_data.description
-		if item_data.id == "Fazcoin":
-			description = GameState.FAZCOIN_DESCRIPTIONS[GameState.fazcoin_count]
+		if item_data.id == "Fazcoin": description = GameState.FAZCOIN_DESCRIPTIONS[GameState.fazcoin_count]
 		item_button.set_meta("description", description); item_button.set_meta("name", item_data.name); item_button.set_meta("id", item_data.id)
 		item_button.mouse_entered.connect(_on_item_mouse_entered.bind(item_button))
 		item_button.mouse_exited.connect(_on_item_mouse_exited)
@@ -89,22 +84,17 @@ func _generate_buttons_from_list(item_list: Array):
 		item_container.add_child(item_button)
 
 func _on_item_button_pressed(item_button):
-	GameState.is_in_shop = false
-	GameState.current_shop_items = []
+	GameState.is_in_shop = false; GameState.current_shop_items = []
 	var item_id = item_button.get_meta("id")
 	GameState.apply_item_effect(item_id)
 	GameState.update_spawnable_items()
 	if GameState.scene_change_mailbox != "":
-		var scene_to_load = GameState.scene_change_mailbox
-		GameState.scene_change_mailbox = ""
-		if GameState.scene_change_mailbox == "res://3d squirrel.tscn":
+		var scene_to_load = GameState.scene_change_mailbox; GameState.scene_change_mailbox = ""
+		if scene_to_load == "res://3d squirrel.tscn":
 			get_tree().change_scene_to_file(scene_to_load)
-		else:
-			SceneTransitioner.transition_to_scene(scene_to_load)
+		else: SceneTransitioner.transition_to_scene(scene_to_load)
 	else:
-		item_container.visible = false
-		tooltip.visible = false
-		slots_animation.play("close_slots")
+		item_container.visible = false; tooltip.visible = false; slots_animation.play("close_slots")
 
 func _adjust_tooltip_font_size():
 	var container_height = tooltip.size.y - 10

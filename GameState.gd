@@ -1,4 +1,4 @@
-# GameState.gd (Complete, Final Version with All Item Effects)
+# GameState.gd (Your file, corrected)
 extends Node
 
 # --- Core Game Data ---
@@ -8,6 +8,9 @@ var squirrels_per_second: float = 0.0
 var buildings: Array = []
 var all_items = {}
 var owned_item_ids = []
+# THE FIX: Added the missing stat tracking variables
+var total_clicks: int = 0
+var total_squirrels_earned: float = 0.0
 
 # --- Buff/Multiplier Variables ---
 var sps_multiplier = 1.0
@@ -54,7 +57,6 @@ var volume_db = 0.0
 var is_fullscreen = false
 var use_antialiasing = false
 
-# --- CONSTANTS ---
 const FAZCOIN_DESCRIPTIONS = [
 	"Please deposit five coins.", "You are attempting to trick Freddy.",
 	"You are attempting to trick Freddy.", "Freddy is the best. You are the best.",
@@ -72,7 +74,9 @@ func _ready():
 	recalculate_sps()
 
 func _process(delta):
-	squirrels += squirrels_per_second * delta
+	var earned_this_frame = squirrels_per_second * delta
+	squirrels += earned_this_frame
+	total_squirrels_earned += earned_this_frame # THE FIX: Update total earned
 	if Input.is_action_just_pressed("ui_cancel") and not is_in_shop:
 		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
 
@@ -113,7 +117,7 @@ func setup_items():
 		"ButtsPie": { "name": "A Pie", "description": "Butterscotch-cinnamon pie, one slice. The smell reminded SQUIRRELS of something. x2 sps for 10 minutes.", "texture_path": "res://sqrlart/shopart/Sprite-cinnamonbutterscotchpie.png", "is_spawnable": true, "type": "powerup" },
 		"Companion Cube": { "name": "A Companion", "description": "If it could talk - and the Enrichment Center takes this opportunity to remind you that it cannot - it would tell you to get more squirrels.", "texture_path": "res://sqrlart/shopart/Sprite-companioncude.png", "is_spawnable": true, "type": "cosmetic" },
 		"Fazcoin": { "name": "A Fazcoin", "description": "Please deposit five coins.", "texture_path": "res://sqrlart/shopart/Sprite-fazcoin.png", "is_spawnable": true, "type": "powerup" },
-		"HR": { "name": "Human Resources", "description": "A team of investigators has levied claims againts your squirrels for professional indecency and nudity in the workplace. They fire 3 random different buildings (if possible).", "texture_path": "res://sqrlart/shopart/Sprite-humanresources.png", "is_spawnable": true, "type": "evil" },
+		"HR": { "name": "Human Resources", "description": "A team of investigators has levied claims againts your squirrels for professional indecency and nudity in the workplace. They fire 3 random buildings.", "texture_path": "res://sqrlart/shopart/Sprite-humanresources.png", "is_spawnable": true, "type": "evil" },
 		"Wheat": { "name": "A bundle of wheat", "description": "A small bundle of wheat to be fed to the squirrels. This will put them in love mode, meaning even more squirrels. Doubles your current squirrel count.", "texture_path": "res://sqrlart/shopart/Sprite-wheatitem.png", "is_spawnable": true, "type": "powerup" },
 		"Gyoza": { "name": "A Gyoza", "description": "It tastes the same as the gyoza you have been eating for 15 years. -15% sps for 15 minutes", "texture_path": "res://sqrlart/shopart/Sprite-goyzaitem.png", "is_spawnable": true, "type": "evil" },
 		"The Plant": { "name": "The Plant", "description": "The Plant breaks buildings because plants do not have buildings. Lose 1 of your highest yielding building.", "texture_path": "res://sqrlart/shopart/Sprite-theplantitem.png", "is_spawnable": true, "type": "evil" },
@@ -125,29 +129,37 @@ func setup_items():
 
 func setup_buildings():
 	buildings = [
-		{"name": "Nuts", "base_cost": 10, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-sqrladdfornuts.png"},
-		{"name": "Trees", "base_cost": 100, "sps": 1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png"},
-		{"name": "Arboretums", "base_cost": 1000, "sps": 10, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png"},
-		{"name": "Montreal", "base_cost": 10000, "sps": 100, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"},
-		{"name": "Grandfather Paradox", "base_cost": 100000, "sps": 1000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png"},
-		{"name": "Free Healthcare", "base_cost": 1000000, "sps": 10000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"},
-		{"name": "Persona", "base_cost": 10000000, "sps": 100000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
-		{"name": "Foxes", "base_cost": 100000000, "sps": 1000000, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"}
+		{"name": "Nuts", "base_cost": 10.0, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-sqrladdfornuts.png"},
+		{"name": "Trees", "base_cost": 100.0, "sps": 1.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png"},
+		{"name": "Arboretums", "base_cost": 1000.0, "sps": 10.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png"},
+		{"name": "Montreal", "base_cost": 1.0e4, "sps": 100.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"},
+		{"name": "Grandfather Paradox", "base_cost": 1.0e5, "sps": 1.0e3, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png"},
+		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"},
+		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
+		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"},
+		{"name": "Chainsaw", "base_cost": 1.0e14, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png"},
+		{"name": "Nuclear Bombs", "base_cost": 1.0e17, "sps": 1.0e15, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfornucelear.png"},
+		{"name": "Dead End Job", "base_cost": 1.0e20, "sps": 1.0e18, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfordeadendjob.png"},
+		{"name": "Heavy Rain", "base_cost": 1.0e23, "sps": 1.0e21, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforheavyrain.png"},
+		{"name": "Abandoned Flower", "base_cost": 1.0e26, "sps": 1.0e24, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforflower.png"},
+		{"name": "Empty Corner", "base_cost": 1.0e29, "sps": 1.0e27, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforemptycorner.png"},
+		{"name": "Forest Fire", "base_cost": 1.0e32, "sps": 1.0e30, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforforestfires.png"},
+		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png"}
 	]
 
 func recalculate_sps():
 	var old_sps = squirrels_per_second
-	var base_sps = 0.0
-	for building in buildings: base_sps += building.owned * building.sps
+	var base_sps: float = 0.0
+	for building in buildings: base_sps += float(building.owned) * building.sps
 	squirrels_per_second = base_sps * sps_multiplier * temporary_sps_debuff * temporary_sps_buff * gyoza_debuff_multiplier * test_debuff_multiplier
 	if not is_equal_approx(old_sps, squirrels_per_second):
 		sps_change_mailbox.append({"old": old_sps, "new": squirrels_per_second})
 
-func calculate_building_cost(building_index: int) -> int:
+func calculate_building_cost(building_index: int) -> float:
 	if building_index >= 0 and building_index < buildings.size():
 		var building = buildings[building_index]
-		return int(ceil(building.base_cost * pow(1.1, building.owned)))
-	return 0
+		return ceil(building.base_cost * pow(1.1, float(building.owned)))
+	return 0.0
 
 func apply_item_effect(item_id: String):
 	if not all_items.has(item_id): return
@@ -195,7 +207,8 @@ func save_game():
 			"sps_multiplier": sps_multiplier, "fazcoin_count": fazcoin_count,
 			"is_in_shop": is_in_shop, "current_shop_items": current_shop_items,
 			"steroid_end_time": steroid_end_time, "tapeworm_end_time": tapeworm_end_time, "pie_end_time": pie_end_time,
-			"gyoza_end_time": gyoza_end_time, "test_end_time": test_end_time
+			"gyoza_end_time": gyoza_end_time, "test_end_time": test_end_time,
+			"total_clicks": total_clicks, "total_squirrels_earned": total_squirrels_earned
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -211,7 +224,7 @@ func load_game():
 				var saved_buildings = loaded_data.get("buildings", []); var saved_progress = {}; for b in saved_buildings: saved_progress[b.name] = b.owned
 				for b in buildings:
 					if saved_progress.has(b.name): b.owned = saved_progress[b.name]
-				squirrels = loaded_data.get("squirrels", 0.0); squirrels_per_click = loaded_data.get("squirrels_per_click", 1)
+				squirrels = loaded_data.get("squirrels", 0.0); squirrels_per_click = loaded_data.get("squirrels_per_click", 1.0)
 				owned_item_ids = loaded_data.get("owned_item_ids", []); sps_multiplier = loaded_data.get("sps_multiplier", 1.0)
 				fazcoin_count = loaded_data.get("fazcoin_count", 0)
 				is_in_shop = loaded_data.get("is_in_shop", false); current_shop_items = loaded_data.get("current_shop_items", [])
@@ -219,11 +232,13 @@ func load_game():
 				pie_end_time = loaded_data.get("pie_end_time", 0)
 				gyoza_end_time = loaded_data.get("gyoza_end_time", 0)
 				test_end_time = loaded_data.get("test_end_time", 0)
+				total_clicks = loaded_data.get("total_clicks", 0)
+				total_squirrels_earned = loaded_data.get("total_squirrels_earned", 0.0)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
 					var temp_sps = 0.0
-					for b in buildings: temp_sps += b.owned * b.sps
+					for b in buildings: temp_sps += float(b.owned) * b.sps
 					temp_sps *= sps_multiplier
 					var current_time = Time.get_unix_time_from_system(); offline_seconds_passed = current_time - saved_time
 					offline_squirrels_earned = offline_seconds_passed * temp_sps; squirrels += offline_squirrels_earned
@@ -232,7 +247,7 @@ func load_game():
 		else: print("Error reading save file: ", file_path)
 
 func reset_game_state():
-	squirrels = 0.0; squirrels_per_click = 1; sps_multiplier = 1.0
+	squirrels = 0.0; squirrels_per_click = 1.0; sps_multiplier = 1.0
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
 	owned_item_ids = []; fazcoin_count = 0
 	temporary_sps_buff = 1.0; temporary_sps_debuff = 1.0
@@ -240,6 +255,7 @@ func reset_game_state():
 	steroid_end_time = 0; tapeworm_end_time = 0; pie_end_time = 0
 	gyoza_debuff_multiplier = 1.0; test_debuff_multiplier = 1.0
 	gyoza_end_time = 0; test_end_time = 0
+	total_clicks = 0; total_squirrels_earned = 0.0
 	setup_buildings(); recalculate_sps()
 
 func get_and_clear_offline_progress() -> Dictionary:
@@ -251,7 +267,7 @@ func _apply_steroid_buff():
 	if not is_instance_valid(steroid_timer):
 		steroid_timer = Timer.new(); steroid_timer.one_shot = true
 		steroid_timer.timeout.connect(_on_steroid_timer_timeout); add_child(steroid_timer)
-	click_multiplier = 4.0; steroid_end_time = Time.get_unix_time_from_system() + 30; steroid_timer.start(30.0)
+	click_multiplier = 4.0; steroid_end_time = Time.get_unix_time_from_system() + 30.0; steroid_timer.start(30.0)
 
 func _on_steroid_timer_timeout():
 	click_multiplier = 1.0; steroid_end_time = 0
@@ -260,7 +276,7 @@ func _apply_tapeworm_debuff():
 	if not is_instance_valid(tapeworm_timer):
 		tapeworm_timer = Timer.new(); tapeworm_timer.one_shot = true
 		tapeworm_timer.timeout.connect(_on_tapeworm_timer_timeout); add_child(tapeworm_timer)
-	temporary_sps_debuff = 0.8; tapeworm_end_time = Time.get_unix_time_from_system() + 30; tapeworm_timer.start(30.0); recalculate_sps()
+	temporary_sps_debuff = 0.8; tapeworm_end_time = Time.get_unix_time_from_system() + 30.0; tapeworm_timer.start(30.0); recalculate_sps()
 
 func _on_tapeworm_timer_timeout():
 	temporary_sps_debuff = 1.0; tapeworm_end_time = 0; recalculate_sps()
@@ -269,7 +285,7 @@ func _apply_pie_buff():
 	if not is_instance_valid(pie_timer):
 		pie_timer = Timer.new(); pie_timer.one_shot = true
 		pie_timer.timeout.connect(_on_pie_timer_timeout); add_child(pie_timer)
-	temporary_sps_buff = 2.0; pie_end_time = Time.get_unix_time_from_system() + 600; pie_timer.start(600.0); recalculate_sps()
+	temporary_sps_buff = 2.0; pie_end_time = Time.get_unix_time_from_system() + 600.0; pie_timer.start(600.0); recalculate_sps()
 
 func _on_pie_timer_timeout():
 	temporary_sps_buff = 1.0; pie_end_time = 0; recalculate_sps()
@@ -279,7 +295,7 @@ func _apply_gyoza_debuff():
 		gyoza_timer = Timer.new(); gyoza_timer.one_shot = true
 		gyoza_timer.timeout.connect(_on_gyoza_timer_timeout); add_child(gyoza_timer)
 	gyoza_debuff_multiplier = 0.85
-	gyoza_end_time = Time.get_unix_time_from_system() + 900
+	gyoza_end_time = Time.get_unix_time_from_system() + 900.0
 	gyoza_timer.start(900.0); recalculate_sps()
 
 func _on_gyoza_timer_timeout():
@@ -290,7 +306,7 @@ func _apply_test_debuff():
 		test_timer = Timer.new(); test_timer.one_shot = true
 		test_timer.timeout.connect(_on_test_timer_timeout); add_child(test_timer)
 	test_debuff_multiplier = 0.90
-	test_end_time = Time.get_unix_time_from_system() + 300
+	test_end_time = Time.get_unix_time_from_system() + 300.0
 	test_timer.start(300.0); recalculate_sps()
 
 func _on_test_timer_timeout():
@@ -298,11 +314,11 @@ func _on_test_timer_timeout():
 
 func _remove_best_building():
 	if buildings.is_empty(): return
-	var best_building_index = -1; var highest_yield = -1.0
+	var best_building_index = -1; var highest_yield: float = -1.0
 	for i in range(buildings.size()):
 		var building = buildings[i]
 		if building.owned > 0:
-			var building_yield = building.owned * building.sps
+			var building_yield: float = float(building.owned) * building.sps
 			if building_yield > highest_yield:
 				highest_yield = building_yield; best_building_index = i
 	if best_building_index != -1:
@@ -351,14 +367,31 @@ func _check_persistent_timers():
 		test_debuff_multiplier = 0.90; test_timer.start(float(remaining))
 	
 func format_number(number: float, allow_decimals: bool = false) -> String:
+	if is_equal_approx(number, 1.0e100): return "Googol!"
 	if number < 1000.0:
 		if allow_decimals:
 			if fmod(number, 1.0) == 0: return str(int(number))
 			else: return "%.1f" % number
 		else: return str(int(number))
-	const SUFFIXES = ["", "K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc","Ud","Dd","Td","Qad","Qid","Sxd","Spd","Ocd","Nod","Vg","Uvg","Dvg","Tvg","Qavg","Qivg","Sxvg","Spvg","Ocvg","Novg","Tg","Utg","Dtg","Goog"];
-	var magnitude = int(floor(log(number) / log(1000))); if magnitude >= SUFFIXES.size(): magnitude = SUFFIXES.size() - 1
-	var divisor = pow(1000, magnitude); var abbreviated_num = number / divisor; var suffix = SUFFIXES[magnitude]; var formatted_string: String
+	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd", "Nod", "Vg", "Uvg", "Dvg", "Tvg", "Qavg", "Qivg", "Sxvg", "Spvg", "Ocvg", "Novg", "Tg", "Utg", "Dtg"]
+	var magnitude = int(floor(log(number) / log(1000)))
+	var abbreviated_num: float
+	var suffix: String
+	if magnitude < SUFFIXES.size():
+		abbreviated_num = number / pow(1000, magnitude)
+		suffix = SUFFIXES[magnitude]
+	else:
+		const LETTERS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+		abbreviated_num = number / pow(1000, magnitude)
+		var index = magnitude - SUFFIXES.size() + SUFFIXES.size() * 2
+		var first_letter_index = int(floor(index / LETTERS.size()))
+		var second_letter_index = index % LETTERS.size()
+		if first_letter_index < LETTERS.size():
+			suffix = LETTERS[first_letter_index] + LETTERS[second_letter_index]
+		else:
+			return "%.2e" % number
+
+	var formatted_string: String
 	if fmod(abbreviated_num, 1.0) == 0: formatted_string = "%d" % int(abbreviated_num)
 	elif abbreviated_num < 10: formatted_string = "%.2f" % abbreviated_num
 	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num

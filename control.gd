@@ -1,3 +1,4 @@
+
 # Control.gd
 extends Control
 
@@ -35,6 +36,7 @@ func _process(_delta):
 	if GameState.death_mailbox:
 		_start_death_sequence()
 		return
+
 	if not GameState.toast_mailbox.is_empty(): _show_toast(GameState.toast_mailbox.pop_front())
 	if not GameState.sps_change_mailbox.is_empty():
 		var change = GameState.sps_change_mailbox.pop_front(); _handle_sps_change(change.old, change.new)
@@ -44,16 +46,19 @@ func _process(_delta):
 
 func _start_death_sequence():
 	GameState.death_mailbox = false
+	
 	var flash_rect = ColorRect.new()
-	flash_rect.color = Color(1.0, 0, 0, 0) 
+	flash_rect.color = Color(1.0, 0, 0, 0)
 	flash_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	effects_layer.add_child(flash_rect)
-	var flash_tween = create_tween()
+	
+	var flash_tween = create_tween().set_trans(Tween.TRANS_QUINT)
 	var chain = flash_tween.chain()
-	chain.tween_property(flash_rect, "color:a", 0.7, 0.1).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
-	chain.tween_property(flash_rect, "color:a", 0.0, 0.4).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_IN)
+	chain.tween_property(flash_rect, "color:a", 0.7, 0.1)
+	chain.tween_property(flash_rect, "color:a", 0.0, 0.4)
 	await flash_tween.finished
 	flash_rect.queue_free()
+
 	var fade_rect = ColorRect.new()
 	fade_rect.color = Color(0, 0, 0, 0)
 	fade_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -65,13 +70,6 @@ func _start_death_sequence():
 	
 	GameState.save_game()
 	get_tree().quit()
-	
-	var tween = create_tween()
-	tween.tween_property(fade_rect, "color:a", 1.0, 1.5).set_ease(Tween.EASE_IN)
-	await tween.finished
-	
-	GameState.save_game()
-	get_tree().quit()
 
 func _update_buff_display():
 	var current_time = Time.get_unix_time_from_system()
@@ -79,7 +77,6 @@ func _update_buff_display():
 	_update_single_buff("steroids", "Steroids", int(GameState.steroid_end_time - current_time), 30, Color.LIGHT_GREEN, false)
 	_update_single_buff("tapeworm", "Tapeworm", int(GameState.tapeworm_end_time - current_time), 30, Color.RED, false)
 	_update_single_buff("pie", "Nostalgia", int(GameState.pie_end_time - current_time), 600, Color.LIGHT_GREEN, true)
-	# --- NEW: Display for new evil items ---
 	_update_single_buff("gyoza", "Gyoza", int(GameState.gyoza_end_time - current_time), 900, Color.RED, true)
 	_update_single_buff("test", "Infertility", int(GameState.test_end_time - current_time), 300, Color.RED, true)
 
@@ -116,7 +113,7 @@ func show_offline_progress_toast():
 	var progress = GameState.get_and_clear_offline_progress()
 	if progress.seconds > 1 and progress.squirrels > 0.1:
 		var time_text = format_seconds_to_string(progress.seconds)
-		var squirrels_text = format_number(progress.squirrels, true)
+		var squirrels_text = GameState.format_number(progress.squirrels, true)
 		var message = "While you were away for %s \n you earned %s squirrels!" % [time_text, squirrels_text]
 		_show_toast(message)
 
@@ -124,7 +121,9 @@ func _on_toast_timer_timeout():
 	toast_popup.visible = false
 
 func _on_texture_button_pressed():
-	GameState.squirrels += GameState.squirrels_per_click * GameState.click_multiplier; create_click_animation()
+	GameState.squirrels += GameState.squirrels_per_click * GameState.click_multiplier; GameState.total_clicks += 1
+	GameState.total_squirrels_earned += GameState.squirrels_per_click * GameState.click_multiplier
+	create_click_animation()
 
 func _on_next_building_pressed():
 	current_building_index = (current_building_index + 1) % GameState.buildings.size(); update_building_display()
@@ -139,15 +138,15 @@ func _on_purchase_building_pressed():
 		GameState.recalculate_sps(); update_building_display()
 
 func update_text():
-	label.text = "Squirrels: " + format_number(GameState.squirrels)
+	label.text = "Squirrels: " + GameState.format_number(GameState.squirrels)
 
 func update_sps_display():
-	sps_label.text = "SPS: " + format_number(GameState.squirrels_per_second, true)
+	sps_label.text = "SPS: " + GameState.format_number(GameState.squirrels_per_second, true)
 
 func update_building_display():
 	var current_building = GameState.buildings[current_building_index]
-	var cost = GameState.calculate_building_cost(current_building_index)
-	building_price_label.text = "Cost: " + format_number(cost)
+	var cost: float = GameState.calculate_building_cost(current_building_index)
+	building_price_label.text = "Cost: " + GameState.format_number(cost)
 	var new_texture = load(current_building.texture_path)
 	building_ad_texture.texture_normal = new_texture
 
@@ -184,18 +183,3 @@ func create_click_animation():
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
-
-func format_number(number: float, allow_decimals: bool = false) -> String:
-	if number < 1000.0:
-		if allow_decimals:
-			if fmod(number, 1.0) == 0: return str(int(number))
-			else: return "%.1f" % number
-		else: return str(int(number))
-	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
-	var magnitude = int(floor(log(number) / log(1000))); if magnitude >= SUFFIXES.size(): magnitude = SUFFIXES.size() - 1
-	var divisor = pow(1000, magnitude); var abbreviated_num = number / divisor; var suffix = SUFFIXES[magnitude]; var formatted_string: String
-	if fmod(abbreviated_num, 1.0) == 0: formatted_string = "%d" % int(abbreviated_num)
-	elif abbreviated_num < 10: formatted_string = "%.2f" % abbreviated_num
-	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
-	else: formatted_string = "%d" % int(abbreviated_num)
-	return formatted_string + suffix
