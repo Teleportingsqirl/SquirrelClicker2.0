@@ -1,18 +1,15 @@
-# GameState.gd (Your file, corrected)
+# GameState.gd
 extends Node
 
-# --- Core Game Data ---
 var squirrels: float = 0.0
-var squirrels_per_click: int = 1
+var squirrels_per_click: float = 1
 var squirrels_per_second: float = 0.0
 var buildings: Array = []
 var all_items = {}
 var owned_item_ids = []
-# THE FIX: Added the missing stat tracking variables
 var total_clicks: int = 0
 var total_squirrels_earned: float = 0.0
 
-# --- Buff/Multiplier Variables ---
 var sps_multiplier = 1.0
 var click_multiplier = 1.0
 var temporary_sps_debuff = 1.0
@@ -21,14 +18,12 @@ var fazcoin_count = 0
 var gyoza_debuff_multiplier = 1.0
 var test_debuff_multiplier = 1.0
 
-# --- Persistent Timer End Times ---
-var steroid_end_time: int = 0
-var tapeworm_end_time: int = 0
-var pie_end_time: int = 0
-var gyoza_end_time: int = 0
-var test_end_time: int = 0
+var steroid_end_time: float = 0.0
+var tapeworm_end_time: float = 0.0
+var pie_end_time: float = 0.0
+var gyoza_end_time: float = 0.0
+var test_end_time: float = 0.0
 
-# --- Timers (for in-game use) ---
 var steroid_timer: Timer
 var tapeworm_timer: Timer
 var gyoza_timer: Timer
@@ -36,21 +31,17 @@ var test_timer: Timer
 var pie_timer: Timer
 var autosave_timer: Timer
 
-# --- Shop "Trap" System ---
 var is_in_shop = false
 var current_shop_items = []
 
-# --- Offline Progress ---
-var offline_seconds_passed: int = 0
+var offline_seconds_passed: float = 0.0
 var offline_squirrels_earned: float = 0.0
 
-# --- "Mailbox" UI Communication System ---
 var toast_mailbox = []
 var sps_change_mailbox = []
 var scene_change_mailbox = ""
 var death_mailbox = false
 
-# --- Settings ---
 var config = ConfigFile.new()
 var config_path = "user://settings.cfg"
 var volume_db = 0.0
@@ -144,7 +135,11 @@ func setup_buildings():
 		{"name": "Abandoned Flower", "base_cost": 1.0e26, "sps": 1.0e24, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforflower.png"},
 		{"name": "Empty Corner", "base_cost": 1.0e29, "sps": 1.0e27, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforemptycorner.png"},
 		{"name": "Forest Fire", "base_cost": 1.0e32, "sps": 1.0e30, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforforestfires.png"},
-		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png"}
+		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png"},
+		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png"},
+		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-0001.png"},
+		
+		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e90, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png"}
 	]
 
 func recalculate_sps():
@@ -384,7 +379,7 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 		const LETTERS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 		abbreviated_num = number / pow(1000, magnitude)
 		var index = magnitude - SUFFIXES.size() + SUFFIXES.size() * 2
-		var first_letter_index = int(floor(index / LETTERS.size()))
+		var first_letter_index = float(floor(index / float(LETTERS.size())))
 		var second_letter_index = index % LETTERS.size()
 		if first_letter_index < LETTERS.size():
 			suffix = LETTERS[first_letter_index] + LETTERS[second_letter_index]

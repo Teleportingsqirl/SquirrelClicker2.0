@@ -15,11 +15,7 @@ script = ExtResource("1_vcf7e")
 
 [node name="FillRect" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.6088435
-anchor_right = 0.60884356
-offset_left = -178.99998
-offset_right = 25.0
+offset_right = 203.99998
 offset_bottom = 40.0
 texture = ExtResource("2_vowqv")
 expand_mode = 1
