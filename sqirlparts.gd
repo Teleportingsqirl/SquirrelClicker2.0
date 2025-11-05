@@ -1,4 +1,4 @@
-# sqirlparts.gd (Complete, Final Version with Gamble Logic)
+# sqirlparts.gd
 extends Node2D
 const ITEM_DISPLAY_SIZE = Vector2(48, 48)
 const MAX_TOOLTIP_FONT_SIZE = 16

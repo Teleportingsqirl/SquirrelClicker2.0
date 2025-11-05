@@ -2,11 +2,28 @@
 
 [ext_resource type="Script" uid="uid://0gaxcmih4j5g" path="res://upgrade_node.gd" id="1_j6ykn"]
 
-[node name="UpgradeNode" type="TextureButton"]
+[node name="UpgradeNode" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_j6ykn")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.91764706)
+
 [node name="Line2D" type="Line2D" parent="."]
 width = 3.0
 default_color = Color(0.14044744, 0.14044747, 0.14044738, 0.9137255)
+
+[node name="IconButton" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

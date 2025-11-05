@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddwm46nnbgc08"]
+[gd_scene load_steps=4 format=3 uid="uid://ddwm46nnbgc08"]
 
 [ext_resource type="Script" uid="uid://bhr26721ja23u" path="res://stats_screen.gd" id="1_k5b6l"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="2_h4kvb"]
+[ext_resource type="Texture2D" uid="uid://bpbccrfxo4wg8" path="res://sqrlart/Sprite-statmenu.png" id="2_wmgfj"]
 
 [node name="StatsScreen" type="Control"]
 layout_mode = 3
@@ -14,6 +15,7 @@ script = ExtResource("1_k5b6l")
 layout_mode = 0
 offset_right = 1923.0
 offset_bottom = 1082.0
+texture = ExtResource("2_wmgfj")
 
 [node name="Stats" type="Label" parent="."]
 layout_mode = 0
@@ -21,6 +23,9 @@ offset_left = 773.0
 offset_top = -1.0
 offset_right = 1152.0
 offset_bottom = 145.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 15
 theme_override_font_sizes/font_size = 106
 text = "Stats"
 horizontal_alignment = 1
@@ -47,3 +52,4 @@ offset_bottom = 840.0
 layout_mode = 2
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("2_h4kvb")]
+scale = Vector2(2.4755096, 2.4755096)

@@ -1,7 +1,7 @@
 extends Control
 
 @onready var stats_container: VBoxContainer = $ScrollContainer/StatsContainer
-@onready var back_button: Button = $Back 
+@onready var back_button: Button = $Back
 
 func _ready():
 	back_button.pressed.connect(_on_back_pressed)
@@ -16,7 +16,7 @@ func populate_stats():
 	add_stat("Current Squirrels:", GameState.format_number(GameState.squirrels, true))
 	add_stat("Squirrels Per Second:", GameState.format_number(GameState.squirrels_per_second, true))
 	add_stat("Squirrels Per Click:", GameState.format_number(GameState.squirrels_per_click * GameState.click_multiplier, true))
-	add_stat("Total Clicks On The Squirrel:", str(GameState.total_clicks))
+	add_stat("Total Clicks:", str(GameState.total_clicks))
 	
 	var total_buildings = 0
 	for b in GameState.buildings:
@@ -36,8 +36,21 @@ func populate_stats():
 			if GameState.all_items.has(item_id):
 				add_stat(GameState.all_items[item_id].name, "")
 
+	add_stat_header("Upgrades Purchased")
+	if GameState.owned_upgrade_ids.is_empty():
+		add_stat("None yet!", "")
+	else:
+		for upgrade_id in GameState.owned_upgrade_ids:
+			if GameState.all_upgrades.has(upgrade_id):
+				add_stat(GameState.all_upgrades[upgrade_id].name, "")
+
 func add_stat(stat_name: String, value: String):
 	var label = Label.new()
+	
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 3)
+	
 	label.text = stat_name + " " + value
 	stats_container.add_child(label)
 
@@ -45,7 +58,13 @@ func add_stat_header(text: String):
 	var spacer = Control.new()
 	spacer.custom_minimum_size.y = 20
 	stats_container.add_child(spacer)
+	
 	var header_label = RichTextLabel.new()
+	
+	header_label.add_theme_color_override("default_color", Color.WHITE)
+	header_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	header_label.add_theme_constant_override("outline_size", 4)
+	
 	stats_container.add_child(header_label)
 	header_label.fit_content = true
 	header_label.add_theme_font_size_override("normal_font_size", 24)

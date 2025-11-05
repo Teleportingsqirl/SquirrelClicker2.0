@@ -42,6 +42,10 @@ var scene_change_mailbox = ""
 var death_mailbox = false
 var building_unlocked_mailbox = []
 
+var all_upgrades = {}
+var owned_upgrade_ids: Array = []
+
+
 var config = ConfigFile.new()
 var config_path = "user://settings.cfg"
 var volume_db = 0.0
@@ -59,6 +63,7 @@ func _ready():
 	autosave_timer = Timer.new(); autosave_timer.wait_time = 5.0; autosave_timer.one_shot = false
 	autosave_timer.timeout.connect(save_game); add_child(autosave_timer); autosave_timer.start()
 	setup_items()
+	setup_upgrades()
 	load_game()
 	if buildings.is_empty(): setup_buildings()
 	_check_persistent_timers()
@@ -127,23 +132,23 @@ func setup_buildings():
 		{"name": "Montreal", "base_cost": 1.0e4, "sps": 100.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png", "unlocked": false, 
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e4, "unlock_condition_text": "Earn 10k total squirrels"},
 		{"name": "Grandfather Paradox", "base_cost": 1.0e5, "sps": 1.0e3, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png", "unlocked": false,
-		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Montreal", "unlock_condition_value": 5, "unlock_condition_text": "Own 5 Montreals"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "question_egg", "unlock_condition_text": "Requires the 'Stop-&-Swap Egg' upgrade"},
 		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png", "unlocked": false,
 		 "unlock_condition_type": "total_clicks", "unlock_condition_value": 10000, "unlock_condition_text": "Click the squirrel 10,000 times"},
 		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png", "unlocked": false,
-		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e7, "unlock_condition_text": "Earn 10M total squirrels"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "mask", "unlock_condition_text": "Requires the 'Mysterious Mask' upgrade"},
 		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png", "unlocked": false,
-		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Persona", "unlock_condition_value": 25, "unlock_condition_text": "Own 25 Personas"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "herding_foxes", "unlock_condition_text": "Requires the 'Herding Foxes' upgrade"},
 		{"name": "Dogs", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-dogstoherdfoxes.png", "unlocked": false,
-		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Foxes", "unlock_condition_value": 1, "unlock_condition_text": "Own 1 Fox"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "herding_dogs", "unlock_condition_text": "Requires the 'Herding Dogs' upgrade"},
 		{"name": "Cats", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-catstoherddogs.png", "unlocked": false,
-		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Dogs", "unlock_condition_value": 1, "unlock_condition_text": "Own 1 Dog"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "herding_cats", "unlock_condition_text": "Requires the 'Herding Cats' upgrade"},
 		{"name": "Futility", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-conceptoffutiilitytoherdcats.png", "unlocked": false,
-		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Cats", "unlock_condition_value": 1, "unlock_condition_text": "Own 1 Cat"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "futility", "unlock_condition_text": "Requires the 'Concept of Futility' upgrade"},
 		{"name": "Chainsaw", "base_cost": 1.0e14, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e14, "unlock_condition_text": "Earn 100T total squirrels"},
 		{"name": "Nuclear Bombs", "base_cost": 1.0e17, "sps": 1.0e15, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfornucelear.png", "unlocked": false,
-		 "unlock_condition_type": "item_owned", "unlock_condition_target": "Liquid Pain", "unlock_condition_text": "Become death, destroyer of worlds, by dying."},
+		 "unlock_condition_type": "item_owned", "unlock_condition_target": "Liquid Pain", "unlock_condition_text": "Become death, destroyer of worlds, by dying"},
 		{"name": "Dead End Job", "base_cost": 1.0e20, "sps": 1.0e18, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfordeadendjob.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e20, "unlock_condition_text": "Earn 100Qi total squirrels"},
 		{"name": "Heavy Rain", "base_cost": 1.0e23, "sps": 1.0e21, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforheavyrain.png", "unlocked": false,
@@ -157,7 +162,7 @@ func setup_buildings():
 		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e35, "unlock_condition_text": "Earn 100Dc total squirrels"},
 		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png", "unlocked": false,
-		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e38, "unlock_condition_text": "Earn 100Ud total squirrels"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "music_note", "unlock_condition_text": "Requires the 'Music Note' upgrade"},
 		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforsockdrawer.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e41, "unlock_condition_text": "Earn 100Dd total squirrels"},
 		{"name": "Tree of Life", "base_cost": 1.0e44, "sps": 1.0e42, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-treeoflifead.png", "unlocked": false,
@@ -168,24 +173,129 @@ func setup_buildings():
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e100, "unlock_condition_text": "Earn a Googol total squirrels"}
 	]
 
+func setup_upgrades():
+	var start_pos = Vector2(736, 1746)
+	var v_space = 180.0
+	var h_space = 220.0
+	
+	all_upgrades = {
+		"first_click":   { "name": "First Place Medal", "description": "Maybe now your father will be proud. Grants +1 squirrel per click.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-firstplacemedal.png", "cost": 50.0,
+						   "effect_type": "click_flat", "effect_value": 1.0, 
+						   "dependencies": [], "position": start_pos },
+
+		"second_click":  { "name": "Second Place", "description": "Your father is not proud. Grants another +4 squirrels per click.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-secondplaceupgrade.png", "cost": 300.0,
+						   "effect_type": "click_flat", "effect_value": 4.0, 
+						   "dependencies": ["first_click"], "position": start_pos + Vector2(0, -v_space) },
+
+		"strawberry":    { "name": "A Single Strawberry", "description": "You could make a pie out of these. All click gains are boosted by 25%.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-strawberryupgrade.png", "cost": 1000.0,
+						   "effect_type": "click_multiplier", "effect_value": 0.25,
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(-h_space, -v_space * 2) },
+						   
+		"nubby":         { "name": "Nubby Squirrels", "description": "Nubby likes trees, and brings his own fake plastic ones. Each Tree you own provides an additional +2 SPS.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-nubbyupgrade.png", "cost": 1500.0,
+						   "effect_type": "building_sps_flat", "effect_target": "Trees", "effect_value": 2.0, 
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(0, -v_space * 2) },
+						   
+		"blue_red_shirt": { "name": "Red & Blue Shirt", "description": "A slightly dirty blue and red shirt. It has a strange medallion. Global SPS is permanently increased by 10%.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-blueandredshirtupgrade.png", "cost": 2500.0,
+						   "effect_type": "sps_multiplier", "effect_value": 0.10,
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(h_space, -v_space * 2) },
+
+		"standard_arrow": { "name": "Stand Arrow", "description": "You feel more motivated to click. Grants +25 squirrels per click.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-standarrowupgrade.png", "cost": 7500.0,
+						   "effect_type": "click_flat", "effect_value": 25.0,
+						   "dependencies": ["strawberry"], "position": start_pos + Vector2(-h_space, -v_space * 3) },
+						   
+		"tall_squirrel": { "name": "Tall Squirrels", "description": "Taller squirrels can reach higher branches to get more squirrels. Triples the effectiveness of all Trees.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-tallsquirrel.png", "cost": 15000.0,
+						   "effect_type": "building_sps_multiplier", "effect_target": "Trees", "effect_value": 3.0, 
+						   "dependencies": ["nubby"], "position": start_pos + Vector2(0, -v_space * 3) },
+						   
+		"question_egg":  { "name": "Stop-&-Swap Egg", "description": "A mysterious egg that seems to warp reality. Grants a massive flat bonus of +1,000 SPS and unlocks the Grandfather Paradox building.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-questionmarkeggupgrade.png", "cost": 1.0e5,
+						   "effect_type": "sps_flat_and_unlock", "effect_value": 1000.0, "unlock_target": "Grandfather Paradox",
+						   "dependencies": ["tall_squirrel"], "position": start_pos + Vector2(-h_space / 2, -v_space * 4) },
+						   
+		"mask":          { "name": "Mysterious Mask", "description": "Putting on this strange bug mask makes your squirrels feel like someone else. Unlocks the Persona building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-maskupgrade.png", "cost": 5.0e6,
+						   "effect_type": "unlock_building", "effect_value": "Persona",
+						   "dependencies": ["tall_squirrel", "blue_red_shirt"], "position": start_pos + Vector2(h_space / 2, -v_space * 4) },
+						
+		"herding_foxes": { "name": "Herding Foxes", "description": "Time to wrangle some wildlife. Unlocks the Foxes building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-herdingdogupgrade.png", # Placeholder
+						   "cost": 1.0e10,
+						   "effect_type": "unlock_building", "effect_value": "Foxes",
+						   "dependencies": ["mask"], "position": start_pos + Vector2(h_space * 2, -v_space * 3.5) },
+
+		"herding_dogs":  { "name": "Herding Dogs", "description": "You need dogs to herd the foxes. Unlocks the Dogs building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-herdingdogupgrade.png",
+						   "cost": 1.0e12,
+						   "effect_type": "unlock_building", "effect_value": "Dogs",
+						   "dependencies": ["herding_foxes"], "position": start_pos + Vector2(h_space * 2, -v_space * 4.5) },
+						
+		"herding_cats":  { "name": "Herding Cats", "description": "The dogs are out of hand. Cats will keep them in line. Unlocks the Cats building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-herdingcatupgrade.png",
+						   "cost": 1.0e14,
+						   "effect_type": "unlock_building", "effect_value": "Cats",
+						   "dependencies": ["herding_dogs"], "position": start_pos + Vector2(h_space * 2, -v_space * 5.5) },
+						   
+		"futility":      { "name": "Concept of Futility", "description": "You can't herd cats. Unlocks the Futility building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-conceptoffutilityupgrade.png",
+						   "cost": 1.0e16,
+						   "effect_type": "unlock_building", "effect_value": "Futility",
+						   "dependencies": ["herding_cats"], "position": start_pos + Vector2(h_space * 2, -v_space * 6.5) },
+						
+		"feather":       { "name": "Golden Feather", "description": "Your clicks become invincible, but were never in danger. All click gains are doubled.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-featherupgrade.png", "cost": 1.0e7,
+						   "effect_type": "click_multiplier", "effect_value": 1.0,
+						   "dependencies": ["question_egg"], "position": start_pos + Vector2(-h_space, -v_space * 5) },
+						   
+		"kadir":         { "name": "The Kadir", "description": "A powerful symbol that resonates with your squirrels' ambition. Global SPS is permanently increased by 25%.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-kadirupgrade.png", "cost": 5.0e7,
+						   "effect_type": "sps_multiplier", "effect_value": 0.25,
+						   "dependencies": ["question_egg", "mask"], "position": start_pos + Vector2(0, -v_space * 5) },
+
+		"negative_squirrel": { "name": "Negative Squirrels", "description": "Through forbidden science, you create anti-squirrels. Each click now also generates 2% of your SPS.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-negativesquirrel.png", "cost": 1.0e8,
+						   "effect_type": "click_from_sps", "effect_value": 0.02,
+						   "dependencies": ["mask"], "position": start_pos + Vector2(h_space, -v_space * 5) },
+
+		"wheatley":       { "name": "Wheat Companion", "description": "This is the part where he gets squirrels. All building production is doubled.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-wheatlyupgrade.png", "cost": 1.0e9,
+						   "effect_type": "sps_multiplier", "effect_value": 1.0,
+						   "dependencies": ["kadir", "negative_squirrel"], "position": start_pos + Vector2(h_space/2, -v_space * 6) },
+						   
+		"music_note":    { "name": "Music Note", "description": "It's a Note, one of a hundred on each world. Unlocks the White Ferrari building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-musicnoteupgrade.png", "cost": 1.0e37,
+						   "effect_type": "unlock_building", "effect_value": "White Ferrari",
+						   "dependencies": ["wheatley"], "position": start_pos + Vector2(0, -v_space * 7) },
+						   
+		"algebra":       { "name": "Squirrel Algebra", "description": "Your squirrels learn to count properly. Global SPS is permanently increased by 15%.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-algebraupgrade.png", "cost": 50000.0,
+						   "effect_type": "sps_multiplier", "effect_value": 0.15, 
+						   "dependencies": ["standard_arrow", "tall_squirrel"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 4) },
+	}
+
 func check_unlock_conditions():
 	for building in buildings:
 		if not building.unlocked:
 			var condition_met = false
 			match building.unlock_condition_type:
 				"total_squirrels_earned":
-					if total_squirrels_earned >= building.unlock_condition_value:
-						condition_met = true
+					if total_squirrels_earned >= building.unlock_condition_value: condition_met = true
 				"total_clicks":
-					if total_clicks >= building.unlock_condition_value:
-						condition_met = true
+					if total_clicks >= building.unlock_condition_value: condition_met = true
 				"building_owned":
 					var target_building = buildings.filter(func(b): return b.name == building.unlock_condition_target)
 					if not target_building.is_empty() and target_building[0].owned >= building.unlock_condition_value:
 						condition_met = true
 				"item_owned":
-					if owned_item_ids.has(building.unlock_condition_target):
-						condition_met = true
+					if owned_item_ids.has(building.unlock_condition_target): condition_met = true
+				"upgrade_owned":
+					if owned_upgrade_ids.has(building.unlock_condition_target): condition_met = true
 
 			if condition_met:
 				building.unlocked = true
@@ -195,6 +305,10 @@ func recalculate_sps():
 	var old_sps = squirrels_per_second
 	var base_sps: float = 0.0
 	for building in buildings: base_sps += float(building.owned) * building.sps
+	
+	if owned_upgrade_ids.has("question_egg"):
+		base_sps += 1000.0
+	
 	squirrels_per_second = base_sps * sps_multiplier * temporary_sps_debuff * temporary_sps_buff * gyoza_debuff_multiplier * test_debuff_multiplier
 	if not is_equal_approx(old_sps, squirrels_per_second):
 		sps_change_mailbox.append({"old": old_sps, "new": squirrels_per_second})
@@ -212,13 +326,13 @@ func apply_item_effect(item_id: String):
 		"tapeworm":
 			var earnings = squirrels_per_second * 10800
 			squirrels += earnings
-			total_squirrels_earned += earnings # <-- FIX
+			total_squirrels_earned += earnings
 			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true))
 			_apply_tapeworm_debuff()
 		"Clock":
 			var earnings = squirrels_per_second * 3600
 			squirrels += earnings
-			total_squirrels_earned += earnings # <-- FIX
+			total_squirrels_earned += earnings
 			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true))
 		"steroids": _apply_steroid_buff()
 		"pill": sps_multiplier *= 2.0
@@ -247,6 +361,47 @@ func apply_item_effect(item_id: String):
 	if item_data.type == "permanent" or item_data.type == "cosmetic":
 		if not owned_item_ids.has(item_id): owned_item_ids.append(item_id)
 	recalculate_sps()
+
+func apply_upgrade_effect(upgrade_id: String):
+	if not all_upgrades.has(upgrade_id): return
+	
+	var upgrade = all_upgrades[upgrade_id]
+	match upgrade.effect_type:
+		"click_flat":
+			squirrels_per_click += upgrade.effect_value
+		"click_multiplier":
+			click_multiplier += upgrade.effect_value
+		"sps_multiplier":
+			sps_multiplier += upgrade.effect_value
+		"sps_flat_and_unlock":
+			for building in buildings:
+				if building.name == upgrade.unlock_target:
+					if not building.unlocked:
+						building.unlocked = true
+						building_unlocked_mailbox.append(building.name)
+					break
+			pass
+		"building_sps_flat":
+			for building in buildings:
+				if building.name == upgrade.effect_target:
+					building.sps += upgrade.effect_value
+					break
+		"building_sps_multiplier":
+			for building in buildings:
+				if building.name == upgrade.effect_target:
+					building.sps *= upgrade.effect_value
+					break
+		"unlock_building":
+			for building in buildings:
+				if building.name == upgrade.effect_value:
+					if not building.unlocked:
+						building.unlocked = true
+						building_unlocked_mailbox.append(building.name)
+					break
+		"click_from_sps":
+			pass
+	
+	recalculate_sps()
 	
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST: save_game(); get_tree().quit()
@@ -262,11 +417,13 @@ func save_game():
 		var save_data = {
 			"squirrels": squirrels, "squirrels_per_click": squirrels_per_click, "buildings": buildings_to_save,
 			"save_timestamp": Time.get_unix_time_from_system(), "owned_item_ids": owned_item_ids,
-			"sps_multiplier": sps_multiplier, "fazcoin_count": fazcoin_count,
+			"sps_multiplier": sps_multiplier, "click_multiplier": click_multiplier,
+			"fazcoin_count": fazcoin_count,
 			"is_in_shop": is_in_shop, "current_shop_items": current_shop_items,
 			"steroid_end_time": steroid_end_time, "tapeworm_end_time": tapeworm_end_time, "pie_end_time": pie_end_time,
 			"gyoza_end_time": gyoza_end_time, "test_end_time": test_end_time,
-			"total_clicks": total_clicks, "total_squirrels_earned": total_squirrels_earned
+			"total_clicks": total_clicks, "total_squirrels_earned": total_squirrels_earned,
+			"owned_upgrade_ids": owned_upgrade_ids
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -291,13 +448,16 @@ func load_game():
 							b_game.unlocked = true
 				
 				squirrels = loaded_data.get("squirrels", 0.0); squirrels_per_click = loaded_data.get("squirrels_per_click", 1.0)
-				owned_item_ids = loaded_data.get("owned_item_ids", []); sps_multiplier = loaded_data.get("sps_multiplier", 1.0)
+				owned_item_ids = loaded_data.get("owned_item_ids", []); 
+				sps_multiplier = loaded_data.get("sps_multiplier", 1.0)
+				click_multiplier = loaded_data.get("click_multiplier", 1.0)
 				fazcoin_count = loaded_data.get("fazcoin_count", 0)
 				is_in_shop = loaded_data.get("is_in_shop", false); current_shop_items = loaded_data.get("current_shop_items", [])
 				steroid_end_time = loaded_data.get("steroid_end_time", 0); tapeworm_end_time = loaded_data.get("tapeworm_end_time", 0)
 				pie_end_time = loaded_data.get("pie_end_time", 0); gyoza_end_time = loaded_data.get("gyoza_end_time", 0)
 				test_end_time = loaded_data.get("test_end_time", 0); total_clicks = loaded_data.get("total_clicks", 0)
 				total_squirrels_earned = loaded_data.get("total_squirrels_earned", 0.0)
+				owned_upgrade_ids = loaded_data.get("owned_upgrade_ids", [])
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -311,7 +471,7 @@ func load_game():
 		else: print("Error reading save file: ", file_path)
 
 func reset_game_state():
-	squirrels = 0.0; squirrels_per_click = 1.0; sps_multiplier = 1.0
+	squirrels = 0.0; squirrels_per_click = 1.0; sps_multiplier = 1.0; click_multiplier = 1.0
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
 	owned_item_ids = []; fazcoin_count = 0
 	temporary_sps_buff = 1.0; temporary_sps_debuff = 1.0
@@ -320,6 +480,7 @@ func reset_game_state():
 	gyoza_debuff_multiplier = 1.0; test_debuff_multiplier = 1.0
 	gyoza_end_time = 0; test_end_time = 0
 	total_clicks = 0; total_squirrels_earned = 0.0
+	owned_upgrade_ids = []
 	setup_buildings();
 	recalculate_sps()
 	
@@ -327,43 +488,54 @@ func get_and_clear_offline_progress() -> Dictionary:
 	var progress = { "seconds": offline_seconds_passed, "squirrels": offline_squirrels_earned }
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
 	return progress
+
 func _apply_steroid_buff():
 	if not is_instance_valid(steroid_timer):
 		steroid_timer = Timer.new(); steroid_timer.one_shot = true
 		steroid_timer.timeout.connect(_on_steroid_timer_timeout); add_child(steroid_timer)
 	click_multiplier = 4.0; steroid_end_time = Time.get_unix_time_from_system() + 30.0; steroid_timer.start(30.0)
+
 func _on_steroid_timer_timeout():
 	click_multiplier = 1.0; steroid_end_time = 0
+
 func _apply_tapeworm_debuff():
 	if not is_instance_valid(tapeworm_timer):
 		tapeworm_timer = Timer.new(); tapeworm_timer.one_shot = true
 		tapeworm_timer.timeout.connect(_on_tapeworm_timer_timeout); add_child(tapeworm_timer)
 	temporary_sps_debuff = 0.8; tapeworm_end_time = Time.get_unix_time_from_system() + 30.0; tapeworm_timer.start(30.0); recalculate_sps()
+
 func _on_tapeworm_timer_timeout():
 	temporary_sps_debuff = 1.0; tapeworm_end_time = 0; recalculate_sps()
+
 func _apply_pie_buff():
 	if not is_instance_valid(pie_timer):
 		pie_timer = Timer.new(); pie_timer.one_shot = true
 		pie_timer.timeout.connect(_on_pie_timer_timeout); add_child(pie_timer)
 	temporary_sps_buff = 2.0; pie_end_time = Time.get_unix_time_from_system() + 600.0; pie_timer.start(600.0); recalculate_sps()
+
 func _on_pie_timer_timeout():
 	temporary_sps_buff = 1.0; pie_end_time = 0; recalculate_sps()
+	
 func _apply_gyoza_debuff():
 	if not is_instance_valid(gyoza_timer):
 		gyoza_timer = Timer.new(); gyoza_timer.one_shot = true
 		gyoza_timer.timeout.connect(_on_gyoza_timer_timeout); add_child(gyoza_timer)
 	gyoza_debuff_multiplier = 0.85; gyoza_end_time = Time.get_unix_time_from_system() + 900.0
 	gyoza_timer.start(900.0); recalculate_sps()
+
 func _on_gyoza_timer_timeout():
 	gyoza_debuff_multiplier = 1.0; gyoza_end_time = 0; recalculate_sps()
+
 func _apply_test_debuff():
 	if not is_instance_valid(test_timer):
 		test_timer = Timer.new(); test_timer.one_shot = true
 		test_timer.timeout.connect(_on_test_timer_timeout); add_child(test_timer)
 	test_debuff_multiplier = 0.90; test_end_time = Time.get_unix_time_from_system() + 300.0
 	test_timer.start(300.0); recalculate_sps()
+
 func _on_test_timer_timeout():
 	test_debuff_multiplier = 1.0; test_end_time = 0; recalculate_sps()
+
 func _remove_best_building():
 	if buildings.is_empty(): return
 	var best_building_index = -1; var highest_yield: float = -1.0
@@ -377,10 +549,13 @@ func _remove_best_building():
 		buildings[best_building_index].owned -= 1
 		toast_mailbox.append("The Plant destroyed one %s!" % buildings[best_building_index].name)
 		recalculate_sps()
+
 func _fire_random_buildings(count: int):
 	var owned_buildings_indices = []
 	for i in range(buildings.size()):
-		if buildings[i].owned > 0: owned_buildings_indices.append(i)
+		if buildings[i].owned > 0:
+			owned_buildings_indices.append(i)
+	
 	var buildings_fired = 0
 	while not owned_buildings_indices.is_empty() and buildings_fired < count:
 		owned_buildings_indices.shuffle()
@@ -388,7 +563,10 @@ func _fire_random_buildings(count: int):
 		buildings[index_to_fire].owned -= 1
 		toast_mailbox.append("HR fired one %s!" % buildings[index_to_fire].name)
 		buildings_fired += 1
-	if buildings_fired > 0: recalculate_sps()
+	
+	if buildings_fired > 0:
+		recalculate_sps()
+	
 func _check_persistent_timers():
 	var current_time = Time.get_unix_time_from_system()
 	if steroid_end_time > current_time:
@@ -411,6 +589,7 @@ func _check_persistent_timers():
 		var remaining = test_end_time - current_time
 		if not is_instance_valid(test_timer): test_timer = Timer.new(); test_timer.one_shot = true; test_timer.timeout.connect(_on_test_timer_timeout); add_child(test_timer)
 		test_debuff_multiplier = 0.90; test_timer.start(float(remaining))
+	
 func format_number(number: float, allow_decimals: bool = false) -> String:
 	if is_equal_approx(number, 1.0e100): return "Googol!"
 	if number < 1000.0:
@@ -420,22 +599,29 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 		else: return str(int(number))
 	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd", "Nod", "Vg", "Uvg", "Dvg", "Tvg", "Qavg", "Qivg", "Sxvg", "Spvg", "Ocvg", "Novg", "Tg", "Utg", "Dtg"]
 	var magnitude = int(floor(log(number) / log(1000)))
-	var abbreviated_num: float; var suffix: String
+	var abbreviated_num: float
+	var suffix: String
 	if magnitude < SUFFIXES.size():
-		abbreviated_num = number / pow(1000, magnitude); suffix = SUFFIXES[magnitude]
+		abbreviated_num = number / pow(1000, magnitude)
+		suffix = SUFFIXES[magnitude]
 	else:
 		const LETTERS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 		abbreviated_num = number / pow(1000, magnitude)
 		var index = magnitude - SUFFIXES.size() + SUFFIXES.size() * 2
-		var first_letter_index = float(floor(index / float(LETTERS.size()))); var second_letter_index = index % LETTERS.size()
-		if first_letter_index < LETTERS.size(): suffix = LETTERS[first_letter_index] + LETTERS[second_letter_index]
-		else: return "%.2e" % number
+		var first_letter_index = float(floor(index / float(LETTERS.size())))
+		var second_letter_index = index % LETTERS.size()
+		if first_letter_index < LETTERS.size():
+			suffix = LETTERS[first_letter_index] + LETTERS[second_letter_index]
+		else:
+			return "%.2e" % number
+
 	var formatted_string: String
 	if fmod(abbreviated_num, 1.0) == 0: formatted_string = "%d" % int(abbreviated_num)
 	elif abbreviated_num < 10: formatted_string = "%.2f" % abbreviated_num
 	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
 	else: formatted_string = "%d" % int(abbreviated_num)
 	return formatted_string + suffix
+
 func update_spawnable_items():
 	if all_items.has("Fazcoin"):
 		if fazcoin_count < 5: all_items.Fazcoin.is_spawnable = true
