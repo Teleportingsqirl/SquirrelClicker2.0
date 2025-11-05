@@ -128,6 +128,9 @@ func setup_buildings():
 		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"},
 		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
 		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"},
+		{"name": "Dogs", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-dogstoherdfoxes.png"},
+		{"name": "Cats", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-catstoherddogs.png"},
+		{"name": "Futility", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-conceptoffutiilitytoherdcats.png"},
 		{"name": "Chainsaw", "base_cost": 1.0e14, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png"},
 		{"name": "Nuclear Bombs", "base_cost": 1.0e17, "sps": 1.0e15, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfornucelear.png"},
 		{"name": "Dead End Job", "base_cost": 1.0e20, "sps": 1.0e18, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfordeadendjob.png"},
@@ -137,7 +140,9 @@ func setup_buildings():
 		{"name": "Forest Fire", "base_cost": 1.0e32, "sps": 1.0e30, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforforestfires.png"},
 		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png"},
 		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png"},
-		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-0001.png"},
+		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforsockdrawer.png"},
+		{"name": "Tree of Life", "base_cost": 1.0e44, "sps": 1.0e42, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-treeoflifead.png"},
+		{"name": "The House", "base_cost": 1.0e47, "sps": 1.0e47, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforthehouse.png"},
 		
 		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e98, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png"}
 	]
