@@ -1,4 +1,3 @@
-# GameState.gd
 extends Node
 
 var squirrels: float = 0.0
@@ -41,6 +40,7 @@ var toast_mailbox = []
 var sps_change_mailbox = []
 var scene_change_mailbox = ""
 var death_mailbox = false
+var building_unlocked_mailbox = []
 
 var config = ConfigFile.new()
 var config_path = "user://settings.cfg"
@@ -67,7 +67,8 @@ func _ready():
 func _process(delta):
 	var earned_this_frame = squirrels_per_second * delta
 	squirrels += earned_this_frame
-	total_squirrels_earned += earned_this_frame # THE FIX: Update total earned
+	total_squirrels_earned += earned_this_frame
+	check_unlock_conditions()
 	if Input.is_action_just_pressed("ui_cancel") and not is_in_shop:
 		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
 
@@ -120,32 +121,75 @@ func setup_items():
 
 func setup_buildings():
 	buildings = [
-		{"name": "Nuts", "base_cost": 10.0, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-sqrladdfornuts.png"},
-		{"name": "Trees", "base_cost": 100.0, "sps": 1.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png"},
-		{"name": "Arboretums", "base_cost": 1000.0, "sps": 10.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png"},
-		{"name": "Montreal", "base_cost": 1.0e4, "sps": 100.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png"},
-		{"name": "Grandfather Paradox", "base_cost": 1.0e5, "sps": 1.0e3, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png"},
-		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png"},
-		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png"},
-		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png"},
-		{"name": "Dogs", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-dogstoherdfoxes.png"},
-		{"name": "Cats", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-catstoherddogs.png"},
-		{"name": "Futility", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-conceptoffutiilitytoherdcats.png"},
-		{"name": "Chainsaw", "base_cost": 1.0e14, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png"},
-		{"name": "Nuclear Bombs", "base_cost": 1.0e17, "sps": 1.0e15, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfornucelear.png"},
-		{"name": "Dead End Job", "base_cost": 1.0e20, "sps": 1.0e18, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfordeadendjob.png"},
-		{"name": "Heavy Rain", "base_cost": 1.0e23, "sps": 1.0e21, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforheavyrain.png"},
-		{"name": "Abandoned Flower", "base_cost": 1.0e26, "sps": 1.0e24, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforflower.png"},
-		{"name": "Empty Corner", "base_cost": 1.0e29, "sps": 1.0e27, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforemptycorner.png"},
-		{"name": "Forest Fire", "base_cost": 1.0e32, "sps": 1.0e30, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforforestfires.png"},
-		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png"},
-		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png"},
-		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforsockdrawer.png"},
-		{"name": "Tree of Life", "base_cost": 1.0e44, "sps": 1.0e42, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-treeoflifead.png"},
-		{"name": "The House", "base_cost": 1.0e47, "sps": 1.0e47, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforthehouse.png"},
-		
-		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e98, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png"}
+		{"name": "Nuts", "base_cost": 10.0, "sps": 0.1, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-sqrladdfornuts.png", "unlocked": true},
+		{"name": "Trees", "base_cost": 100.0, "sps": 1.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png", "unlocked": true},
+		{"name": "Arboretums", "base_cost": 1000.0, "sps": 10.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png", "unlocked": true},
+		{"name": "Montreal", "base_cost": 1.0e4, "sps": 100.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png", "unlocked": false, 
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e4, "unlock_condition_text": "Earn 10k total squirrels"},
+		{"name": "Grandfather Paradox", "base_cost": 1.0e5, "sps": 1.0e3, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png", "unlocked": false,
+		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Montreal", "unlock_condition_value": 5, "unlock_condition_text": "Own 5 Montreals"},
+		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png", "unlocked": false,
+		 "unlock_condition_type": "total_clicks", "unlock_condition_value": 10000, "unlock_condition_text": "Click the squirrel 10,000 times"},
+		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e7, "unlock_condition_text": "Earn 10M total squirrels"},
+		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png", "unlocked": false,
+		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Persona", "unlock_condition_value": 25, "unlock_condition_text": "Own 25 Personas"},
+		{"name": "Dogs", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-dogstoherdfoxes.png", "unlocked": false,
+		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Foxes", "unlock_condition_value": 1, "unlock_condition_text": "Own 1 Fox"},
+		{"name": "Cats", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-catstoherddogs.png", "unlocked": false,
+		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Dogs", "unlock_condition_value": 1, "unlock_condition_text": "Own 1 Dog"},
+		{"name": "Futility", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-conceptoffutiilitytoherdcats.png", "unlocked": false,
+		 "unlock_condition_type": "building_owned", "unlock_condition_target": "Cats", "unlock_condition_value": 1, "unlock_condition_text": "Own 1 Cat"},
+		{"name": "Chainsaw", "base_cost": 1.0e14, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e14, "unlock_condition_text": "Earn 100T total squirrels"},
+		{"name": "Nuclear Bombs", "base_cost": 1.0e17, "sps": 1.0e15, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfornucelear.png", "unlocked": false,
+		 "unlock_condition_type": "item_owned", "unlock_condition_target": "Liquid Pain", "unlock_condition_text": "Become death, destroyer of worlds, by dying."},
+		{"name": "Dead End Job", "base_cost": 1.0e20, "sps": 1.0e18, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfordeadendjob.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e20, "unlock_condition_text": "Earn 100Qi total squirrels"},
+		{"name": "Heavy Rain", "base_cost": 1.0e23, "sps": 1.0e21, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforheavyrain.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e23, "unlock_condition_text": "Earn 100Sx total squirrels"},
+		{"name": "Abandoned Flower", "base_cost": 1.0e26, "sps": 1.0e24, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforflower.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e26, "unlock_condition_text": "Earn 100Sp total squirrels"},
+		{"name": "Empty Corner", "base_cost": 1.0e29, "sps": 1.0e27, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforemptycorner.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e29, "unlock_condition_text": "Earn 100Oc total squirrels"},
+		{"name": "Forest Fire", "base_cost": 1.0e32, "sps": 1.0e30, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforforestfires.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e32, "unlock_condition_text": "Earn 100No total squirrels"},
+		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e35, "unlock_condition_text": "Earn 100Dc total squirrels"},
+		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e38, "unlock_condition_text": "Earn 100Ud total squirrels"},
+		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforsockdrawer.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e41, "unlock_condition_text": "Earn 100Dd total squirrels"},
+		{"name": "Tree of Life", "base_cost": 1.0e44, "sps": 1.0e42, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-treeoflifead.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e44, "unlock_condition_text": "Earn 100Td total squirrels"},
+		{"name": "The House", "base_cost": 1.0e47, "sps": 1.0e47, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforthehouse.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e47, "unlock_condition_text": "Earn 100Qad total squirrels"},
+		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e98, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e100, "unlock_condition_text": "Earn a Googol total squirrels"}
 	]
+
+func check_unlock_conditions():
+	for building in buildings:
+		if not building.unlocked:
+			var condition_met = false
+			match building.unlock_condition_type:
+				"total_squirrels_earned":
+					if total_squirrels_earned >= building.unlock_condition_value:
+						condition_met = true
+				"total_clicks":
+					if total_clicks >= building.unlock_condition_value:
+						condition_met = true
+				"building_owned":
+					var target_building = buildings.filter(func(b): return b.name == building.unlock_condition_target)
+					if not target_building.is_empty() and target_building[0].owned >= building.unlock_condition_value:
+						condition_met = true
+				"item_owned":
+					if owned_item_ids.has(building.unlock_condition_target):
+						condition_met = true
+
+			if condition_met:
+				building.unlocked = true
+				building_unlocked_mailbox.append(building.name)
 
 func recalculate_sps():
 	var old_sps = squirrels_per_second
@@ -166,10 +210,15 @@ func apply_item_effect(item_id: String):
 	var item_data = all_items[item_id]
 	match item_id:
 		"tapeworm":
-			var earnings = squirrels_per_second * 10800; squirrels += earnings
-			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true)); _apply_tapeworm_debuff()
+			var earnings = squirrels_per_second * 10800
+			squirrels += earnings
+			total_squirrels_earned += earnings # <-- FIX
+			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true))
+			_apply_tapeworm_debuff()
 		"Clock":
-			var earnings = squirrels_per_second * 3600; squirrels += earnings
+			var earnings = squirrels_per_second * 3600
+			squirrels += earnings
+			total_squirrels_earned += earnings # <-- FIX
 			toast_mailbox.append("Gained %s squirrels!" % format_number(earnings, true))
 		"steroids": _apply_steroid_buff()
 		"pill": sps_multiplier *= 2.0
@@ -177,7 +226,10 @@ func apply_item_effect(item_id: String):
 		"mr_primal": sps_multiplier += 0.05
 		"bandaid": sps_multiplier += 0.10
 		"ButtsPie": _apply_pie_buff()
-		"Wheat": squirrels *= 2
+		"Wheat":
+			var earned_from_wheat = squirrels
+			squirrels *= 2
+			total_squirrels_earned += earned_from_wheat
 		"Fazcoin":
 			fazcoin_count += 1
 			if fazcoin_count >= 5: scene_change_mailbox = "res://3d squirrel.tscn"
@@ -187,13 +239,15 @@ func apply_item_effect(item_id: String):
 		"Liquid Pain":
 			is_in_shop = false
 			death_mailbox = true
+			if not owned_item_ids.has(item_id): owned_item_ids.append(item_id)
+			return 
 		"Loss": squirrels = 0
 		"Pregnancy test": _apply_test_debuff()
 
 	if item_data.type == "permanent" or item_data.type == "cosmetic":
 		if not owned_item_ids.has(item_id): owned_item_ids.append(item_id)
 	recalculate_sps()
-
+	
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST: save_game(); get_tree().quit()
 
@@ -201,8 +255,12 @@ func save_game():
 	var file_path = "user://savegame.dat"
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	if file:
+		var buildings_to_save = []
+		for b in buildings:
+			buildings_to_save.append({"name": b.name, "owned": b.owned, "unlocked": b.get("unlocked", true)})
+
 		var save_data = {
-			"squirrels": squirrels, "squirrels_per_click": squirrels_per_click, "buildings": buildings,
+			"squirrels": squirrels, "squirrels_per_click": squirrels_per_click, "buildings": buildings_to_save,
 			"save_timestamp": Time.get_unix_time_from_system(), "owned_item_ids": owned_item_ids,
 			"sps_multiplier": sps_multiplier, "fazcoin_count": fazcoin_count,
 			"is_in_shop": is_in_shop, "current_shop_items": current_shop_items,
@@ -221,18 +279,24 @@ func load_game():
 			var loaded_data = file.get_var()
 			if typeof(loaded_data) == TYPE_DICTIONARY:
 				setup_buildings()
-				var saved_buildings = loaded_data.get("buildings", []); var saved_progress = {}; for b in saved_buildings: saved_progress[b.name] = b.owned
-				for b in buildings:
-					if saved_progress.has(b.name): b.owned = saved_progress[b.name]
+				var saved_buildings = loaded_data.get("buildings", []); 
+				var saved_progress = {}
+				for b_saved in saved_buildings: 
+					saved_progress[b_saved.name] = {"owned": b_saved.owned, "unlocked": b_saved.get("unlocked", true)}
+
+				for b_game in buildings:
+					if saved_progress.has(b_game.name):
+						b_game.owned = saved_progress[b_game.name].owned
+						if saved_progress[b_game.name].unlocked:
+							b_game.unlocked = true
+				
 				squirrels = loaded_data.get("squirrels", 0.0); squirrels_per_click = loaded_data.get("squirrels_per_click", 1.0)
 				owned_item_ids = loaded_data.get("owned_item_ids", []); sps_multiplier = loaded_data.get("sps_multiplier", 1.0)
 				fazcoin_count = loaded_data.get("fazcoin_count", 0)
 				is_in_shop = loaded_data.get("is_in_shop", false); current_shop_items = loaded_data.get("current_shop_items", [])
 				steroid_end_time = loaded_data.get("steroid_end_time", 0); tapeworm_end_time = loaded_data.get("tapeworm_end_time", 0)
-				pie_end_time = loaded_data.get("pie_end_time", 0)
-				gyoza_end_time = loaded_data.get("gyoza_end_time", 0)
-				test_end_time = loaded_data.get("test_end_time", 0)
-				total_clicks = loaded_data.get("total_clicks", 0)
+				pie_end_time = loaded_data.get("pie_end_time", 0); gyoza_end_time = loaded_data.get("gyoza_end_time", 0)
+				test_end_time = loaded_data.get("test_end_time", 0); total_clicks = loaded_data.get("total_clicks", 0)
 				total_squirrels_earned = loaded_data.get("total_squirrels_earned", 0.0)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
@@ -256,62 +320,50 @@ func reset_game_state():
 	gyoza_debuff_multiplier = 1.0; test_debuff_multiplier = 1.0
 	gyoza_end_time = 0; test_end_time = 0
 	total_clicks = 0; total_squirrels_earned = 0.0
-	setup_buildings(); recalculate_sps()
-
+	setup_buildings();
+	recalculate_sps()
+	
 func get_and_clear_offline_progress() -> Dictionary:
 	var progress = { "seconds": offline_seconds_passed, "squirrels": offline_squirrels_earned }
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
 	return progress
-
 func _apply_steroid_buff():
 	if not is_instance_valid(steroid_timer):
 		steroid_timer = Timer.new(); steroid_timer.one_shot = true
 		steroid_timer.timeout.connect(_on_steroid_timer_timeout); add_child(steroid_timer)
 	click_multiplier = 4.0; steroid_end_time = Time.get_unix_time_from_system() + 30.0; steroid_timer.start(30.0)
-
 func _on_steroid_timer_timeout():
 	click_multiplier = 1.0; steroid_end_time = 0
-
 func _apply_tapeworm_debuff():
 	if not is_instance_valid(tapeworm_timer):
 		tapeworm_timer = Timer.new(); tapeworm_timer.one_shot = true
 		tapeworm_timer.timeout.connect(_on_tapeworm_timer_timeout); add_child(tapeworm_timer)
 	temporary_sps_debuff = 0.8; tapeworm_end_time = Time.get_unix_time_from_system() + 30.0; tapeworm_timer.start(30.0); recalculate_sps()
-
 func _on_tapeworm_timer_timeout():
 	temporary_sps_debuff = 1.0; tapeworm_end_time = 0; recalculate_sps()
-
 func _apply_pie_buff():
 	if not is_instance_valid(pie_timer):
 		pie_timer = Timer.new(); pie_timer.one_shot = true
 		pie_timer.timeout.connect(_on_pie_timer_timeout); add_child(pie_timer)
 	temporary_sps_buff = 2.0; pie_end_time = Time.get_unix_time_from_system() + 600.0; pie_timer.start(600.0); recalculate_sps()
-
 func _on_pie_timer_timeout():
 	temporary_sps_buff = 1.0; pie_end_time = 0; recalculate_sps()
-	
 func _apply_gyoza_debuff():
 	if not is_instance_valid(gyoza_timer):
 		gyoza_timer = Timer.new(); gyoza_timer.one_shot = true
 		gyoza_timer.timeout.connect(_on_gyoza_timer_timeout); add_child(gyoza_timer)
-	gyoza_debuff_multiplier = 0.85
-	gyoza_end_time = Time.get_unix_time_from_system() + 900.0
+	gyoza_debuff_multiplier = 0.85; gyoza_end_time = Time.get_unix_time_from_system() + 900.0
 	gyoza_timer.start(900.0); recalculate_sps()
-
 func _on_gyoza_timer_timeout():
 	gyoza_debuff_multiplier = 1.0; gyoza_end_time = 0; recalculate_sps()
-
 func _apply_test_debuff():
 	if not is_instance_valid(test_timer):
 		test_timer = Timer.new(); test_timer.one_shot = true
 		test_timer.timeout.connect(_on_test_timer_timeout); add_child(test_timer)
-	test_debuff_multiplier = 0.90
-	test_end_time = Time.get_unix_time_from_system() + 300.0
+	test_debuff_multiplier = 0.90; test_end_time = Time.get_unix_time_from_system() + 300.0
 	test_timer.start(300.0); recalculate_sps()
-
 func _on_test_timer_timeout():
 	test_debuff_multiplier = 1.0; test_end_time = 0; recalculate_sps()
-
 func _remove_best_building():
 	if buildings.is_empty(): return
 	var best_building_index = -1; var highest_yield: float = -1.0
@@ -325,13 +377,10 @@ func _remove_best_building():
 		buildings[best_building_index].owned -= 1
 		toast_mailbox.append("The Plant destroyed one %s!" % buildings[best_building_index].name)
 		recalculate_sps()
-
 func _fire_random_buildings(count: int):
 	var owned_buildings_indices = []
 	for i in range(buildings.size()):
-		if buildings[i].owned > 0:
-			owned_buildings_indices.append(i)
-	
+		if buildings[i].owned > 0: owned_buildings_indices.append(i)
 	var buildings_fired = 0
 	while not owned_buildings_indices.is_empty() and buildings_fired < count:
 		owned_buildings_indices.shuffle()
@@ -339,10 +388,7 @@ func _fire_random_buildings(count: int):
 		buildings[index_to_fire].owned -= 1
 		toast_mailbox.append("HR fired one %s!" % buildings[index_to_fire].name)
 		buildings_fired += 1
-	
-	if buildings_fired > 0:
-		recalculate_sps()
-	
+	if buildings_fired > 0: recalculate_sps()
 func _check_persistent_timers():
 	var current_time = Time.get_unix_time_from_system()
 	if steroid_end_time > current_time:
@@ -365,7 +411,6 @@ func _check_persistent_timers():
 		var remaining = test_end_time - current_time
 		if not is_instance_valid(test_timer): test_timer = Timer.new(); test_timer.one_shot = true; test_timer.timeout.connect(_on_test_timer_timeout); add_child(test_timer)
 		test_debuff_multiplier = 0.90; test_timer.start(float(remaining))
-	
 func format_number(number: float, allow_decimals: bool = false) -> String:
 	if is_equal_approx(number, 1.0e100): return "Googol!"
 	if number < 1000.0:
@@ -375,29 +420,22 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 		else: return str(int(number))
 	const SUFFIXES = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd", "Nod", "Vg", "Uvg", "Dvg", "Tvg", "Qavg", "Qivg", "Sxvg", "Spvg", "Ocvg", "Novg", "Tg", "Utg", "Dtg"]
 	var magnitude = int(floor(log(number) / log(1000)))
-	var abbreviated_num: float
-	var suffix: String
+	var abbreviated_num: float; var suffix: String
 	if magnitude < SUFFIXES.size():
-		abbreviated_num = number / pow(1000, magnitude)
-		suffix = SUFFIXES[magnitude]
+		abbreviated_num = number / pow(1000, magnitude); suffix = SUFFIXES[magnitude]
 	else:
 		const LETTERS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 		abbreviated_num = number / pow(1000, magnitude)
 		var index = magnitude - SUFFIXES.size() + SUFFIXES.size() * 2
-		var first_letter_index = float(floor(index / float(LETTERS.size())))
-		var second_letter_index = index % LETTERS.size()
-		if first_letter_index < LETTERS.size():
-			suffix = LETTERS[first_letter_index] + LETTERS[second_letter_index]
-		else:
-			return "%.2e" % number
-
+		var first_letter_index = float(floor(index / float(LETTERS.size()))); var second_letter_index = index % LETTERS.size()
+		if first_letter_index < LETTERS.size(): suffix = LETTERS[first_letter_index] + LETTERS[second_letter_index]
+		else: return "%.2e" % number
 	var formatted_string: String
 	if fmod(abbreviated_num, 1.0) == 0: formatted_string = "%d" % int(abbreviated_num)
 	elif abbreviated_num < 10: formatted_string = "%.2f" % abbreviated_num
 	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
 	else: formatted_string = "%d" % int(abbreviated_num)
 	return formatted_string + suffix
-
 func update_spawnable_items():
 	if all_items.has("Fazcoin"):
 		if fazcoin_count < 5: all_items.Fazcoin.is_spawnable = true

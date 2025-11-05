@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=19 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://qwto8sjpcxfd" path="res://sqrlart/ads/Sprite-sqrladdfornuts.png" id="6_t3dcb"]
 [ext_resource type="Texture2D" uid="uid://dpo0ppcfecmg5" path="res://sqrlart/ads/Sprite-arrows.png" id="7_t3dcb"]
 [ext_resource type="FontFile" uid="uid://bxd5f8so23f5i" path="res://fonts/Poco.ttf" id="8_2wfyv"]
+[ext_resource type="Texture2D" uid="uid://d1cqlw7fjxblg" path="res://sqrlart/ads/Sprite-lockedad.png" id="8_61pn2"]
+[ext_resource type="FontFile" uid="uid://15452jj17u7g" path="res://fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf" id="8_74l45"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="8_s7qjs"]
 [ext_resource type="FontFile" uid="uid://c0mptcymibc31" path="res://fonts/Sangyo-E4ywr.ttf" id="8_t3dcb"]
 [ext_resource type="Texture2D" uid="uid://cm8dkcjpo43k4" path="res://sqrlart/Sprite-upgradebutton.png" id="9_2wfyv"]
@@ -34,7 +36,7 @@ grow_vertical = 2
 scale = Vector2(1.6503397, 1.6503397)
 mouse_filter = 2
 
-[node name="Control" type="Control" parent="."]
+[node name="Control building" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,14 +48,14 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_upo0g")
 
-[node name="background" type="TextureRect" parent="Control"]
+[node name="background" type="TextureRect" parent="Control building"]
 layout_mode = 0
 offset_right = 1162.0
 offset_bottom = 659.0
 mouse_filter = 2
 texture = ExtResource("3_sjpgo")
 
-[node name="clicksqrltext" type="Label" parent="Control"]
+[node name="clicksqrltext" type="Label" parent="Control building"]
 layout_mode = 0
 offset_left = 361.00006
 offset_top = 31.0
@@ -65,23 +67,23 @@ theme_override_font_sizes/font_size = 45
 text = "Click The Squirrel!"
 horizontal_alignment = 1
 
-[node name="sqrlcontainer" type="CenterContainer" parent="Control"]
+[node name="sqrlcontainer" type="CenterContainer" parent="Control building"]
 layout_mode = 0
 offset_left = 342.00006
 offset_top = 109.0
 offset_right = 853.0
 offset_bottom = 535.0
 
-[node name="sqrlbutton" type="TextureButton" parent="Control/sqrlcontainer"]
+[node name="sqrlbutton" type="TextureButton" parent="Control building/sqrlcontainer"]
 layout_mode = 2
 texture_normal = ExtResource("3_crmfy")
 
-[node name="sqirl buildings" type="Control" parent="Control"]
+[node name="sqirl buildings" type="Control" parent="Control building"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="building holder" type="TextureRect" parent="Control/sqirl buildings"]
+[node name="building holder" type="TextureRect" parent="Control building/sqirl buildings"]
 layout_mode = 0
 offset_left = 36.0
 offset_top = 96.0
@@ -89,7 +91,7 @@ offset_right = 286.0
 offset_bottom = 525.0
 texture = ExtResource("5_l110m")
 
-[node name="buildingads" type="TextureButton" parent="Control/sqirl buildings"]
+[node name="buildingads" type="TextureButton" parent="Control building/sqirl buildings"]
 layout_mode = 0
 offset_left = 71.00001
 offset_top = 171.0
@@ -99,25 +101,7 @@ scale = Vector2(0.6, 0.6)
 texture_normal = ExtResource("6_t3dcb")
 stretch_mode = 0
 
-[node name="nextpagebuildings" type="TextureButton" parent="Control/sqirl buildings"]
-layout_mode = 0
-offset_left = 222.0
-offset_top = 519.0
-offset_right = 270.0
-offset_bottom = 570.0
-rotation = -1.5707964
-texture_normal = ExtResource("7_t3dcb")
-
-[node name="lastpagebuildings" type="TextureButton" parent="Control/sqirl buildings"]
-layout_mode = 0
-offset_left = 99.0
-offset_top = 471.0
-offset_right = 147.0
-offset_bottom = 522.0
-rotation = -4.712389
-texture_normal = ExtResource("7_t3dcb")
-
-[node name="building price" type="Label" parent="Control/sqirl buildings"]
+[node name="building price" type="Label" parent="Control building/sqirl buildings"]
 layout_mode = 0
 offset_left = 51.0
 offset_top = 99.0
@@ -129,7 +113,76 @@ text = "Cost : X Squirrels"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SPSLabel" type="Label" parent="Control"]
+[node name="LockOverlay" type="Control" parent="Control building/sqirl buildings"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LockIcon" type="TextureRect" parent="Control building/sqirl buildings/LockOverlay"]
+layout_mode = 0
+offset_left = 71.500435
+offset_top = 170.87392
+offset_right = 252.67526
+offset_bottom = 530.7998
+texture = ExtResource("8_61pn2")
+expand_mode = 1
+
+[node name="LockTitleLabel" type="Label" parent="Control building/sqirl buildings/LockOverlay"]
+layout_mode = 0
+offset_left = 98.76755
+offset_top = 81.195404
+offset_right = 275.76755
+offset_bottom = 156.1954
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_2wfyv")
+theme_override_font_sizes/font_size = 46
+text = "LOCKED"
+
+[node name="LockConditionLabel" type="Label" parent="Control building/sqirl buildings/LockOverlay"]
+layout_mode = 0
+offset_left = 73.92417
+offset_top = 167.84424
+offset_right = 255.099
+offset_bottom = 395.0702
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 26
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("8_74l45")
+text = "Unlock condition :
+ get a million squirrels"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="nextpagebuildings" type="TextureButton" parent="Control building/sqirl buildings"]
+layout_mode = 0
+offset_left = 222.00002
+offset_top = 519.0
+offset_right = 270.0
+offset_bottom = 570.0
+rotation = -1.5707964
+texture_normal = ExtResource("7_t3dcb")
+
+[node name="lastpagebuildings" type="TextureButton" parent="Control building/sqirl buildings"]
+layout_mode = 0
+offset_left = 99.00001
+offset_top = 471.0
+offset_right = 147.0
+offset_bottom = 522.0
+rotation = -4.712389
+texture_normal = ExtResource("7_t3dcb")
+
+[node name="Stats" type="Button" parent="Control building/sqirl buildings"]
+layout_mode = 0
+offset_left = 1.2118683
+offset_right = 48.211876
+offset_bottom = 31.000004
+text = "Stats
+"
+
+[node name="SPSLabel" type="Label" parent="Control building"]
 layout_mode = 0
 offset_left = 644.0
 offset_top = 66.0
@@ -142,7 +195,7 @@ text = "SPS : 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SpsChangeLabel" type="Label" parent="Control"]
+[node name="SpsChangeLabel" type="Label" parent="Control building"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = 644.0
@@ -153,7 +206,7 @@ theme_override_fonts/font = ExtResource("8_2wfyv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ToastPopup" type="PanelContainer" parent="Control"]
+[node name="ToastPopup" type="PanelContainer" parent="Control building"]
 visible = false
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 0
@@ -162,7 +215,7 @@ offset_right = 1162.0
 offset_bottom = 71.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_s7qjs")
 
-[node name="ToastLabel" type="Label" parent="Control/ToastPopup"]
+[node name="ToastLabel" type="Label" parent="Control building/ToastPopup"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("8_t3dcb")
@@ -173,11 +226,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="ToastTimer" type="Timer" parent="Control"]
+[node name="ToastTimer" type="Timer" parent="Control building"]
 wait_time = 3.0
 one_shot = true
 
-[node name="BuffsBox" type="PanelContainer" parent="Control"]
+[node name="BuffsBox" type="PanelContainer" parent="Control building"]
 layout_mode = 0
 offset_left = 870.7297
 offset_top = 79.983536
@@ -185,10 +238,10 @@ offset_right = 1159.7612
 offset_bottom = 282.3661
 theme_override_styles/panel = SubResource("StyleBoxTexture_tyo7n")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/BuffsBox"]
+[node name="MarginContainer" type="MarginContainer" parent="Control building/BuffsBox"]
 layout_mode = 2
 
-[node name="BuffContainer" type="VBoxContainer" parent="Control/BuffsBox/MarginContainer"]
+[node name="BuffContainer" type="VBoxContainer" parent="Control building/BuffsBox/MarginContainer"]
 layout_mode = 2
 
 [node name="3DButton" type="Button" parent="."]
@@ -232,8 +285,8 @@ scale = Vector2(2.4755096, 2.4755096)
 [node name="EffectsLayer" type="CanvasLayer" parent="."]
 layer = 128
 
-[connection signal="pressed" from="Control/sqrlcontainer/sqrlbutton" to="Control" method="_on_texture_button_pressed"]
-[connection signal="timeout" from="Control/ToastTimer" to="Control" method="_on_toast_timer_timeout"]
-[connection signal="pressed" from="3DButton" to="Control" method="_on_3d_button_pressed"]
-[connection signal="pressed" from="upgradeButton" to="Control" method="_on_upgrade_button_pressed"]
-[connection signal="pressed" from="sqirlParts" to="Control" method="_on_sqirlparts_button_pressed"]
+[connection signal="pressed" from="Control building/sqrlcontainer/sqrlbutton" to="Control building" method="_on_texture_button_pressed"]
+[connection signal="timeout" from="Control building/ToastTimer" to="Control building" method="_on_toast_timer_timeout"]
+[connection signal="pressed" from="3DButton" to="Control building" method="_on_3d_button_pressed"]
+[connection signal="pressed" from="upgradeButton" to="Control building" method="_on_upgrade_button_pressed"]
+[connection signal="pressed" from="sqirlParts" to="Control building" method="_on_sqirlparts_button_pressed"]

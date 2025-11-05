@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddwm46nnbgc08"]
+
+[ext_resource type="Script" uid="uid://bhr26721ja23u" path="res://stats_screen.gd" id="1_k5b6l"]
+[ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="2_h4kvb"]
+
+[node name="StatsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1915.0
+offset_bottom = 1075.0
+script = ExtResource("1_k5b6l")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1923.0
+offset_bottom = 1082.0
+
+[node name="Stats" type="Label" parent="."]
+layout_mode = 0
+offset_left = 773.0
+offset_top = -1.0
+offset_right = 1152.0
+offset_bottom = 145.0
+theme_override_font_sizes/font_size = 106
+text = "Stats"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 0
+offset_left = 885.0
+offset_top = 864.0
+offset_right = 1053.0
+offset_bottom = 951.0
+theme_override_font_sizes/font_size = 46
+text = "Back
+"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 603.0
+offset_top = 137.0
+offset_right = 1332.0
+offset_bottom = 840.0
+
+[node name="StatsContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+
+[node name="AnimatedCursor" parent="." instance=ExtResource("2_h4kvb")]

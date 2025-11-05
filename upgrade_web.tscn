@@ -34,6 +34,19 @@ theme_override_styles/disabled_mirrored = ExtResource("3_7p0gc")
 theme_override_styles/focus = ExtResource("3_7p0gc")
 text = "BACK"
 
+[node name="InfoPanel" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="InfoLabel" type="RichTextLabel" parent="CanvasLayer/InfoPanel"]
+layout_mode = 2
+
+[node name="WebContainer" type="Node2D" parent="."]
+
 [node name="AnimatedCursor" parent="." instance=ExtResource("3_xwn6h")]
 top_level = true
 position = Vector2(0, 1)
