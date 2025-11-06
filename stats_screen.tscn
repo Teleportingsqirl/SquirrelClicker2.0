@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddwm46nnbgc08"]
+[gd_scene load_steps=5 format=3 uid="uid://ddwm46nnbgc08"]
 
 [ext_resource type="Script" uid="uid://bhr26721ja23u" path="res://stats_screen.gd" id="1_k5b6l"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="2_h4kvb"]
 [ext_resource type="Texture2D" uid="uid://bpbccrfxo4wg8" path="res://sqrlart/Sprite-statmenu.png" id="2_wmgfj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmgfj"]
+bg_color = Color(0, 0, 0, 0.6117647)
 
 [node name="StatsScreen" type="Control"]
 layout_mode = 3
@@ -47,6 +50,7 @@ offset_left = 603.0
 offset_top = 137.0
 offset_right = 1332.0
 offset_bottom = 840.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmgfj")
 
 [node name="StatsContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
