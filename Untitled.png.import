@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfutti4oru0h4"
-path="res://.godot/imported/Sprite-statsbuttonpressedr.png-94cdc74e16cb8e9080cea42652d63f31.ctex"
+uid="uid://db83em0ons6lh"
+path="res://.godot/imported/Untitled.png-30da513a925d9064453decddf41ecbd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sqrlart/Sprite-statsbuttonpressedr.png"
-dest_files=["res://.godot/imported/Sprite-statsbuttonpressedr.png-94cdc74e16cb8e9080cea42652d63f31.ctex"]
+source_file="res://Untitled.png"
+dest_files=["res://.godot/imported/Untitled.png-30da513a925d9064453decddf41ecbd4.ctex"]
 
 [params]
 

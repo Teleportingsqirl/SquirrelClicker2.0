@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://cm8dkcjpo43k4" path="res://sqrlart/Sprite-upgradebutton.png" id="9_2wfyv"]
 [ext_resource type="Texture2D" uid="uid://hrcbn2wtc22s" path="res://sqrlart/Sprite-upgradebuttonpressed.png" id="10_l110m"]
 [ext_resource type="Texture2D" uid="uid://cnwd8s4fkrhy3" path="res://sqrlart/Sprite-statsbutton.png" id="10_u41aj"]
-[ext_resource type="Texture2D" uid="uid://bfutti4oru0h4" path="res://sqrlart/Sprite-statsbuttonpressedr.png" id="11_x5snc"]
+[ext_resource type="Texture2D" uid="uid://cc4tccy8qtea0" path="res://sqrlart/Sprite-statsbuttonpressed.png" id="11_u41aj"]
 [ext_resource type="Texture2D" uid="uid://ctfgdn37l3opl" path="res://sqrlart/Sprite-statsbuttonhover.png" id="12_krpvy"]
 [ext_resource type="Texture2D" uid="uid://c60q60vgtektw" path="res://sqrlart/shopart/Sprite-shopbutton.png" id="12_tyo7n"]
 [ext_resource type="Texture2D" uid="uid://dw8fkh5byjdg6" path="res://sqrlart/shopart/Sprite-shopbuttonpressed.png" id="13_61pn2"]
@@ -184,7 +184,7 @@ offset_top = -1.8686056e-05
 offset_right = 111.7031
 offset_bottom = 69.68263
 texture_normal = ExtResource("10_u41aj")
-texture_pressed = ExtResource("11_x5snc")
+texture_pressed = ExtResource("11_u41aj")
 texture_hover = ExtResource("12_krpvy")
 ignore_texture_size = true
 stretch_mode = 0
