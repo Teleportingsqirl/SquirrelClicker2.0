@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cyqg05rnielln"]
+[gd_scene load_steps=4 format=3 uid="uid://cyqg05rnielln"]
 
 [ext_resource type="Script" uid="uid://0gaxcmih4j5g" path="res://upgrade_node.gd" id="1_j6ykn"]
+[ext_resource type="Texture2D" uid="uid://c2io242s6wco5" path="res://sqrlart/Sprite-nodecircle.png" id="2_1bh27"]
+[ext_resource type="Texture2D" uid="uid://cxvm58ru64s5s" path="res://sqrlart/Sprite-nodelockes.png" id="3_lom07"]
 
 [node name="UpgradeNode" type="Control"]
 layout_mode = 3
@@ -9,16 +11,18 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_j6ykn")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
-color = Color(0, 0, 0, 0.91764706)
-
 [node name="Line2D" type="Line2D" parent="."]
 width = 3.0
 default_color = Color(0.14044744, 0.14044747, 0.14044738, 0.9137255)
+antialiased = true
+
+[node name="ColorRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 42.999996
+offset_bottom = 42.0
+mouse_filter = 2
+texture = ExtResource("2_1bh27")
+expand_mode = 1
 
 [node name="IconButton" type="TextureButton" parent="."]
 layout_mode = 1
@@ -27,3 +31,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="LockIcon" type="TextureRect" parent="IconButton"]
+visible = false
+layout_mode = 0
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 103.54762
+offset_bottom = 101.0
+texture = ExtResource("3_lom07")
+expand_mode = 1

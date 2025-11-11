@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4au2ctfg2scl"]
+[gd_scene load_steps=4 format=3 uid="uid://c4au2ctfg2scl"]
 
 [ext_resource type="Script" uid="uid://dop4iju8ymbjs" path="res://upgrade_web.gd" id="1_53snk"]
+[ext_resource type="Texture2D" uid="uid://78640jg4rrdi" path="res://sqrlart/Sprite-backbutton.png" id="2_xwn6h"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="3_xwn6h"]
 
 [node name="RootContainer" type="Control"]
@@ -48,10 +49,12 @@ mouse_filter = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="UpgradeWeb"]
 
-[node name="backButton" type="Button" parent="UpgradeWeb/CanvasLayer"]
+[node name="backButton" type="TextureButton" parent="UpgradeWeb/CanvasLayer"]
 offset_right = 96.0
 offset_bottom = 35.0
-text = "Back"
+texture_normal = ExtResource("2_xwn6h")
+texture_pressed = ExtResource("2_xwn6h")
+texture_hover = ExtResource("2_xwn6h")
 
 [node name="InfoPanel" type="PanelContainer" parent="UpgradeWeb/CanvasLayer"]
 offset_left = 1585.0
