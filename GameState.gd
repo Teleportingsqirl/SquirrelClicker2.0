@@ -217,9 +217,9 @@ func setup_upgrades():
 						   "effect_type": "click_from_sps", "effect_value": 0.02,
 						   "dependencies": ["white_mask"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 6) },
 						   
-		"bomb_head":     { "name": "Hybrid Heart", "description": "A contract is made. Your clicks now rip and tear, adding 0.1% of your total SPS to each click.",
+		"bomb_head":     { "name": "The devil of bombs", "description": "A contract has been made with the bomb devil. explosions can now be formed off your body. Adds 1% of your total sps to your clicks.",
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-bombupgrade.png", "cost": 1.0e16,
-						   "effect_type": "click_from_sps", "effect_value": 0.001, 
+						   "effect_type": "click_from_sps", "effect_value": 0.01, 
 						   "dependencies": ["negative"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 7) },
 
 		"nubby":         { "name": "Nubby Squirrels", "description": "Nubby likes trees, and brings his own fake plastic ones. Each Tree you own provides an additional +2 SPS.", 
