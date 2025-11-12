@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://ddwm46nnbgc08"]
+[gd_scene load_steps=7 format=3 uid="uid://ddwm46nnbgc08"]
 
 [ext_resource type="Script" uid="uid://bhr26721ja23u" path="res://stats_screen.gd" id="1_k5b6l"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="2_h4kvb"]
 [ext_resource type="Texture2D" uid="uid://bpbccrfxo4wg8" path="res://sqrlart/Sprite-statmenu.png" id="2_wmgfj"]
 [ext_resource type="Texture2D" uid="uid://78640jg4rrdi" path="res://sqrlart/Sprite-backbutton.png" id="3_5eiy5"]
+[ext_resource type="Texture2D" uid="uid://7olj6u107m0i" path="res://sqrlart/Sprite-backbuttonhovered.png" id="4_qgn3y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmgfj"]
 bg_color = Color(0, 0, 0, 0.6117647)
@@ -43,7 +44,7 @@ offset_right = 1053.0
 offset_bottom = 951.0
 texture_normal = ExtResource("3_5eiy5")
 texture_pressed = ExtResource("3_5eiy5")
-texture_hover = ExtResource("3_5eiy5")
+texture_hover = ExtResource("4_qgn3y")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 0
