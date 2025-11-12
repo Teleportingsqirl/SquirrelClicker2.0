@@ -1,5 +1,8 @@
+# GameState.gd
 extends Node
 
+var game_is_ready: bool = false
+var active_scene_path: String = ""
 var squirrels: float = 0.0
 var squirrels_per_click: float = 1
 var squirrels_per_second: float = 0.0
@@ -58,6 +61,7 @@ const FAZCOIN_DESCRIPTIONS = [
 	"Thank you for depositing five coins."
 ]
 
+
 func _ready():
 	load_settings()
 	autosave_timer = Timer.new(); autosave_timer.wait_time = 5.0; autosave_timer.one_shot = false
@@ -74,8 +78,7 @@ func _process(delta):
 	squirrels += earned_this_frame
 	total_squirrels_earned += earned_this_frame
 	check_unlock_conditions()
-	if Input.is_action_just_pressed("ui_cancel") and not is_in_shop:
-		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
+
 
 func save_settings():
 	config.set_value("audio", "volume_db", volume_db); config.set_value("graphics", "fullscreen", is_fullscreen)
@@ -130,23 +133,23 @@ func setup_buildings():
 		{"name": "Trees", "base_cost": 100.0, "sps": 1.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfortree.png", "unlocked": true},
 		{"name": "Arboretums", "base_cost": 1000.0, "sps": 10.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-arboretum.png", "unlocked": true},
 		{"name": "Montreal", "base_cost": 1.0e4, "sps": 100.0, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adformontreal.png", "unlocked": false, 
-		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e4, "unlock_condition_text": "Earn 10k total squirrels"},
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e3, "unlock_condition_text": "Earn 1k total squirrels"},
 		{"name": "Grandfather Paradox", "base_cost": 1.0e5, "sps": 1.0e3, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png", "unlocked": false,
-		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "question_egg", "unlock_condition_text": "Requires the 'Stop-&-Swap Egg' upgrade"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "egg", "unlock_condition_text": "Requires the 'Stop-&-Swap Egg' upgrade"},
 		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png", "unlocked": false,
 		 "unlock_condition_type": "total_clicks", "unlock_condition_value": 10000, "unlock_condition_text": "Click the squirrel 10,000 times"},
 		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png", "unlocked": false,
-		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "mask", "unlock_condition_text": "Requires the 'Mysterious Mask' upgrade"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "jokers_mask", "unlock_condition_text": "Requires the 'Mask of Rebellion' upgrade"},
 		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png", "unlocked": false,
-		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e4, "unlock_condition_text": "Collect 100 million squirrels"},
-		{"name": "Dogs", "base_cost": 1.0e8, "sps": 1.0e7, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-dogstoherdfoxes.png", "unlocked": false,
-		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "herding_dogs", "unlock_condition_text": "Requires the 'Herding Dogs' upgrade"},
-		{"name": "Cats", "base_cost": 1.0e8, "sps": 1.0e9, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-catstoherddogs.png", "unlocked": false,
-		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "herding_cats", "unlock_condition_text": "Requires the 'Herding Cats' upgrade"},
-		{"name": "Futility", "base_cost": 1.0e8, "sps": 1.0e11, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-conceptoffutiilitytoherdcats.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e8, "unlock_condition_text": "Earn 100 million total squirrels"},
+		{"name": "Dogs", "base_cost": 1.0e10, "sps": 1.0e7, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-dogstoherdfoxes.png", "unlocked": false,
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "dogs", "unlock_condition_text": "Requires the 'Herding Dogs' upgrade"},
+		{"name": "Cats", "base_cost": 1.0e12, "sps": 1.0e9, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-catstoherddogs.png", "unlocked": false,
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "cats", "unlock_condition_text": "Requires the 'Herding Cats' upgrade"},
+		{"name": "Futility", "base_cost": 1.0e14, "sps": 1.0e11, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-conceptoffutiilitytoherdcats.png", "unlocked": false,
 		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "futility", "unlock_condition_text": "Requires the 'Concept of Futility' upgrade"},
-		{"name": "Chainsaw", "base_cost": 1.0e14, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png", "unlocked": false,
-		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e14, "unlock_condition_text": "Earn 100T total squirrels"},
+		{"name": "Chainsaw", "base_cost": 1.0e15, "sps": 1.0e12, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforchainsaws.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e15, "unlock_condition_text": "Earn 1Qa total squirrels"},
 		{"name": "Nuclear Bombs", "base_cost": 1.0e17, "sps": 1.0e15, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfornucelear.png", "unlocked": false,
 		 "unlock_condition_type": "item_owned", "unlock_condition_target": "Liquid Pain", "unlock_condition_text": "Become death, destroyer of worlds, by dying"},
 		{"name": "Dead End Job", "base_cost": 1.0e20, "sps": 1.0e18, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adfordeadendjob.png", "unlocked": false,
@@ -162,21 +165,21 @@ func setup_buildings():
 		{"name": "Hiding Place", "base_cost": 1.0e35, "sps": 1.0e33, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-addforhidingspot.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e35, "unlock_condition_text": "Earn 100Dc total squirrels"},
 		{"name": "White Ferrari", "base_cost": 1.0e38, "sps": 1.0e36, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforwhiteferrari.png", "unlocked": false,
-		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "music_note", "unlock_condition_text": "Requires the 'Music Note' upgrade"},
+		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "note", "unlock_condition_text": "Requires the 'Music Note' upgrade"},
 		{"name": "Wildfire in my sock drawer", "base_cost": 1.0e41, "sps": 1.0e39, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforsockdrawer.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e41, "unlock_condition_text": "Earn 100Dd total squirrels"},
 		{"name": "Tree of Life", "base_cost": 1.0e44, "sps": 1.0e42, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-treeoflifead.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e44, "unlock_condition_text": "Earn 100Td total squirrels"},
-		{"name": "The House", "base_cost": 1.0e47, "sps": 1.0e47, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforthehouse.png", "unlocked": false,
-		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e47, "unlock_condition_text": "Earn 100Qad total squirrels"},
+		{"name": "The House", "base_cost": 1.0e49, "sps": 1.0e47, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforthehouse.png", "unlocked": false,
+		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e49, "unlock_condition_text": "Earn 100Qid total squirrels"},
 		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e98, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e100, "unlock_condition_text": "Earn a Googol total squirrels"}
 	]
 
 func setup_upgrades():
 	var start_pos = Vector2(736, 1746) 
-	var v_space = 160.0
-	var h_space = 320.0
+	var v_space = 180.0
+	var h_space = 240.0
 	
 	all_upgrades = {
 		"first_click":   { "name": "First Place Medal", "description": "Maybe now your father will be proud. Grants +1 squirrel per click.", 
@@ -188,106 +191,121 @@ func setup_upgrades():
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-secondplaceupgrade.png", "cost": 300.0,
 						   "effect_type": "click_flat", "effect_value": 4.0, 
 						   "dependencies": ["first_click"], "position": start_pos + Vector2(0, -v_space) },
+		
+		"shirt":         { "name": "Red & Blue Shirt", "description": "A slightly sticky blue and red shirt. It has a strange medallion. Global SPS is permanently increased by 10%.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-blueandredshirtupgrade.png", "cost": 2500.0,
+						   "effect_type": "sps_multiplier", "effect_value": 0.10,
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 2) },
+						   
+		"tall":          { "name": "Tall Squirrels", "description": "Taller squirrels can reach higher branches to get more squirrels. Triples the effectiveness of all Trees.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-tallsquirrel.png", "cost": 15000.0,
+						   "effect_type": "building_sps_multiplier", "effect_target": "Trees", "effect_value": 3.0, 
+						   "dependencies": ["shirt"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 3) },
+						   
+		"arrow":         { "name": "Stand Arrow", "description": "You feel more motivated to click. Grants +25 squirrels per click.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-standarrowupgrade.png", "cost": 5.0e5,
+						   "effect_type": "click_flat", "effect_value": 25.0,
+						   "dependencies": ["tall"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 4) },
+
+		"white_mask":    { "name": "Health Mask", "description": "The Health Mask is a representation of your squirrels health. This new one gives you +10% production for everything.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-maskupgrade.png", "cost": 5.0e6,
+						   "effect_type": "sps_multiplier", "effect_value": 0.10,
+						   "dependencies": ["arrow"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 5) },
+		
+		"negative_squirrel":   { "name": "Negative Squirrels", "description": "Through forbidden science, you create anti-squirrels. Each click now also generates 2% of your SPS.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-negativesquirrel.png", "cost": 1.0e8,
+						   "effect_type": "click_from_sps", "effect_value": 0.02,
+						   "dependencies": ["white_mask"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 6) },
+						   
+		"bomb_head":     { "name": "Hybrid Heart", "description": "A contract is made. Your clicks now rip and tear, adding 0.1% of your total SPS to each click.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-bombupgrade.png", "cost": 1.0e16,
+						   "effect_type": "click_from_sps", "effect_value": 0.001, 
+						   "dependencies": ["negative"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 7) },
 
 		"nubby":         { "name": "Nubby Squirrels", "description": "Nubby likes trees, and brings his own fake plastic ones. Each Tree you own provides an additional +2 SPS.", 
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-nubbyupgrade.png", "cost": 1500.0,
 						   "effect_type": "building_sps_flat", "effect_target": "Trees", "effect_value": 2.0, 
-						   "dependencies": ["second_click"], "position": start_pos + Vector2(0, -v_space * 2) },
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 2) },
 
+		"jokers_mask":   { "name": "Mask of Rebellion", "description": "Embrace your inner self. Unlocks the persona building and increases total SPS by 2% for each distinct type of building you own at least one of.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-pesonaupgrade.png", "cost": 7.5e5,
+						   "effect_type": "sps_per_building_type_and_unlock", "effect_value": 0.02, "unlock_target": "Persona",
+						   "dependencies": ["nubby"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 3) },
+						   
+		"feather":       { "name": "Golden Feather", "description": "Your clicks become invincible, but were never in danger. Still, all click gains are doubled.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-featherupgrade.png", "cost": 5.0e7,
+						   "effect_type": "click_multiplier", "effect_value": 1.0,
+						   "dependencies": ["jokers_mask"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 4) },
+						   
+		"wheatley":      { "name": "Wheat Companion", "description": "This is the part where he gets squirrels. All building production is doubled.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-wheatlyupgrade.png", "cost": 1.0e9,
+						   "effect_type": "sps_multiplier", "effect_value": 1.0,
+						   "dependencies": ["feather"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 5) },
+
+		"rhinestone_eyes":{ "name": "Rhinestone Eyes", "description": "You see the value in everything. Global SPS multiplier is increased by a flat +0.25.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-rhinestoneeyesupgrade.png", "cost": 5.0e9,
+						   "effect_type": "sps_multiplier", "effect_value": 0.25, 
+						   "dependencies": ["wheatley"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 6) },
+
+		"runners_vision":{ "name": "Runner's Vision", "description": "The world slows down, and the path becomes clear. Every click permanently increases your base SPS by a minuscule amount (+0.01).",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-reddoorupgrade.png", "cost": 1.0e12,
+						   "effect_type": "sps_per_click", "effect_value": 0.01, 
+						   "dependencies": ["rhinestone_eyes"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 7) },
+						
 		"strawberry":    { "name": "A Single Strawberry", "description": "You could make a pie out of these. All click gains are boosted by 25%.",
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-strawberryupgrade.png", "cost": 1000.0,
 						   "effect_type": "click_multiplier", "effect_value": 0.25,
-						   "dependencies": ["nubby"], "position": start_pos + Vector2(-h_space * 0.75, -v_space * 3) },
-						   
-		"standard_arrow": { "name": "Stand Arrow", "description": "You feel more motivated to click. Grants +25 squirrels per click.",
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-standarrowupgrade.png", "cost": 7500.0,
-						   "effect_type": "click_flat", "effect_value": 25.0,
-						   "dependencies": ["strawberry"], "position": start_pos + Vector2(-h_space * 0.9, -v_space * 4) },
-		
-		"feather":       { "name": "Golden Feather", "description": "Your clicks become invincible, but were never in danger. All click gains are doubled.",
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-featherupgrade.png", "cost": 1.0e7,
-						   "effect_type": "click_multiplier", "effect_value": 1.0,
-						   "dependencies": ["standard_arrow"], "position": start_pos + Vector2(-h_space * 1.0, -v_space * 5.5) },
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 2) },
 
-		"red_book":      { "name": "Red Book", "description": "A mysterious book. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-redbookupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["feather"], "position": start_pos + Vector2(-h_space * 1.1, -v_space * 7) },
-
-		"algebra":       { "name": "Squirrel Algebra", "description": "Your squirrels learn to count properly. Global SPS is permanently increased by 15%.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-algebraupgrade.png", "cost": 50000.0,
-						   "effect_type": "sps_multiplier", "effect_value": 0.15, 
-						   "dependencies": ["strawberry", "question_egg"], "position": start_pos + Vector2(-h_space * 1.25, -v_space * 4) },
-
-		"helmet":        { "name": "Strange Helmet", "description": "A mysterious helmet. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-helmetupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["algebra"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 5) },
-
-		"blue_p_orb":    { "name": "Blue 'P' Orb", "description": "A mysterious orb. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-blueporbupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["helmet"], "position": start_pos + Vector2(-h_space * 1.75, -v_space * 6) },
-
-		"question_egg":  { "name": "Stop-&-Swap Egg", "description": "A mysterious egg that seems to warp reality. Grants a massive flat bonus of +1,000 SPS and unlocks the Grandfather Paradox building.", 
+		"egg":           { "name": "Stop-&-Swap Egg", "description": "About time! We’ve been waiting over ten years for this thing! Grants a massive flat bonus of +1,000 SPS and unlocks the Grandfather Paradox building.", 
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-questionmarkeggupgrade.png", "cost": 1.0e5,
 						   "effect_type": "sps_flat_and_unlock", "effect_value": 1000.0, "unlock_target": "Grandfather Paradox",
-						   "dependencies": ["nubby"], "position": start_pos + Vector2(-h_space * 0.5, -v_space * 4) },
+						   "dependencies": ["strawberry"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 3) },
 
-		"mask":          { "name": "Mysterious Mask", "description": "Putting on this strange bug mask makes your squirrels feel like someone else. Unlocks the Persona building.",
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-maskupgrade.png", "cost": 5.0e6,
-						   "effect_type": "unlock_building", "effect_value": "Persona",
-						   "dependencies": ["question_egg", "blue_red_shirt"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 5) },
-
-		"negative_squirrel": { "name": "Negative Squirrels", "description": "Through forbidden science, you create anti-squirrels. Each click now also generates 2% of your SPS.",
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-negativesquirrel.png", "cost": 1.0e8,
-						   "effect_type": "click_from_sps", "effect_value": 0.02,
-						   "dependencies": ["mask"], "position": start_pos + Vector2(0, -v_space * 6) },
-		
-		"music_note":    { "name": "Music Note", "description": "It's a Note, one of a hundred on each world. Unlocks the White Ferrari building.",
+		"note":          { "name": "Music Note", "description": "It's a Note, one of a hundred on each world. Unlocks the White Ferrari building.",
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-musicnoteupgrade.png", "cost": 1.0e37,
 						   "effect_type": "unlock_building", "effect_value": "White Ferrari",
-						   "dependencies": ["negative_squirrel"], "position": start_pos + Vector2(-h_space * 0.25, -v_space * 7) },
+						   "dependencies": ["egg"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 4) },
 
-		"wheatley":       { "name": "Wheat Companion", "description": "This is the part where he gets squirrels. All building production is doubled.",
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-wheatlyupgrade.png", "cost": 1.0e9,
-						   "effect_type": "sps_multiplier", "effect_value": 1.0,
-						   "dependencies": ["negative_squirrel"], "position": start_pos + Vector2(h_space * 0.25, -v_space * 7) },
+		"cuphead":       { "name": "Soul Contract", "description": "You sell your soul for more squirrels. Doubles the production of all buildings with two-word names, but makes them 10% more expensive.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-cuphead.png", "cost": 1.0e40,
+						   "effect_type": "conditional_building_multiplier", "effect_value": 2.0, 
+						   "dependencies": ["note"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 5) },
 
-		"hotdog":        { "name": "Suspicious Hotdog", "description": "A mysterious hotdog. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-hotdogupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["nubby"], "position": start_pos + Vector2(h_space * 0.75, -v_space * 3) },
-						   
-		"blue_red_shirt": { "name": "Red & Blue Shirt", "description": "A slightly dirty blue and red shirt. It has a strange medallion. Global SPS is permanently increased by 10%.",
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-blueandredshirtupgrade.png", "cost": 2500.0,
-						   "effect_type": "sps_multiplier", "effect_value": 0.10,
-						   "dependencies": ["hotdog"], "position": start_pos + Vector2(h_space * 0.9, -v_space * 4) },
+		"algebra":       { "name": "Squirrel Algebra", "description": "Your squirrels learn to count themselves properly. Global SPS is permanently increased by 15%.", 
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-algebraupgrade.png", "cost": 50000.0,
+						   "effect_type": "sps_multiplier", "effect_value": 0.15, 
+						   "dependencies": ["strawberry"], "position": start_pos + Vector2(h_space * 1.5, -v_space * 3) },
+
+		"scintillation": { "name": "Scintillation", "description": "Everything is just a little bit brighter. All global SPS percentage multiplier upgrades (like this one!) are 5% more effective.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-fancysparklesupgrade.png", "cost": 1.0e8,
+						   "effect_type": "meta_multiplier", "effect_value": 0.05, 
+						   "dependencies": ["algebra"], "position": start_pos + Vector2(h_space * 1.5, -v_space * 4) },
+
+		"knight_magic":  { "name": "Knight's Magic", "description": "The knight uses magic, permanantly doubling the output of nuts, trees, arboretums, and montreals.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-castlecrasher.png", "cost": 1.0e10,
+						   "effect_type": "early_building_doubler", "effect_value": 0, 
+						   "dependencies": ["scintillation"], "position": start_pos + Vector2(h_space * 1.5, -v_space * 5) },
 
 		"kadir":         { "name": "The Kadir", "description": "A powerful symbol that resonates with your squirrels' ambition. Global SPS is permanently increased by 25%.",
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-kadirupgrade.png", "cost": 5.0e7,
 						   "effect_type": "sps_multiplier", "effect_value": 0.25,
-						   "dependencies": ["mask"], "position": start_pos + Vector2(h_space * 1.0, -v_space * 6) },
+						   "dependencies": ["second_click"], "position": start_pos + Vector2(h_space * 2.0, -v_space * 2) },
 
-		"lapis_lazuli":  { "name": "Lapis Lazuli", "description": "A mysterious blue gem. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-lapisupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["kadir", "tall_squirrel"], "position": start_pos + Vector2(h_space * 1.5, -v_space * 7) },
-
-		"tall_squirrel": { "name": "Tall Squirrels", "description": "Taller squirrels can reach higher branches to get more squirrels. Triples the effectiveness of all Trees.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-tallsquirrel.png", "cost": 15000.0,
-						   "effect_type": "building_s_multiplier", "effect_target": "Trees", "effect_value": 3.0, 
-						   "dependencies": ["kadir"], "position": start_pos + Vector2(h_space * 1.75, -v_space * 6.5) },
-
-		"brown_bear":    { "name": "Brown Bear", "description": "A mysterious bear. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-brownbearupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["tall_squirrel"], "position": start_pos + Vector2(h_space * 2.0, -v_space * 7) },
-
-		"white_pillar":  { "name": "White Pillar", "description": "A mysterious pillar. Its effect is unknown.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-whitepillarupgrade.png", "cost": 1.0e99,
-						   "effect_type": "none", "effect_value": 0, 
-						   "dependencies": ["lapis_lazuli"], "position": start_pos + Vector2(h_space * 1.5, -v_space * 8) },
+		"dogs":          { "name": "Herding Dogs", "description": "You need dogs to herd the foxes. Unlocks the Dogs building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-herdingdogupgrade.png", "cost": 1.0e9,
+						   "effect_type": "unlock_building", "effect_value": "Dogs",
+						   "dependencies": ["kadir"], "position": start_pos + Vector2(h_space * 2.0, -v_space * 3) },
+						
+		"cats":          { "name": "Herding Cats", "description": "The dogs are out of hand. Cats will keep them in line. Unlocks the Cats building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-herdingcatupgrade.png", "cost": 1.0e11,
+						   "effect_type": "unlock_building", "effect_value": "Cats",
+						   "dependencies": ["dogs"], "position": start_pos + Vector2(h_space * 2.5, -v_space * 4) },
+						   
+		"futility":      { "name": "Concept of Futility", "description": "You can't herd cats. Unlocks the Futility building.",
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-conceptoffutilityupgrade.png", "cost": 1.0e13,
+						   "effect_type": "unlock_building", "effect_value": "Futility",
+						   "dependencies": ["cats"], "position": start_pos + Vector2(h_space * 3.0, -v_space * 5) },
 	}
 
 func check_unlock_conditions():
@@ -315,19 +333,54 @@ func check_unlock_conditions():
 func recalculate_sps():
 	var old_sps = squirrels_per_second
 	var base_sps: float = 0.0
-	for building in buildings: base_sps += float(building.owned) * building.sps
 	
-	if owned_upgrade_ids.has("question_egg"):
-		base_sps += 1000.0
+	var final_sps_multiplier = sps_multiplier
+	if owned_upgrade_ids.has("scintillation"):
+		var meta_bonus = 0.0
+		for upgrade_id in owned_upgrade_ids:
+			if all_upgrades.has(upgrade_id):
+				var upgrade = all_upgrades[upgrade_id]
+				if upgrade.effect_type == "sps_multiplier" or upgrade.effect_type == "sps_per_building_type_and_unlock":
+					meta_bonus += upgrade.effect_value * 0.05
+		final_sps_multiplier += meta_bonus
+
+	if owned_upgrade_ids.has("jokers_mask"):
+		var owned_types = 0
+		for building in buildings:
+			if building.owned > 0:
+				owned_types += 1
+		final_sps_multiplier += owned_types * all_upgrades.jokers_mask.effect_value
+		
+	for b_idx in range(buildings.size()):
+		var building = buildings[b_idx]
+		var building_sps = building.sps
+		
+		if owned_upgrade_ids.has("knight_magic") and b_idx < 4:
+			building_sps *= 2.0
+			
+		if owned_upgrade_ids.has("cuphead") and building.name.split(" ").size() == 2:
+			building_sps *= 2.0
+			
+		base_sps += float(building.owned) * building_sps
+
+	if owned_upgrade_ids.has("egg"):
+		base_sps += all_upgrades.egg.effect_value
+		
+	if owned_upgrade_ids.has("runners_vision"):
+		base_sps += all_upgrades.runners_vision.effect_value * total_clicks
 	
-	squirrels_per_second = base_sps * sps_multiplier * temporary_sps_debuff * temporary_sps_buff * gyoza_debuff_multiplier * test_debuff_multiplier
+	squirrels_per_second = base_sps * final_sps_multiplier * temporary_sps_debuff * temporary_sps_buff * gyoza_debuff_multiplier * test_debuff_multiplier
 	if not is_equal_approx(old_sps, squirrels_per_second):
 		sps_change_mailbox.append({"old": old_sps, "new": squirrels_per_second})
 
 func calculate_building_cost(building_index: int) -> float:
 	if building_index >= 0 and building_index < buildings.size():
 		var building = buildings[building_index]
-		return ceil(building.base_cost * pow(1.1, float(building.owned)))
+		var cost_multiplier = 1.0
+		if owned_upgrade_ids.has("cuphead") and building.name.split(" ").size() == 2:
+			cost_multiplier = 1.1
+		
+		return ceil(building.base_cost * pow(1.1, float(building.owned)) * cost_multiplier)
 	return 0.0
 
 func apply_item_effect(item_id: String):
@@ -392,6 +445,14 @@ func apply_upgrade_effect(upgrade_id: String):
 						building_unlocked_mailbox.append(building.name)
 					break
 			pass
+		"sps_per_building_type_and_unlock":
+			for building in buildings:
+				if building.name == upgrade.unlock_target:
+					if not building.unlocked:
+						building.unlocked = true
+						building_unlocked_mailbox.append(building.name)
+					break
+			pass
 		"building_sps_flat":
 			for building in buildings:
 				if building.name == upgrade.effect_target:
@@ -410,6 +471,16 @@ func apply_upgrade_effect(upgrade_id: String):
 						building_unlocked_mailbox.append(building.name)
 					break
 		"click_from_sps":
+			pass
+		"sps_per_building_type":
+			pass
+		"sps_per_click":
+			pass
+		"conditional_building_multiplier":
+			pass
+		"meta_multiplier":
+			pass
+		"early_building_doubler":
 			pass
 	
 	recalculate_sps()
@@ -473,11 +544,9 @@ func load_game():
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
-					var temp_sps = 0.0
-					for b in buildings: temp_sps += float(b.owned) * b.sps
-					temp_sps *= sps_multiplier
+					recalculate_sps()
 					var current_time = Time.get_unix_time_from_system(); offline_seconds_passed = current_time - saved_time
-					offline_squirrels_earned = offline_seconds_passed * temp_sps; squirrels += offline_squirrels_earned
+					offline_squirrels_earned = offline_seconds_passed * squirrels_per_second; squirrels += offline_squirrels_earned
 				print("Game Loaded!")
 			else: print("Error: Save file is corrupted.")
 		else: print("Error reading save file: ", file_path)

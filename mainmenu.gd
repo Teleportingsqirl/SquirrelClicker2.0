@@ -21,6 +21,11 @@ var confirm_reset = false
 @onready var volume_slider = $options/MarginContainer/VBoxContainer/HSlider
 @onready var language_btn = $options/MarginContainer/VBoxContainer/LanguageBtn
 
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		get_tree().quit()
+
 func _ready() -> void:
 	mainbuttons_onscreen_pos = mainbuttons.position; options_onscreen_pos = options.position
 	mainbuttons_offscreen_pos = mainbuttons_onscreen_pos - Vector2(0, 400)

@@ -46,6 +46,11 @@ func _ready():
 	update_all_nodes()
 	draw_all_lines()
 
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		_on_back_button_pressed()
+
 func _on_scroll_container_gui_input(event):
 	if event is InputEventMouseButton and (event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN):
 		accept_event()

@@ -1,11 +1,17 @@
+# stats_screen.gd
 extends Control
 
 @onready var stats_container: VBoxContainer = $ScrollContainer/StatsContainer
-@onready var back_button: Button = $Back
+@onready var back: TextureButton = $Back
 
 func _ready():
-	back_button.pressed.connect(_on_back_pressed)
 	populate_stats()
+	
+	
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		_on_back_pressed()
 
 func populate_stats():
 	for child in stats_container.get_children():
@@ -71,4 +77,4 @@ func add_stat_header(text: String):
 	header_label.append_text("[u]" + text + "[/u]")
 
 func _on_back_pressed():
-	SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
+	SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_UP)

@@ -1,3 +1,4 @@
+#control.gd
 extends Control
 
 const BuffBarScene = preload("res://BuffBar.tscn")
@@ -43,6 +44,11 @@ func _ready():
 	
 	update_text(); update_sps_display(); update_building_display()
 	show_offline_progress_toast() 
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel") and not GameState.is_in_shop:
+		get_viewport().set_input_as_handled()
+		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
 
 func _process(_delta):
 	if GameState.death_mailbox:
@@ -203,7 +209,7 @@ func _on_upgrade_button_pressed():
 	SceneTransitioner.transition_to_scene("res://upgrade_web.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 
 func _on_stats_button_pressed():
-	SceneTransitioner.transition_to_scene("res://stats_screen.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+	SceneTransitioner.transition_to_scene("res://stats_screen.tscn", SceneTransitioner.TransitionMode.SLIDE_DOWN)
 
 func _on_sqirlparts_button_pressed():
 	SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)

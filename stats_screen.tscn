@@ -57,4 +57,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_wmgfj")
 layout_mode = 2
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("2_h4kvb")]
+position = Vector2(-269, 62)
 scale = Vector2(2.4755096, 2.4755096)
+
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
