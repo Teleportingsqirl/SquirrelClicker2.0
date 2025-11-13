@@ -58,7 +58,7 @@ var use_antialiasing = false
 const FAZCOIN_DESCRIPTIONS = [
 	"Please deposit five coins.", "You are attempting to trick Freddy.",
 	"You are attempting to trick Freddy.", "Freddy is the best. You are the best.",
-	"Thank you for depositing five coins."
+	"Thank you for depositing five coins.",
 ]
 
 

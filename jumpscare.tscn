@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://bett6bj40aqf6"]
+
+[ext_resource type="Texture2D" uid="uid://wpxpdeht2lan" path="res://other art/upscalemedia-transformed.jpg" id="1_lc0cw"]
+
+[sub_resource type="Gradient" id="Gradient_dkw4f"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.9722222, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6rciv"]
+gradient = SubResource("Gradient_dkw4f")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -57.0
+offset_top = 3.0
+offset_right = 1996.0
+offset_bottom = 1082.0
+texture = SubResource("GradientTexture1D_6rciv")
+
+[node name="Node2D" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 3.0
+offset_right = 1684.0
+offset_bottom = 1080.0
+texture = ExtResource("1_lc0cw")
+expand_mode = 1
