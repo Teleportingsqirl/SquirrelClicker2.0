@@ -318,7 +318,6 @@ scale = Vector2(2.4755096, 2.4755096)
 layer = 128
 
 [node name="sqirlpartstooltip" type="TextureRect" parent="."]
-visible = false
 layout_mode = 0
 offset_left = 202.38257
 offset_top = 76.95385
@@ -328,7 +327,6 @@ texture = ExtResource("21_5rdqw")
 expand_mode = 1
 
 [node name="closetooltip" type="TextureButton" parent="sqirlpartstooltip"]
-visible = false
 layout_mode = 0
 offset_left = 716.2162
 offset_top = 51.504555

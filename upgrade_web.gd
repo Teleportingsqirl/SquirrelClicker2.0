@@ -1,3 +1,4 @@
+#upgrade_web.gd
 extends Control
 
 const UpgradeNodeScene = preload("res://upgrade_node.tscn")

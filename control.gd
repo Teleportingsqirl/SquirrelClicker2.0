@@ -10,6 +10,7 @@ const SQUIRREL_CLICK_SFX = preload("res://audios/sqirlclick.wav")
 @onready var texture_button = $"sqrlcontainer/sqrlbutton"
 @onready var sqirlparts_tooltip = $"../sqirlpartstooltip"
 @onready var close_tooltip_button = $"../sqirlpartstooltip/closetooltip"
+@onready var sqirl_parts: TextureButton = $"../sqirlParts"
 
 @onready var building_price_label = $"sqirl buildings/building price"
 @onready var building_ad_button = $"sqirl buildings/buildingads"
@@ -48,12 +49,24 @@ func _ready():
 	stats_button.pressed.connect(_on_stats_button_pressed)
 	upgrade_button.pressed.connect(_on_upgrade_button_pressed)
 	sqirlparts_tooltip.visible = false
+	sqirl_parts.visible = false
+	upgrade_button.visible = false
 	close_tooltip_button.pressed.connect(_on_close_parts_tooltip_pressed)
 	
+	if GameState.upgrade_slid_in:
+		upgrade_button.visible = true
+	else:
+		upgrade_button.visible = false
+		
+	if GameState.parts_slid_in:
+		sqirl_parts.visible = true
+	else:
+		sqirl_parts.visible = false
+		
 	update_text(); update_sps_display(); update_building_display()
 	show_offline_progress_toast() 
 
-func _unhandled_input(event):
+func _input(event):
 	if event.is_action_pressed("ui_cancel") and not GameState.is_in_shop:
 		get_viewport().set_input_as_handled()
 		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
@@ -76,7 +89,24 @@ func _process(_delta):
 	else:
 		tv_texture.texture = on_texture
 		boxes_label.text = str(GameState.squirrelboxes)
+	if not GameState.upgrade_slid_in and GameState.squirrels >= 50:
+		GameState.upgrade_slid_in = true
+		var tween = create_tween()
+		for node in [upgrade_button] + upgrade_button.get_children():
+			var target_pos = node.position
+			node.position += Vector2(500, 0)
+			node.visible = true
+			tween.tween_property(node, "position", target_pos, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	
+	if not GameState.parts_slid_in and GameState.squirrelboxes > 0:
+		GameState.parts_slid_in = true
+		var tween = create_tween()
+		for node in [sqirl_parts] + sqirl_parts.get_children():
+			var target_pos = node.position
+			node.position += Vector2(500, 0)
+			node.visible = true
+			tween.tween_property(node, "position", target_pos, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
 	update_text(); update_sps_display(); _update_buff_display()
 	texture_button.position = texture_button.position.round()
 
@@ -231,6 +261,7 @@ func _on_sqirlparts_button_pressed():
 			sqirlparts_tooltip.visible = true
 			GameState.has_seen_parts_tooltip = true
 			return
+
 		GameState.squirrelboxes -= 1
 		SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 	else:

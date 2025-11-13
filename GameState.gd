@@ -12,6 +12,8 @@ var owned_item_ids = []
 var total_clicks: int = 0
 var total_squirrels_earned: float = 0.0
 var has_seen_parts_tooltip: bool = false
+var upgrade_slid_in: bool = false
+var parts_slid_in: bool = false
 
 var sps_multiplier = 1.0
 var click_multiplier = 1.0
@@ -521,7 +523,9 @@ func save_game():
 			"owned_upgrade_ids": owned_upgrade_ids,
 			"squirrelboxes": squirrelboxes,
 			"firstsquirrel": firstsquirrel,
-			"has_seen_parts_tooltip": has_seen_parts_tooltip
+			"has_seen_parts_tooltip": has_seen_parts_tooltip,
+			"upgrade_slid_in": upgrade_slid_in,
+			"parts_slid_in": parts_slid_in
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -560,6 +564,8 @@ func load_game():
 				squirrelboxes = loaded_data.get("squirrelboxes", 0)
 				firstsquirrel = loaded_data.get("firstsquirrel", 0)
 				has_seen_parts_tooltip = loaded_data.get("has_seen_parts_tooltip", false)
+				upgrade_slid_in = loaded_data.get("upgrade_slid_in", false)
+				parts_slid_in = loaded_data.get("parts_slid_in", false)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -584,6 +590,8 @@ func reset_game_state():
 	squirrelboxes = 0
 	firstsquirrel = 0
 	has_seen_parts_tooltip = false
+	upgrade_slid_in = false
+	parts_slid_in = false
 	setup_buildings();
 	recalculate_sps()
 	

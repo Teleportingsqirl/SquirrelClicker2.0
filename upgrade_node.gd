@@ -1,3 +1,4 @@
+#upgrade_node.gd
 extends Control
 
 signal hovered(data)
