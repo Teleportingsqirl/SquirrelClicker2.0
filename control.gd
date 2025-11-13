@@ -8,16 +8,20 @@ const SQUIRREL_CLICK_SFX = preload("res://audios/sqirlclick.wav")
 @onready var sps_label: Label = $SPSLabel
 @onready var sps_change_label: Label = $SpsChangeLabel
 @onready var texture_button = $"sqrlcontainer/sqrlbutton"
+@onready var sqirlparts_tooltip = $"../sqirlpartstooltip"
+@onready var close_tooltip_button = $"../sqirlpartstooltip/closetooltip"
 
 @onready var building_price_label = $"sqirl buildings/building price"
 @onready var building_ad_button = $"sqirl buildings/buildingads"
 @onready var building_ad_texture = $"sqirl buildings/buildingads"
 @onready var next_button = $"sqirl buildings/nextpagebuildings"
 @onready var prev_button = $"sqirl buildings/lastpagebuildings"
+@onready var boxes_label: Label = $"../sqirlParts/tv_texture/boxes label"
 
 @onready var lock_overlay = $"sqirl buildings/LockOverlay"
 @onready var lock_title_label = $"sqirl buildings/LockOverlay/LockTitleLabel"
 @onready var lock_condition_label = $"sqirl buildings/LockOverlay/LockConditionLabel"
+@onready var tv_texture: TextureRect = $"../sqirlParts/tv_texture"
 
 @onready var toast_popup = $ToastPopup
 @onready var toast_label = $ToastPopup/ToastLabel
@@ -31,6 +35,8 @@ const SQUIRREL_CLICK_SFX = preload("res://audios/sqirlclick.wav")
 var current_building_index = 0
 var idle_float_tween: Tween; var idle_wobble_tween: Tween; var click_tween: Tween
 var buff_ui_nodes = {}
+var on_texture = preload("res://sqrlart/shopart/Sprite-shopcountdisplay.png")
+var off_texture = preload("res://sqrlart/shopart/Sprite-shopcountdisplayempty.png")
 
 func _ready():
 	texture_button.pivot_offset = texture_button.size / 2
@@ -41,6 +47,8 @@ func _ready():
 	
 	stats_button.pressed.connect(_on_stats_button_pressed)
 	upgrade_button.pressed.connect(_on_upgrade_button_pressed)
+	sqirlparts_tooltip.visible = false
+	close_tooltip_button.pressed.connect(_on_close_parts_tooltip_pressed)
 	
 	update_text(); update_sps_display(); update_building_display()
 	show_offline_progress_toast() 
@@ -62,6 +70,12 @@ func _process(_delta):
 		var unlocked_building_name = GameState.building_unlocked_mailbox.pop_front()
 		_show_toast("New Building Unlocked: %s!" % unlocked_building_name)
 		update_building_display()
+	if GameState.squirrelboxes <= 0 :
+		tv_texture.texture = off_texture
+		boxes_label.text = str("")
+	else:
+		tv_texture.texture = on_texture
+		boxes_label.text = str(GameState.squirrelboxes)
 	
 	update_text(); update_sps_display(); _update_buff_display()
 	texture_button.position = texture_button.position.round()
@@ -212,9 +226,19 @@ func _on_stats_button_pressed():
 	SceneTransitioner.transition_to_scene("res://stats_screen.tscn", SceneTransitioner.TransitionMode.SLIDE_DOWN)
 
 func _on_sqirlparts_button_pressed():
-	
-	SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
-	
+	if GameState.squirrelboxes > 0:
+		if not GameState.has_seen_parts_tooltip:
+			sqirlparts_tooltip.visible = true
+			GameState.has_seen_parts_tooltip = true
+			return
+		GameState.squirrelboxes -= 1
+		SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+	else:
+		return
+		
+func _on_close_parts_tooltip_pressed():
+	sqirlparts_tooltip.visible = false
+
 func create_idle_animation():
 	if (idle_float_tween and idle_float_tween.is_running()) or \
 	   (idle_wobble_tween and idle_wobble_tween.is_running()): return

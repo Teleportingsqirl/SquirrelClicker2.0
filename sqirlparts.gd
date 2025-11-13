@@ -76,7 +76,9 @@ func _generate_buttons_from_list(item_list: Array):
 		item_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		item_button.position = slot_position - (ITEM_DISPLAY_SIZE / 2)
 		var description = item_data.description
-		if item_data.id == "Fazcoin": description = GameState.FAZCOIN_DESCRIPTIONS[GameState.fazcoin_count]
+		if item_data.id == "Fazcoin":
+			var description_index = min(GameState.fazcoin_count, GameState.FAZCOIN_DESCRIPTIONS.size() - 1)
+			description = GameState.FAZCOIN_DESCRIPTIONS[description_index]
 		item_button.set_meta("description", description); item_button.set_meta("name", item_data.name); item_button.set_meta("id", item_data.id)
 		item_button.mouse_entered.connect(_on_item_mouse_entered.bind(item_button))
 		item_button.mouse_exited.connect(_on_item_mouse_exited)

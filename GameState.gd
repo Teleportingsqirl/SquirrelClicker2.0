@@ -11,6 +11,7 @@ var all_items = {}
 var owned_item_ids = []
 var total_clicks: int = 0
 var total_squirrels_earned: float = 0.0
+var has_seen_parts_tooltip: bool = false
 
 var sps_multiplier = 1.0
 var click_multiplier = 1.0
@@ -82,14 +83,15 @@ func _process(delta):
 	squirrels += earned_this_frame
 	total_squirrels_earned += earned_this_frame
 	check_unlock_conditions()
-	if total_squirrels_earned <= 100000 && firstsquirrel == 0:
+	if total_squirrels_earned >= 100000 && firstsquirrel == 0:
 		squirrelboxes += 1 
 		firstsquirrel += 1
-	randomdroptimer += delta
-	if randomdroptimer >= 1.0:
-		randomdroptimer = 0.0
-		if randi_range(1, 100) <= 5:
-			squirrelboxes += 1
+	else:
+		randomdroptimer += delta
+		if randomdroptimer >= 1.0:
+			randomdroptimer = 0.0
+			if randi_range(1, 100) <= 1:
+				squirrelboxes += 1
 
 func save_settings():
 	config.set_value("audio", "volume_db", volume_db); config.set_value("graphics", "fullscreen", is_fullscreen)
@@ -516,7 +518,10 @@ func save_game():
 			"steroid_end_time": steroid_end_time, "tapeworm_end_time": tapeworm_end_time, "pie_end_time": pie_end_time,
 			"gyoza_end_time": gyoza_end_time, "test_end_time": test_end_time,
 			"total_clicks": total_clicks, "total_squirrels_earned": total_squirrels_earned,
-			"owned_upgrade_ids": owned_upgrade_ids
+			"owned_upgrade_ids": owned_upgrade_ids,
+			"squirrelboxes": squirrelboxes,
+			"firstsquirrel": firstsquirrel,
+			"has_seen_parts_tooltip": has_seen_parts_tooltip
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -552,6 +557,9 @@ func load_game():
 				test_end_time = loaded_data.get("test_end_time", 0); total_clicks = loaded_data.get("total_clicks", 0)
 				total_squirrels_earned = loaded_data.get("total_squirrels_earned", 0.0)
 				owned_upgrade_ids = loaded_data.get("owned_upgrade_ids", [])
+				squirrelboxes = loaded_data.get("squirrelboxes", 0)
+				firstsquirrel = loaded_data.get("firstsquirrel", 0)
+				has_seen_parts_tooltip = loaded_data.get("has_seen_parts_tooltip", false)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -573,6 +581,9 @@ func reset_game_state():
 	gyoza_end_time = 0; test_end_time = 0
 	total_clicks = 0; total_squirrels_earned = 0.0
 	owned_upgrade_ids = []
+	squirrelboxes = 0
+	firstsquirrel = 0
+	has_seen_parts_tooltip = false
 	setup_buildings();
 	recalculate_sps()
 	

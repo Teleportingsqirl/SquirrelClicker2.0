@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=27 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
@@ -20,6 +20,10 @@
 [ext_resource type="Texture2D" uid="uid://dw8fkh5byjdg6" path="res://sqrlart/shopart/Sprite-shopbuttonpressed.png" id="13_61pn2"]
 [ext_resource type="Texture2D" uid="uid://n4qxj7fyg1f4" path="res://sqrlart/shopart/Sprite-shopbuttonhover.png" id="14_74l45"]
 [ext_resource type="Texture2D" uid="uid://dgev2jnhrbyb5" path="res://sqrlart/shopart/Sprite-shopcountdisplay.png" id="19_x5snc"]
+[ext_resource type="Texture2D" uid="uid://bl2174gqekyea" path="res://sqrlart/shopart/Sprite-shoptextbox.png" id="21_5rdqw"]
+[ext_resource type="Texture2D" uid="uid://c78boj1st8gfm" path="res://sqrlart/shopart/Sprite-exitbutton.png" id="22_kyphk"]
+[ext_resource type="Texture2D" uid="uid://lfiasjlca2s6" path="res://sqrlart/shopart/Sprite-exitbuttonpressed.png" id="23_mei6u"]
+[ext_resource type="Texture2D" uid="uid://bv3cw1rfvexxq" path="res://sqrlart/shopart/Sprite-exitbuttonhoverd.png" id="24_gel82"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7qjs"]
 bg_color = Color(0.7737747, 0.49879366, 0.6672472, 1)
@@ -283,7 +287,7 @@ texture_hover = ExtResource("14_74l45")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="TextureRect" type="TextureRect" parent="sqirlParts"]
+[node name="tv_texture" type="TextureRect" parent="sqirlParts"]
 layout_mode = 0
 offset_left = 271.45923
 offset_top = -41.203644
@@ -292,7 +296,7 @@ offset_bottom = 3.0296326
 texture = ExtResource("19_x5snc")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="sqirlParts/TextureRect"]
+[node name="boxes label" type="Label" parent="sqirlParts/tv_texture"]
 layout_mode = 0
 offset_left = 4.8475175
 offset_top = 3.6356068
@@ -312,6 +316,29 @@ scale = Vector2(2.4755096, 2.4755096)
 
 [node name="EffectsLayer" type="CanvasLayer" parent="."]
 layer = 128
+
+[node name="sqirlpartstooltip" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 202.38257
+offset_top = 76.95385
+offset_right = 1036.1503
+offset_bottom = 545.94824
+texture = ExtResource("21_5rdqw")
+expand_mode = 1
+
+[node name="closetooltip" type="TextureButton" parent="sqirlpartstooltip"]
+visible = false
+layout_mode = 0
+offset_left = 716.2162
+offset_top = 51.504555
+offset_right = 768.7075
+offset_bottom = 103.99589
+texture_normal = ExtResource("22_kyphk")
+texture_pressed = ExtResource("23_mei6u")
+texture_hover = ExtResource("24_gel82")
+ignore_texture_size = true
+stretch_mode = 0
 
 [connection signal="pressed" from="Control building/sqrlcontainer/sqrlbutton" to="Control building" method="_on_texture_button_pressed"]
 [connection signal="timeout" from="Control building/ToastTimer" to="Control building" method="_on_toast_timer_timeout"]
