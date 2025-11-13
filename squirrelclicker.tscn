@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://ccb7sd6fvr4g6"]
+[gd_scene load_steps=23 format=3 uid="uid://ccb7sd6fvr4g6"]
 
 [ext_resource type="Script" uid="uid://yoklm1grxh8n" path="res://control.gd" id="1_upo0g"]
 [ext_resource type="Texture2D" uid="uid://u71gunirupqu" path="res://sqrlart/Sprite-squirrel.png" id="3_crmfy"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://c60q60vgtektw" path="res://sqrlart/shopart/Sprite-shopbutton.png" id="12_tyo7n"]
 [ext_resource type="Texture2D" uid="uid://dw8fkh5byjdg6" path="res://sqrlart/shopart/Sprite-shopbuttonpressed.png" id="13_61pn2"]
 [ext_resource type="Texture2D" uid="uid://n4qxj7fyg1f4" path="res://sqrlart/shopart/Sprite-shopbuttonhover.png" id="14_74l45"]
+[ext_resource type="Texture2D" uid="uid://dgev2jnhrbyb5" path="res://sqrlart/shopart/Sprite-shopcountdisplay.png" id="19_x5snc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7qjs"]
 bg_color = Color(0.7737747, 0.49879366, 0.6672472, 1)
@@ -281,6 +282,26 @@ texture_pressed = ExtResource("13_61pn2")
 texture_hover = ExtResource("14_74l45")
 ignore_texture_size = true
 stretch_mode = 0
+
+[node name="TextureRect" type="TextureRect" parent="sqirlParts"]
+layout_mode = 0
+offset_left = 271.45923
+offset_top = -41.203644
+offset_right = 315.6925
+offset_bottom = 3.0296326
+texture = ExtResource("19_x5snc")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="sqirlParts/TextureRect"]
+layout_mode = 0
+offset_left = 4.8475175
+offset_top = 3.6356068
+offset_right = 39.38585
+offset_bottom = 34.512756
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "31"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 127

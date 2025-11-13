@@ -212,6 +212,7 @@ func _on_stats_button_pressed():
 	SceneTransitioner.transition_to_scene("res://stats_screen.tscn", SceneTransitioner.TransitionMode.SLIDE_DOWN)
 
 func _on_sqirlparts_button_pressed():
+	
 	SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 	
 func create_idle_animation():

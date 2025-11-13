@@ -90,7 +90,7 @@ func _on_item_button_pressed(item_button):
 	GameState.update_spawnable_items()
 	if GameState.scene_change_mailbox != "":
 		var scene_to_load = GameState.scene_change_mailbox; GameState.scene_change_mailbox = ""
-		if scene_to_load == "res://3d squirrel.tscn":
+		if scene_to_load == "res://jumpscare.tscn":
 			get_tree().change_scene_to_file(scene_to_load)
 		else: SceneTransitioner.transition_to_scene(scene_to_load)
 	else:

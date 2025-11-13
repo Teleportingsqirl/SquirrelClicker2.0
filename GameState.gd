@@ -19,6 +19,10 @@ var temporary_sps_buff = 1.0
 var fazcoin_count = 0
 var gyoza_debuff_multiplier = 1.0
 var test_debuff_multiplier = 1.0
+var squirrelboxes = 0
+var firstsquirrel = 0;
+var randomdroptimer: float = 0.0
+
 
 var steroid_end_time: float = 0.0
 var tapeworm_end_time: float = 0.0
@@ -78,7 +82,14 @@ func _process(delta):
 	squirrels += earned_this_frame
 	total_squirrels_earned += earned_this_frame
 	check_unlock_conditions()
-
+	if total_squirrels_earned <= 100000 && firstsquirrel == 0:
+		squirrelboxes += 1 
+		firstsquirrel += 1
+	randomdroptimer += delta
+	if randomdroptimer >= 1.0:
+		randomdroptimer = 0.0
+		if randi_range(1, 100) <= 5:
+			squirrelboxes += 1
 
 func save_settings():
 	config.set_value("audio", "volume_db", volume_db); config.set_value("graphics", "fullscreen", is_fullscreen)
@@ -410,7 +421,7 @@ func apply_item_effect(item_id: String):
 			total_squirrels_earned += earned_from_wheat
 		"Fazcoin":
 			fazcoin_count += 1
-			if fazcoin_count >= 5: scene_change_mailbox = "res://3d squirrel.tscn"
+			if fazcoin_count >= 5: scene_change_mailbox = "res://jumpscare.tscn"
 		"HR": _fire_random_buildings(3)
 		"Gyoza": _apply_gyoza_debuff()
 		"The Plant": _remove_best_building()
