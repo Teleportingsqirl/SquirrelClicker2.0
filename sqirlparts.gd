@@ -16,7 +16,8 @@ const SQUIRREL_CLOSE_SFX = preload("res://audios/squirreclosing.wav")
 func _ready():
 	var sfx_player = AudioStreamPlayer.new()
 	sfx_player.stream = SQUIRREL_OPEN_SFX
-	sfx_player.volume_db = -45.0
+	sfx_player.bus = "SFX"
+	sfx_player.volume_db = 0.0
 	add_child(sfx_player)
 	sfx_player.play()
 	sfx_player.finished.connect(sfx_player.queue_free)
@@ -106,7 +107,8 @@ func _on_item_button_pressed(item_button):
 	else:
 		var sfx_player = AudioStreamPlayer.new()
 		sfx_player.stream = SQUIRREL_CLOSE_SFX
-		sfx_player.volume_db = -45.0
+		sfx_player.bus = "SFX"
+		sfx_player.volume_db = 0.0
 		add_child(sfx_player)
 		sfx_player.play()
 		sfx_player.finished.connect(sfx_player.queue_free)

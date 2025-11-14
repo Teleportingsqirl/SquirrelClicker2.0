@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cpjh2w32gxuov"
+path="res://.godot/imported/Patricia Taxxon - Ceramics.wav-19850d21b0896674a1f4fc999809e5bb.sample"
+
+[deps]
+
+source_file="res://audios/Patricia Taxxon - Ceramics.wav"
+dest_files=["res://.godot/imported/Patricia Taxxon - Ceramics.wav-19850d21b0896674a1f4fc999809e5bb.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

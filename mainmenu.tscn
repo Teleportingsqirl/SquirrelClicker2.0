@@ -184,7 +184,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 alignment = 1
 
-[node name="options titel" type="Label" parent="options/MarginContainer/VBoxContainer"]
+[node name="options title" type="Label" parent="options/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 70)
 layout_mode = 2
 size_flags_horizontal = 5
@@ -195,6 +195,15 @@ theme_override_font_sizes/font_size = 71
 text = "OPTIONS"
 horizontal_alignment = 1
 
+[node name="volume" type="Label" parent="options/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_7uvds")
+theme_override_font_sizes/font_size = 26
+text = "Music Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="HSlider" type="HSlider" parent="options/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 70)
 layout_mode = 2
@@ -202,7 +211,9 @@ size_flags_horizontal = 5
 theme_override_styles/slider = SubResource("StyleBoxLine_igs2m")
 theme_override_styles/grabber_area = SubResource("StyleBoxLine_3pujl")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_3pujl")
-value = 50.0
+max_value = 1.0
+step = 0.01
+value = 1.0
 
 [node name="FullscreenBtn" type="CheckButton" parent="options/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 70)
@@ -227,14 +238,14 @@ theme_override_font_sizes/font_size = 31
 text = "Antialiasing"
 
 [node name="LanguageBtn" type="OptionButton" parent="options/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(300, 70)
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 size_flags_horizontal = 5
 size_flags_vertical = 0
 theme_override_fonts/font = ExtResource("5_7uvds")
 
 [node name="Control" type="Control" parent="options/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(300, 70)
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 size_flags_horizontal = 5
 size_flags_vertical = 0
@@ -257,6 +268,7 @@ text = "BACK"
 icon_alignment = 1
 
 [node name="AnimatedCursor" parent="." instance=ExtResource("5_3pujl")]
+z_index = 4096
 position = Vector2(-47, -35)
 scale = Vector2(2.4755096, 2.4755096)
 

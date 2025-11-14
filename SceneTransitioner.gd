@@ -26,7 +26,8 @@ func transition_to_scene(scene_path: String, animation_mode: TransitionMode = Tr
 	
 	var sfx_player = AudioStreamPlayer.new()
 	sfx_player.stream = SQUIRREL_SWISH_SFX
-	sfx_player.volume_db = -45.0
+	sfx_player.bus = "SFX"
+	sfx_player.volume_db = -10.0
 	add_child(sfx_player)
 	sfx_player.play()
 	sfx_player.finished.connect(sfx_player.queue_free)

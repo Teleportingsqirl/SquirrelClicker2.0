@@ -58,10 +58,19 @@ var owned_upgrade_ids: Array = []
 
 var config = ConfigFile.new()
 var config_path = "user://settings.cfg"
-var volume_db = 0.0
+var music_volume_db = -6.0
+var sfx_volume_db = 0.0
 var is_fullscreen = false
 var use_antialiasing = false
 var window_resolution: Vector2i = Vector2i(1280, 720)
+
+var music_playlist: Array[AudioStream] = [
+	preload("res://audios/Patricia Taxxon - Ceramics.wav"),
+	preload("res://audios/Patricia Taxxon - Frat Claws.wav"),
+	preload("res://audios/Patricia Taxxon - Polypony.wav"),
+	preload("res://audios/Patricia Taxxon - Spider.wav"),
+	preload("res://audios/Patricia Taxxon - TECHDOG.wav"),
+]
 
 const CLICK_SFX = preload("res://audios/clickdown.wav")
 var sfx_player: AudioStreamPlayer
@@ -72,8 +81,19 @@ const FAZCOIN_DESCRIPTIONS = [
 	"Thank you for depositing five coins.",
 ]
 
+const FADE_DURATION = 2.0
+const MUSIC_BUS_NAME = "Music"
+const SFX_BUS_NAME = "SFX"
+
+var music_player_a: AudioStreamPlayer
+var music_player_b: AudioStreamPlayer
+var _active_music_player: AudioStreamPlayer
+var _last_song_index = -1
+var _music_tween: Tween
+
 
 func _ready():
+	_initialize_music_players()
 	load_settings()
 	autosave_timer = Timer.new(); autosave_timer.wait_time = 5.0; autosave_timer.one_shot = false
 	autosave_timer.timeout.connect(save_game); add_child(autosave_timer); autosave_timer.start()
@@ -82,11 +102,15 @@ func _ready():
 	load_game()
 	if buildings.is_empty(): setup_buildings()
 	sfx_player = AudioStreamPlayer.new()
+	sfx_player.bus = SFX_BUS_NAME
 	add_child(sfx_player)
 	sfx_player.stream = CLICK_SFX
-	sfx_player.volume_db = -50
+	sfx_player.volume_db = -10 
 	_check_persistent_timers()
 	recalculate_sps()
+	if not music_playlist.is_empty():
+		randomize()
+		play_next_song()
 
 func _input(event):
 	if event is InputEventMouseButton and event.is_pressed():
@@ -109,7 +133,8 @@ func _process(delta):
 				
 				
 func save_settings():
-	config.set_value("audio", "volume_db", volume_db)
+	config.set_value("audio", "sfx_volume_db", sfx_volume_db)
+	config.set_value("audio", "music_volume_db", music_volume_db)
 	config.set_value("graphics", "fullscreen", is_fullscreen)
 	config.set_value("graphics", "antialiasing", use_antialiasing)
 	config.set_value("graphics", "resolution", window_resolution)
@@ -126,14 +151,16 @@ func load_settings():
 		apply_settings()
 		return
 
-	volume_db = config.get_value("audio", "volume_db", 0.0)
+	sfx_volume_db = config.get_value("audio", "sfx_volume_db", 0.0)
+	music_volume_db = config.get_value("audio", "music_volume_db", -6.0)
 	is_fullscreen = config.get_value("graphics", "fullscreen", false)
 	use_antialiasing = config.get_value("graphics", "antialiasing", false)
 	window_resolution = config.get_value("graphics", "resolution", Vector2i(1280, 720))
 	apply_settings()
 
 func apply_settings():
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), volume_db)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(SFX_BUS_NAME), sfx_volume_db)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(MUSIC_BUS_NAME), music_volume_db)
 
 	var current_mode = DisplayServer.window_get_mode()
 
@@ -161,6 +188,44 @@ func apply_settings():
 	if get_viewport().screen_space_aa != new_fxaa_mode:
 		print("Applying new FXAA setting.")
 		get_viewport().screen_space_aa = new_fxaa_mode
+		
+		
+func _initialize_music_players():
+	music_player_a = AudioStreamPlayer.new()
+	music_player_b = AudioStreamPlayer.new()
+	music_player_a.name = "MusicPlayerA"
+	music_player_b.name = "MusicPlayerB"
+	music_player_a.bus = MUSIC_BUS_NAME
+	music_player_b.bus = MUSIC_BUS_NAME
+	add_child(music_player_a)
+	add_child(music_player_b)
+	music_player_a.finished.connect(play_next_song)
+	music_player_b.finished.connect(play_next_song)
+	_active_music_player = music_player_a
+
+func play_next_song():
+	if music_playlist.is_empty():
+		print("no songs found")
+		return
+	var new_player = music_player_a if _active_music_player == music_player_b else music_player_b
+	var old_player = _active_music_player
+	var next_song_index = randi() % music_playlist.size()
+	if music_playlist.size() > 1:
+		while next_song_index == _last_song_index:
+			next_song_index = randi() % music_playlist.size()
+	
+	_last_song_index = next_song_index
+	new_player.stream = music_playlist[next_song_index]
+	new_player.volume_db = -80.0
+	new_player.play()
+	if _music_tween and _music_tween.is_valid():
+		_music_tween.kill()
+	_music_tween = create_tween()
+	_music_tween.set_parallel(true)
+	_music_tween.tween_property(new_player, "volume_db", 0, FADE_DURATION)
+	if old_player.playing:
+		_music_tween.tween_property(old_player, "volume_db", -80, FADE_DURATION)
+	_active_music_player = new_player
 
 func setup_items():
 	all_items = {
@@ -199,7 +264,7 @@ func setup_buildings():
 		{"name": "Grandfather Paradox", "base_cost": 1.0e5, "sps": 1.0e3, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforgrandfatherparadox.png", "unlocked": false,
 		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "egg", "unlock_condition_text": "Requires the 'Stop-&-Swap Egg' upgrade"},
 		{"name": "Free Healthcare", "base_cost": 1.0e6, "sps": 1.0e4, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforfreehealthcare.png", "unlocked": false,
-		 "unlock_condition_type": "total_clicks", "unlock_condition_value": 10000, "unlock_condition_text": "Click the squirrel 10,000 times"},
+		 "unlock_condition_type": "total_clicks", "unlock_condition_value": 2000, "unlock_condition_text": "Click the squirrel 2000 times"},
 		{"name": "Persona", "base_cost": 1.0e7, "sps": 1.0e5, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforpersona.png", "unlocked": false,
 		 "unlock_condition_type": "upgrade_owned", "unlock_condition_target": "jokers_mask", "unlock_condition_text": "Requires the 'Mask of Rebellion' upgrade"},
 		{"name": "Foxes", "base_cost": 1.0e8, "sps": 1.0e6, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-adforherdingfoxes.png", "unlocked": false,
@@ -320,7 +385,7 @@ func setup_upgrades():
 						   "dependencies": ["second_click"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 2) },
 
 		"egg":           { "name": "Stop-&-Swap Egg", "description": "About time! We’ve been waiting over ten years for this thing! Grants a massive flat bonus of +1,000 SPS and unlocks the Grandfather Paradox building.", 
-						   "texture_path": "res://sqrlart/upgradewebart/Sprite-questionmarkeggupgrade.png", "cost": 1.0e5,
+						   "texture_path": "res://sqrlart/upgradewebart/Sprite-questionmarkeggupgrade.png", "cost": 1.0e4,
 						   "effect_type": "sps_flat_and_unlock", "effect_value": 1000.0, "unlock_target": "Grandfather Paradox",
 						   "dependencies": ["strawberry"], "position": start_pos + Vector2(h_space * 0.5, -v_space * 3) },
 

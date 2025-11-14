@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://co3lh36y43rgf"
+path="res://.godot/imported/Patricia Taxxon - Frat Claws.wav-8d569aad627608d01191446367feb3be.sample"
+
+[deps]
+
+source_file="res://audios/Patricia Taxxon - Frat Claws.wav"
+dest_files=["res://.godot/imported/Patricia Taxxon - Frat Claws.wav-8d569aad627608d01191446367feb3be.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

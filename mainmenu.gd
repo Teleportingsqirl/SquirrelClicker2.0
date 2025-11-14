@@ -23,6 +23,18 @@ var confirm_reset = false
 @onready var resolution_btn: OptionButton = $options/MarginContainer/VBoxContainer/ResolutionBtn
 
 var available_resolutions: Array[Vector2i] = []
+const MIN_DB = -40.0
+const MAX_DB = 0.0
+
+func _value_to_db(value: float) -> float:
+	if value < 0.001:
+		return -80.0
+	return lerp(MIN_DB, MAX_DB, value)
+	
+func _db_to_value(db: float) -> float:
+	if db < MIN_DB:
+		return 0.0
+	return remap(db, MIN_DB, MAX_DB, 0.0, 1.0)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
@@ -91,7 +103,7 @@ func _on_options_pressed() -> void:
 	if is_options_open:
 		fullscreen_btn.set_pressed_no_signal(GameState.is_fullscreen)
 		antialias_btn.set_pressed_no_signal(GameState.use_antialiasing)
-		volume_slider.set_value_no_signal(db_to_linear(GameState.volume_db))
+		volume_slider.set_value_no_signal(_db_to_value(GameState.music_volume_db))
 		
 		resolution_btn.disabled = GameState.is_fullscreen
 
@@ -121,9 +133,14 @@ func _on_fullscreen_toggled(toggled_on):
 	GameState.save_settings()
 
 func _on_antialias_toggled(toggled_on): GameState.use_antialiasing = toggled_on; GameState.apply_settings(); GameState.save_settings()
-func _on_volume_value_changed(value): GameState.volume_db = linear_to_db(value); GameState.apply_settings()
+
+func _on_volume_value_changed(value): 
+	GameState.music_volume_db = _value_to_db(value)
+	GameState.apply_settings()
+	
 func _on_volume_drag_ended(value_changed):
 	if value_changed: GameState.save_settings()
+	
 func _on_language_selected(index):
 	if index == 1: get_tree().quit()
 
