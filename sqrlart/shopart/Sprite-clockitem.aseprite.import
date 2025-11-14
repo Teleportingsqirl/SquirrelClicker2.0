@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://1f8ak2ggmtat"
+path="res://.godot/imported/Sprite-clockitem.aseprite-be86682c9ffb0d0b2ca4f93878441e8d.res"
+
+[deps]
+
+source_file="res://sqrlart/shopart/Sprite-clockitem.aseprite"
+dest_files=["res://.godot/imported/Sprite-clockitem.aseprite-be86682c9ffb0d0b2ca4f93878441e8d.res"]
+
+[params]
+

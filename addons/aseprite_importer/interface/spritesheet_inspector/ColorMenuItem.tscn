@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/aseprite_importer/interface/spritesheet_inspector/ColorMenuItem.gd" id="1"]
+
+[node name="ColorMenuItem" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1")
+
+[node name="Header" type="HBoxContainer" parent="."]
+offset_right = 13.0
+offset_bottom = 23.0
+
+[node name="Label" type="Label" parent="Header"]
+unique_name_in_owner = true
+offset_right = 1.0
+offset_bottom = 23.0
+size_flags_horizontal = 3
+
+[node name="VisibilityButton" type="Button" parent="Header"]
+unique_name_in_owner = true
+offset_left = 5.0
+offset_right = 13.0
+offset_bottom = 23.0
+size_flags_horizontal = 8
+hint_tooltip = "Toggle Visibility"
+shortcut_in_tooltip = false
+
+[node name="ColorPicker" type="ColorPickerButton" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 25)
+offset_top = 27.0
+offset_right = 13.0
+offset_bottom = 52.0

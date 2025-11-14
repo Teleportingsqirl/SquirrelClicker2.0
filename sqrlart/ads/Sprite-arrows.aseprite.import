@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://e1so3vtpxs8s"
+path="res://.godot/imported/Sprite-arrows.aseprite-37144b6b2d992313bd0685aa3be57de4.res"
+
+[deps]
+
+source_file="res://sqrlart/ads/Sprite-arrows.aseprite"
+dest_files=["res://.godot/imported/Sprite-arrows.aseprite-37144b6b2d992313bd0685aa3be57de4.res"]
+
+[params]
+

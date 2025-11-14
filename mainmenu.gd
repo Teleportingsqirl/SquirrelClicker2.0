@@ -154,6 +154,7 @@ func _on_resolution_selected(index: int):
 
 func _on_start_pressed() -> void:
 	start_button.disabled = true
+	
 	if GameState.is_in_shop:
 		SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 	else:

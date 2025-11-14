@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://7y8xwwnnroxm"
+path="res://.godot/imported/Sprite-castlecrasher.aseprite-d37324deafeb61c5584f1e456e1c0981.res"
+
+[deps]
+
+source_file="res://sqrlart/upgradewebart/Sprite-castlecrasher.aseprite"
+dest_files=["res://.godot/imported/Sprite-castlecrasher.aseprite-d37324deafeb61c5584f1e456e1c0981.res"]
+
+[params]
+

@@ -54,6 +54,7 @@ var building_unlocked_mailbox = []
 
 var all_upgrades = {}
 var owned_upgrade_ids: Array = []
+var opening_cutscene = false
 
 
 var config = ConfigFile.new()
@@ -347,7 +348,7 @@ func setup_upgrades():
 		"bomb_head":     { "name": "The devil of bombs", "description": "A contract has been made with the bomb devil. explosions can now be formed off your body. Adds 1% of your total sps to your clicks.",
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-bombupgrade.png", "cost": 1.0e16,
 						   "effect_type": "click_from_sps", "effect_value": 0.01, 
-						   "dependencies": ["negative"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 7) },
+						   "dependencies": ["negative_squirrel"], "position": start_pos + Vector2(-h_space * 1.5, -v_space * 7) },
 
 		"nubby":         { "name": "Nubby Squirrels", "description": "Nubby likes trees, and brings his own fake plastic ones. Each Tree you own provides an additional +2 SPS.", 
 						   "texture_path": "res://sqrlart/upgradewebart/Sprite-nubbyupgrade.png", "cost": 1500.0,
@@ -637,7 +638,8 @@ func save_game():
 			"firstsquirrel": firstsquirrel,
 			"has_seen_parts_tooltip": has_seen_parts_tooltip,
 			"upgrade_slid_in": upgrade_slid_in,
-			"parts_slid_in": parts_slid_in
+			"parts_slid_in": parts_slid_in,
+			"opening_cutscene": opening_cutscene
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -678,6 +680,7 @@ func load_game():
 				has_seen_parts_tooltip = loaded_data.get("has_seen_parts_tooltip", false)
 				upgrade_slid_in = loaded_data.get("upgrade_slid_in", false)
 				parts_slid_in = loaded_data.get("parts_slid_in", false)
+				opening_cutscene = loaded_data.get("opening_cutscene", false)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -704,6 +707,7 @@ func reset_game_state():
 	has_seen_parts_tooltip = false
 	upgrade_slid_in = false
 	parts_slid_in = false
+	opening_cutscene = false
 	setup_buildings();
 	recalculate_sps()
 	
