@@ -21,10 +21,13 @@ var confirm_reset = false
 @onready var volume_slider = $options/MarginContainer/VBoxContainer/HSlider
 @onready var language_btn = $options/MarginContainer/VBoxContainer/LanguageBtn
 @onready var resolution_btn: OptionButton = $options/MarginContainer/VBoxContainer/ResolutionBtn
+@onready var intro_sprite: AnimatedSprite2D = $"CanvasLayer/start animation"
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var available_resolutions: Array[Vector2i] = []
 const MIN_DB = -40.0
 const MAX_DB = 0.0
+var is_intro_playing = false
 
 func _value_to_db(value: float) -> float:
 	if value < 0.001:
@@ -58,6 +61,14 @@ func _ready() -> void:
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	language_btn.item_selected.connect(_on_language_selected)
 	resolution_btn.item_selected.connect(_on_resolution_selected)
+
+func _process(_delta):
+	if not is_intro_playing:
+		return
+	if intro_sprite.frame >= intro_sprite.sprite_frames.get_frame_count("Animation") - 1:
+		is_intro_playing = false
+		intro_sprite.stop()
+		_on_start_animation_animation_finished()
 
 func _populate_resolutions():
 	resolution_btn.clear()
@@ -154,11 +165,15 @@ func _on_resolution_selected(index: int):
 
 func _on_start_pressed() -> void:
 	start_button.disabled = true
-	
-	if GameState.is_in_shop:
-		SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+	reset_button.disabled = true
+	options_button.disabled = true
+	if GameState.opening_cutscene == false:
+		animation_player.play("fade_to_black")
 	else:
-		SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+		if GameState.is_in_shop:
+			SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+		else:
+			SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 
 func _on_reset_pressed() -> void:
 	if confirm_reset == true:
@@ -171,3 +186,17 @@ func _on_reset_pressed() -> void:
 	reset_button.release_focus()
 
 func _on_exit_pressed() -> void: get_tree().quit()
+
+func _on_animation_player_animation_finished(anim_name: String):
+	if anim_name == "fade_to_black":
+		GameState.opening_cutscene = true
+		mainbuttons.hide()
+		intro_sprite.show()
+		intro_sprite.play("Animation")
+		is_intro_playing = true
+func _on_start_animation_animation_finished():
+	GameState.opening_cutscene = true
+	if GameState.is_in_shop:
+		SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
+	else:
+		SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
