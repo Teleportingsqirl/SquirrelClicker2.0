@@ -10,8 +10,16 @@ const MIN_TOOLTIP_FONT_SIZE = 8
 @onready var slots_animation = $background/SlotsAnimation
 
 var item_slots = []
+const SQUIRREL_OPEN_SFX = preload("res://audios/squirrelopening.wav")
+const SQUIRREL_CLOSE_SFX = preload("res://audios/squirreclosing.wav")
 
 func _ready():
+	var sfx_player = AudioStreamPlayer.new()
+	sfx_player.stream = SQUIRREL_OPEN_SFX
+	sfx_player.volume_db = -45.0
+	add_child(sfx_player)
+	sfx_player.play()
+	sfx_player.finished.connect(sfx_player.queue_free)
 	GameState.is_in_shop = true
 	item_container.visible = false
 	slots_animation.animation_finished.connect(_on_slots_animation_finished)
@@ -96,6 +104,12 @@ func _on_item_button_pressed(item_button):
 			get_tree().change_scene_to_file(scene_to_load)
 		else: SceneTransitioner.transition_to_scene(scene_to_load)
 	else:
+		var sfx_player = AudioStreamPlayer.new()
+		sfx_player.stream = SQUIRREL_CLOSE_SFX
+		sfx_player.volume_db = -45.0
+		add_child(sfx_player)
+		sfx_player.play()
+		sfx_player.finished.connect(sfx_player.queue_free)
 		item_container.visible = false; tooltip.visible = false; slots_animation.play("close_slots")
 
 func _adjust_tooltip_font_size():

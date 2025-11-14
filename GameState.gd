@@ -1,4 +1,4 @@
-# GameState.gd
+#gamestate.gd
 extends Node
 
 var game_is_ready: bool = false
@@ -61,6 +61,10 @@ var config_path = "user://settings.cfg"
 var volume_db = 0.0
 var is_fullscreen = false
 var use_antialiasing = false
+var window_resolution: Vector2i = Vector2i(1280, 720)
+
+const CLICK_SFX = preload("res://audios/clickdown.wav")
+var sfx_player: AudioStreamPlayer
 
 const FAZCOIN_DESCRIPTIONS = [
 	"Please deposit five coins.", "You are attempting to trick Freddy.",
@@ -77,8 +81,16 @@ func _ready():
 	setup_upgrades()
 	load_game()
 	if buildings.is_empty(): setup_buildings()
+	sfx_player = AudioStreamPlayer.new()
+	add_child(sfx_player)
+	sfx_player.stream = CLICK_SFX
+	sfx_player.volume_db = -50
 	_check_persistent_timers()
 	recalculate_sps()
+
+func _input(event):
+	if event is InputEventMouseButton and event.is_pressed():
+		sfx_player.play()
 
 func _process(delta):
 	var earned_this_frame = squirrels_per_second * delta
@@ -94,26 +106,61 @@ func _process(delta):
 			randomdroptimer = 0.0
 			if randi_range(1, 100) <= 1:
 				squirrelboxes += 1
-
+				
+				
 func save_settings():
-	config.set_value("audio", "volume_db", volume_db); config.set_value("graphics", "fullscreen", is_fullscreen)
-	config.set_value("graphics", "antialiasing", use_antialiasing); config.save(config_path); print("Settings saved.")
+	config.set_value("audio", "volume_db", volume_db)
+	config.set_value("graphics", "fullscreen", is_fullscreen)
+	config.set_value("graphics", "antialiasing", use_antialiasing)
+	config.set_value("graphics", "resolution", window_resolution)
+	config.save(config_path)
+	print("Settings saved.")
 
 func load_settings():
 	var error = config.load(config_path)
-	if error != OK: print("No settings file found. Saving defaults."); save_settings(); return
+	if error != OK:
+		print("No settings file found. Saving defaults.")
+		var native_res = DisplayServer.screen_get_size()
+		window_resolution = Vector2i(min(native_res.x, 1920), min(native_res.y, 1080))
+		save_settings()
+		apply_settings()
+		return
+
 	volume_db = config.get_value("audio", "volume_db", 0.0)
 	is_fullscreen = config.get_value("graphics", "fullscreen", false)
 	use_antialiasing = config.get_value("graphics", "antialiasing", false)
+	window_resolution = config.get_value("graphics", "resolution", Vector2i(1280, 720))
 	apply_settings()
 
 func apply_settings():
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), volume_db)
-	if is_fullscreen: DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	else: DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+
+	var current_mode = DisplayServer.window_get_mode()
+
+	if is_fullscreen:
+		if current_mode != DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		if current_mode != DisplayServer.WINDOW_MODE_WINDOWED:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+
+		DisplayServer.window_set_size(window_resolution)
+		
+		var screen_id = DisplayServer.window_get_current_screen()
+		var screen_size = DisplayServer.screen_get_size(screen_id)
+		var screen_pos = DisplayServer.screen_get_position(screen_id)
+		var center_pos = screen_pos + (screen_size - window_resolution) / 2
+		center_pos.x = max(center_pos.x, screen_pos.x)
+		center_pos.y = max(center_pos.y, screen_pos.y)
+		
+		DisplayServer.window_set_position(center_pos)
+
 	var new_fxaa_mode = Viewport.SCREEN_SPACE_AA_FXAA if use_antialiasing else Viewport.SCREEN_SPACE_AA_DISABLED
 	if get_viewport().screen_space_aa != new_fxaa_mode:
-		print("Applying new FXAA setting."); get_viewport().screen_space_aa = new_fxaa_mode
+		print("Applying new FXAA setting.")
+		get_viewport().screen_space_aa = new_fxaa_mode
 
 func setup_items():
 	all_items = {

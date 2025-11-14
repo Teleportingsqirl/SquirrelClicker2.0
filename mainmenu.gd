@@ -1,4 +1,4 @@
-# mainmenu.gd
+#mainmenu.gd
 extends Control
 
 @onready var mainbuttons: VBoxContainer = $mainbuttons
@@ -20,6 +20,9 @@ var confirm_reset = false
 @onready var antialias_btn = $options/MarginContainer/VBoxContainer/AntialiasBtn
 @onready var volume_slider = $options/MarginContainer/VBoxContainer/HSlider
 @onready var language_btn = $options/MarginContainer/VBoxContainer/LanguageBtn
+@onready var resolution_btn: OptionButton = $options/MarginContainer/VBoxContainer/ResolutionBtn
+
+var available_resolutions: Array[Vector2i] = []
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
@@ -34,9 +37,53 @@ func _ready() -> void:
 	var tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property(mainbuttons, "position", mainbuttons_onscreen_pos, 0.6)
 	language_btn.clear(); language_btn.add_item("English (CA)"); language_btn.add_item("Français")
-	fullscreen_btn.toggled.connect(_on_fullscreen_toggled); antialias_btn.toggled.connect(_on_antialias_toggled)
-	volume_slider.value_changed.connect(_on_volume_value_changed); volume_slider.drag_ended.connect(_on_volume_drag_ended)
+	
+	_populate_resolutions()
+	
+	fullscreen_btn.toggled.connect(_on_fullscreen_toggled)
+	antialias_btn.toggled.connect(_on_antialias_toggled)
+	volume_slider.value_changed.connect(_on_volume_value_changed)
+	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	language_btn.item_selected.connect(_on_language_selected)
+	resolution_btn.item_selected.connect(_on_resolution_selected)
+
+func _populate_resolutions():
+	resolution_btn.clear()
+	available_resolutions.clear()
+
+	var standard_resolutions = [
+		Vector2i(1280, 720),
+		Vector2i(1600, 900),
+		Vector2i(1920, 1080),
+		Vector2i(2560, 1440),
+	]
+
+	var native_res = DisplayServer.screen_get_size()
+	
+	if not standard_resolutions.has(native_res):
+		standard_resolutions.append(native_res)
+	
+	for res in standard_resolutions:
+		if res.x <= native_res.x and res.y <= native_res.y:
+			available_resolutions.append(res)
+	available_resolutions.sort()
+
+	var current_res_index = -1
+	for i in range(available_resolutions.size()):
+		var res = available_resolutions[i]
+		var text = "%d x %d" % [res.x, res.y]
+		resolution_btn.add_item(text, i)
+		if res == GameState.window_resolution:
+			current_res_index = i
+			
+	if current_res_index == -1 and GameState.window_resolution != Vector2i.ZERO:
+		available_resolutions.append(GameState.window_resolution)
+		var custom_res_text = "%d x %d (Custom)" % [GameState.window_resolution.x, GameState.window_resolution.y]
+		resolution_btn.add_item(custom_res_text, available_resolutions.size() - 1)
+		current_res_index = available_resolutions.size() - 1
+
+	if current_res_index != -1:
+		resolution_btn.select(current_res_index)
 
 func _on_options_pressed() -> void:
 	is_options_open = not is_options_open
@@ -45,6 +92,17 @@ func _on_options_pressed() -> void:
 		fullscreen_btn.set_pressed_no_signal(GameState.is_fullscreen)
 		antialias_btn.set_pressed_no_signal(GameState.use_antialiasing)
 		volume_slider.set_value_no_signal(db_to_linear(GameState.volume_db))
+		
+		resolution_btn.disabled = GameState.is_fullscreen
+
+		var current_selected_index = -1
+		for i in range(available_resolutions.size()):
+			if available_resolutions[i] == GameState.window_resolution:
+				current_selected_index = i
+				break
+		if current_selected_index != -1:
+			resolution_btn.select(current_selected_index)
+		
 		tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 		tween.tween_property(options, "position", options_onscreen_pos, 0.5)
 	else:
@@ -56,13 +114,26 @@ func _on_back_pressed() -> void:
 	if is_options_open: _on_options_pressed()
 	confirm_reset = false; reset_button.text = "RESET SAVE"
 
-func _on_fullscreen_toggled(toggled_on): GameState.is_fullscreen = toggled_on; GameState.apply_settings(); GameState.save_settings()
+func _on_fullscreen_toggled(toggled_on): 
+	GameState.is_fullscreen = toggled_on
+	resolution_btn.disabled = toggled_on
+	GameState.apply_settings()
+	GameState.save_settings()
+
 func _on_antialias_toggled(toggled_on): GameState.use_antialiasing = toggled_on; GameState.apply_settings(); GameState.save_settings()
 func _on_volume_value_changed(value): GameState.volume_db = linear_to_db(value); GameState.apply_settings()
 func _on_volume_drag_ended(value_changed):
 	if value_changed: GameState.save_settings()
 func _on_language_selected(index):
 	if index == 1: get_tree().quit()
+
+func _on_resolution_selected(index: int):
+	if index >= 0 and index < available_resolutions.size():
+		var selected_res = available_resolutions[index]
+		if selected_res != GameState.window_resolution:
+			GameState.window_resolution = selected_res
+			GameState.apply_settings()
+			GameState.save_settings()
 
 func _on_start_pressed() -> void:
 	start_button.disabled = true

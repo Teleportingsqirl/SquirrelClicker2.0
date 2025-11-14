@@ -1,8 +1,9 @@
-# stats_screen.gd
+#stats_screen.gd
 extends Control
 
 @onready var stats_container: VBoxContainer = $ScrollContainer/StatsContainer
 @onready var back: TextureButton = $Back
+const STATS_FONT = preload("res://fonts/Sangyo-E4ywr.tres")
 
 func _ready():
 	populate_stats()
@@ -52,6 +53,7 @@ func populate_stats():
 
 func add_stat(stat_name: String, value: String):
 	var label = Label.new()
+	label.add_theme_font_override("font", STATS_FONT)
 	
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
@@ -66,6 +68,8 @@ func add_stat_header(text: String):
 	stats_container.add_child(spacer)
 	
 	var header_label = RichTextLabel.new()
+
+	header_label.add_theme_font_override("normal_font", STATS_FONT)
 	
 	header_label.add_theme_color_override("default_color", Color.WHITE)
 	header_label.add_theme_color_override("font_outline_color", Color.BLACK)

@@ -11,8 +11,10 @@ enum TransitionMode {
 
 var current_scene: Node = null
 var is_transitioning: bool = false
+const SQUIRREL_SWISH_SFX = preload("res://audios/squirrelswish.wav")
 
 func _ready():
+	
 	var root = get_tree().root
 	current_scene = root.get_child(root.get_child_count() - 1)
 
@@ -21,7 +23,14 @@ func transition_to_scene(scene_path: String, animation_mode: TransitionMode = Tr
 		return
 
 	is_transitioning = true
-
+	
+	var sfx_player = AudioStreamPlayer.new()
+	sfx_player.stream = SQUIRREL_SWISH_SFX
+	sfx_player.volume_db = -45.0
+	add_child(sfx_player)
+	sfx_player.play()
+	sfx_player.finished.connect(sfx_player.queue_free)
+	
 	var next_scene_res = load(scene_path)
 	if not next_scene_res:
 		print("Scene transition failed: Could not load scene at path ", scene_path)

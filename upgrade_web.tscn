@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4au2ctfg2scl"]
+[gd_scene load_steps=6 format=3 uid="uid://c4au2ctfg2scl"]
 
 [ext_resource type="Script" uid="uid://dop4iju8ymbjs" path="res://upgrade_web.gd" id="1_53snk"]
 [ext_resource type="Texture2D" uid="uid://78640jg4rrdi" path="res://sqrlart/Sprite-backbutton.png" id="2_xwn6h"]
 [ext_resource type="Texture2D" uid="uid://7olj6u107m0i" path="res://sqrlart/Sprite-backbuttonhovered.png" id="3_7p0gc"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="3_xwn6h"]
+[ext_resource type="FontFile" uid="uid://15452jj17u7g" path="res://fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf" id="4_fh8a2"]
 
 [node name="RootContainer" type="Control"]
 layout_mode = 3
@@ -65,6 +66,7 @@ offset_bottom = 1080.0
 
 [node name="InfoLabel" type="RichTextLabel" parent="UpgradeWeb/CanvasLayer/InfoPanel"]
 layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("4_fh8a2")
 
 [node name="AnimatedCursor" parent="UpgradeWeb/CanvasLayer" instance=ExtResource("3_xwn6h")]
 scale = Vector2(2.4755096, 2.4755096)
