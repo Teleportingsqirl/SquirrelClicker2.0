@@ -27,7 +27,6 @@ var confirm_reset = false
 var available_resolutions: Array[Vector2i] = []
 const MIN_DB = -40.0
 const MAX_DB = 0.0
-var is_intro_playing = false
 
 func _value_to_db(value: float) -> float:
 	if value < 0.001:
@@ -61,14 +60,10 @@ func _ready() -> void:
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	language_btn.item_selected.connect(_on_language_selected)
 	resolution_btn.item_selected.connect(_on_resolution_selected)
+	intro_sprite.sprite_frames.set_animation_loop("Animation", false)
 
 func _process(_delta):
-	if not is_intro_playing:
-		return
-	if intro_sprite.frame >= intro_sprite.sprite_frames.get_frame_count("Animation") - 1:
-		is_intro_playing = false
-		intro_sprite.stop()
-		_on_start_animation_animation_finished()
+	pass
 
 func _populate_resolutions():
 	resolution_btn.clear()
@@ -193,7 +188,7 @@ func _on_animation_player_animation_finished(anim_name: String):
 		mainbuttons.hide()
 		intro_sprite.show()
 		intro_sprite.play("Animation")
-		is_intro_playing = true
+
 func _on_start_animation_animation_finished():
 	GameState.opening_cutscene = true
 	if GameState.is_in_shop:

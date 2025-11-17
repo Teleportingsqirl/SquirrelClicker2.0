@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bghbnvy1vvlfi" path="res://sqrlart/Sprite-menutitle.png" id="3_3pujl"]
 [ext_resource type="PackedScene" uid="uid://py42h3wb5i88" path="res://animated_cursor.tscn" id="5_3pujl"]
 [ext_resource type="FontFile" uid="uid://bypmfwxpy3ccb" path="res://fonts/HomeVideo-BLG6G.ttf" id="5_7uvds"]
-[ext_resource type="SpriteFrames" uid="uid://bjsgws63nc4df" path="res://sqrlart/Sprite-openinganimation.aseprite" id="7_at6rn"]
+[ext_resource type="SpriteFrames" uid="uid://bcxjl2cprd611" path="res://sqrlart/openinganimation.aseprite" id="7_at6rn"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7uvds"]
 texture = ExtResource("1_wgsso")
@@ -331,7 +331,6 @@ position = Vector2(973, 532)
 scale = Vector2(8, 8)
 sprite_frames = ExtResource("7_at6rn")
 animation = &"Animation"
-frame_progress = 0.17759539
 
 [connection signal="pressed" from="mainbuttons/start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="mainbuttons/options" to="." method="_on_options_pressed"]

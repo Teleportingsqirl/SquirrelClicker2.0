@@ -122,7 +122,7 @@ func _process(delta):
 	squirrels += earned_this_frame
 	total_squirrels_earned += earned_this_frame
 	check_unlock_conditions()
-	if total_squirrels_earned >= 100000 && firstsquirrel == 0:
+	if squirrels_per_second >= 10 && firstsquirrel == 0:
 		squirrelboxes += 1 
 		firstsquirrel += 1
 	else:
@@ -532,6 +532,10 @@ func apply_item_effect(item_id: String):
 		"mr_primal": sps_multiplier += 0.05
 		"bandaid": sps_multiplier += 0.10
 		"ButtsPie": _apply_pie_buff()
+		"Letter From Dad":
+			var file = FileAccess.open("user://letter.txt", FileAccess.WRITE)
+			file.store_line("aGVsbG8gc29uLiBpZiB5b3UgYXJlIHJlYWRpbmcgdGhpcywgaSBhbSBkZWFkLiBrZWVwIGNvbGxlY3Rpbmcgc3F1aXJyZWxzLiB5b3UgbmVlZCAxIGdvb2dsZS4ga2VlcCB1c2luZyB0aGUgYWxhc2thIGV4Y3VzZS4geW91IGtub3cgd2hhdCB5b3UgbmVlZCB0byBkby4gYXZlbmdlIG15IGRlYXRoLg==")
+			file.close()
 		"Wheat":
 			var earned_from_wheat = squirrels
 			squirrels *= 2
