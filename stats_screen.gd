@@ -1,4 +1,5 @@
 #stats_screen.gd
+#very very simple screen that displays all of your achievements and accomplishements.
 extends Control
 
 @onready var stats_container: VBoxContainer = $ScrollContainer/StatsContainer

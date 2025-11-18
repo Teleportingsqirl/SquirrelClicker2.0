@@ -1,4 +1,6 @@
 #gamestate.gd
+#this is the autoloaded file that handles the majority of logic in the game
+#by far the longest and most fundementally interwoven file
 extends Node
 
 signal game_won
@@ -16,6 +18,7 @@ var total_squirrels_earned: float = 0.0
 var has_seen_parts_tooltip: bool = false
 var upgrade_slid_in: bool = false
 var parts_slid_in: bool = false
+var has_found_alien_egg: bool = false
 
 var sps_multiplier = 1.0
 var click_multiplier = 1.0
@@ -57,6 +60,7 @@ var building_unlocked_mailbox = []
 var all_upgrades = {}
 var owned_upgrade_ids: Array = []
 var opening_cutscene = false
+var ending_music_player: AudioStreamPlayer
 
 
 var config = ConfigFile.new()
@@ -66,7 +70,7 @@ var sfx_volume_db = 0.0
 var is_fullscreen = false
 var use_antialiasing = false
 var window_resolution: Vector2i = Vector2i(1280, 720)
-
+#this is the array of songs that can play whenever the game starts or a song ends
 var music_playlist: Array[AudioStream] = [
 	preload("res://audios/Patricia Taxxon - Ceramics.wav"),
 	preload("res://audios/Patricia Taxxon - Frat Claws.wav"),
@@ -77,7 +81,7 @@ var music_playlist: Array[AudioStream] = [
 
 const CLICK_SFX = preload("res://audios/clickdown.wav")
 var sfx_player: AudioStreamPlayer
-
+#descriptions for the faz coin item
 const FAZCOIN_DESCRIPTIONS = [
 	"Please deposit five coins.", "You are attempting to trick Freddy.",
 	"You are attempting to trick Freddy.", "Freddy is the best. You are the best.",
@@ -87,6 +91,7 @@ const FAZCOIN_DESCRIPTIONS = [
 const FADE_DURATION = 2.0
 const MUSIC_BUS_NAME = "Music"
 const SFX_BUS_NAME = "SFX"
+const ENDING_MUSIC = preload("res://audios/Patricia Taxxon - GECHDOT.wav")
 
 var music_player_a: AudioStreamPlayer
 var music_player_b: AudioStreamPlayer
@@ -94,7 +99,7 @@ var _active_music_player: AudioStreamPlayer
 var _last_song_index = -1
 var _music_tween: Tween
 
-
+#initialising the stuff that needs to be on startup, like loading saves and settings, and creating sound effect players.
 func _ready():
 	_initialize_music_players()
 	load_settings()
@@ -114,11 +119,16 @@ func _ready():
 	if not music_playlist.is_empty():
 		randomize()
 		play_next_song()
-
+		
+	ending_music_player = AudioStreamPlayer.new()
+	ending_music_player.name = "EndingMusicPlayer"
+	ending_music_player.bus = MUSIC_BUS_NAME
+	add_child(ending_music_player)
+#this is the code for the click sound effect
 func _input(event):
 	if event is InputEventMouseButton and event.is_pressed():
 		sfx_player.play()
-
+#math to see how many squirrels you got ever frame. also does the squirrel box random drop system.
 func _process(delta):
 	var earned_this_frame = squirrels_per_second * delta
 	squirrels += earned_this_frame
@@ -136,6 +146,7 @@ func _process(delta):
 				
 				
 				
+#this code makes purchasing buildings actually purchase the buildings, unless its the last one, for the first time, in which case you win the game.
 func purchase_building(building_index: int):
 	if building_index < 0 or building_index >= buildings.size():
 		return
@@ -152,7 +163,7 @@ func purchase_building(building_index: int):
 			has_won_game = true
 			emit_signal("game_won")
 			save_game()
-
+#saving and loading settings files. the settings are saved to your %appdata%/roaming/godot/clickergamesquirrel/settings.cfg file.
 func save_settings():
 	config.set_value("audio", "sfx_volume_db", sfx_volume_db)
 	config.set_value("audio", "music_volume_db", music_volume_db)
@@ -210,7 +221,7 @@ func apply_settings():
 		print("Applying new FXAA setting.")
 		get_viewport().screen_space_aa = new_fxaa_mode
 		
-		
+
 func _initialize_music_players():
 	music_player_a = AudioStreamPlayer.new()
 	music_player_b = AudioStreamPlayer.new()
@@ -223,7 +234,7 @@ func _initialize_music_players():
 	music_player_a.finished.connect(play_next_song)
 	music_player_b.finished.connect(play_next_song)
 	_active_music_player = music_player_a
-
+#random song code
 func play_next_song():
 	if music_playlist.is_empty():
 		print("no songs found")
@@ -247,7 +258,7 @@ func play_next_song():
 	if old_player.playing:
 		_music_tween.tween_property(old_player, "volume_db", -80, FADE_DURATION)
 	_active_music_player = new_player
-
+#massive arrays are here with all the info and lore for the items, the buildings, and the upgrades.
 func setup_items():
 	all_items = {
 		"tapeworm": { "name": "A Tapeworm", "description": "It appears your squirrel was attempting to lose some weight. Gives you 3 hours of offline earnings instantly, but -20% sps for 30 seconds.", "texture_path": "res://sqrlart/shopart/Sprite-wormshopitem.png", "is_spawnable": true, "type": "powerup" },
@@ -323,7 +334,7 @@ func setup_buildings():
 		{"name": "Moose in Alaska", "base_cost": 1.0e100, "sps": 1.0e98, "owned": 0, "texture_path": "res://sqrlart/ads/Sprite-mooseinalaskaad.png", "unlocked": false,
 		 "unlock_condition_type": "total_squirrels_earned", "unlock_condition_value": 1.0e100, "unlock_condition_text": "Earn a Googol total squirrels"}
 	]
-
+#the upgrades one is a little different as it also handles the placement and spacing of the upgrades
 func setup_upgrades():
 	var start_pos = Vector2(736, 1746) 
 	var v_space = 180.0
@@ -455,7 +466,7 @@ func setup_upgrades():
 						   "effect_type": "unlock_building", "effect_value": "Futility",
 						   "dependencies": ["cats"], "position": start_pos + Vector2(h_space * 3.0, -v_space * 5) },
 	}
-
+#this code makes it so that if you have passed an unlock condition, you unlock that building.
 func check_unlock_conditions():
 	for building in buildings:
 		if not building.unlocked:
@@ -477,7 +488,7 @@ func check_unlock_conditions():
 			if condition_met:
 				building.unlocked = true
 				building_unlocked_mailbox.append(building.name)
-
+#this is running almost constantly as your sps changes to see how all of your buildings, upgrades, and item effects are working all together.
 func recalculate_sps():
 	var old_sps = squirrels_per_second
 	var base_sps: float = 0.0
@@ -520,7 +531,7 @@ func recalculate_sps():
 	squirrels_per_second = base_sps * final_sps_multiplier * temporary_sps_debuff * temporary_sps_buff * gyoza_debuff_multiplier * test_debuff_multiplier
 	if not is_equal_approx(old_sps, squirrels_per_second):
 		sps_change_mailbox.append({"old": old_sps, "new": squirrels_per_second})
-
+#simple code to make buildings all mroe expensive the more you buy of them
 func calculate_building_cost(building_index: int) -> float:
 	if building_index >= 0 and building_index < buildings.size():
 		var building = buildings[building_index]
@@ -530,7 +541,9 @@ func calculate_building_cost(building_index: int) -> float:
 		
 		return ceil(building.base_cost * pow(1.1, float(building.owned)) * cost_multiplier)
 	return 0.0
-
+#actually applying the effect of the items that have an effect
+# KNOWN ISSUE (kinda) we were eventually planning on making all of the items actually do something, but a good chunk of them are purely one time items that look cool and do nothing.
+#i say kinda an issue because like it still works i just wish we couldve finished making them all functional and not just for bragging rights
 func apply_item_effect(item_id: String):
 	if not all_items.has(item_id): return
 	var item_data = all_items[item_id]
@@ -554,6 +567,7 @@ func apply_item_effect(item_id: String):
 		"ButtsPie": _apply_pie_buff()
 		"Letter From Dad":
 			var file = FileAccess.open("user://letter.txt", FileAccess.WRITE)
+			#secret base 64 code
 			file.store_line("aGVsbG8gc29uLiBpZiB5b3UgYXJlIHJlYWRpbmcgdGhpcywgaSBhbSBkZWFkLiBrZWVwIGNvbGxlY3Rpbmcgc3F1aXJyZWxzLiB5b3UgbmVlZCAxIGdvb2dsZS4ga2VlcCB1c2luZyB0aGUgYWxhc2thIGV4Y3VzZS4geW91IGtub3cgd2hhdCB5b3UgbmVlZCB0byBkby4gYXZlbmdlIG15IGRlYXRoLg==")
 			file.close()
 		"Wheat":
@@ -577,7 +591,7 @@ func apply_item_effect(item_id: String):
 	if item_data.type == "permanent" or item_data.type == "cosmetic":
 		if not owned_item_ids.has(item_id): owned_item_ids.append(item_id)
 	recalculate_sps()
-
+#same thing as the items, but for upgrades.
 func apply_upgrade_effect(upgrade_id: String):
 	if not all_upgrades.has(upgrade_id): return
 	
@@ -637,9 +651,13 @@ func apply_upgrade_effect(upgrade_id: String):
 	
 	recalculate_sps()
 	
+#saves the game if the player tries to quit
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST: save_game(); get_tree().quit()
 
+#what happens when the game is told to save.
+#your save file is at %appdata%/roaming/godot/clickergamesquirrel/savefile.dat
+#this saves all your squirrel stats to the file for easy loading later
 func save_game():
 	var file_path = "user://savegame.dat"
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
@@ -664,11 +682,12 @@ func save_game():
 			"upgrade_slid_in": upgrade_slid_in,
 			"parts_slid_in": parts_slid_in,
 			"opening_cutscene": opening_cutscene,
-			"has_won_game": has_won_game
+			"has_won_game": has_won_game,
+			"has_found_alien_egg": has_found_alien_egg
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
-
+#this loads all that data that got saved earlier.
 func load_game():
 	var file_path = "user://savegame.dat"
 	if FileAccess.file_exists(file_path):
@@ -707,6 +726,7 @@ func load_game():
 				parts_slid_in = loaded_data.get("parts_slid_in", false)
 				opening_cutscene = loaded_data.get("opening_cutscene", false)
 				has_won_game = loaded_data.get("has_won_game", false)
+				has_found_alien_egg = loaded_data.get("has_found_alien_egg", false)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -716,7 +736,7 @@ func load_game():
 				print("Game Loaded!")
 			else: print("Error: Save file is corrupted.")
 		else: print("Error reading save file: ", file_path)
-
+#this just clears all the save data back to the start again.
 func reset_game_state():
 	squirrels = 0.0; squirrels_per_click = 1.0; sps_multiplier = 1.0; click_multiplier = 1.0
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
@@ -735,14 +755,16 @@ func reset_game_state():
 	parts_slid_in = false
 	opening_cutscene = false
 	has_won_game = false
+	has_found_alien_egg = false
 	setup_buildings();
 	recalculate_sps()
-	
+	#the way i did offline earnings was literally just taking how much time has passed since you last saw the game
+	#and figuring out how many you wouldve gotten. this means you could cheat by just setting your time and date in the future.
 func get_and_clear_offline_progress() -> Dictionary:
 	var progress = { "seconds": offline_seconds_passed, "squirrels": offline_squirrels_earned }
 	offline_seconds_passed = 0; offline_squirrels_earned = 0.0
 	return progress
-
+#individual buff code for each buff, saying what to do while its active, counting the actual time, and saying what to do when it ends.
 func _apply_steroid_buff():
 	if not is_instance_valid(steroid_timer):
 		steroid_timer = Timer.new(); steroid_timer.one_shot = true
@@ -789,7 +811,7 @@ func _apply_test_debuff():
 
 func _on_test_timer_timeout():
 	test_debuff_multiplier = 1.0; test_end_time = 0; recalculate_sps()
-
+#these are all the evil effects that can happen from the items you buy
 func _remove_best_building():
 	if buildings.is_empty(): return
 	var best_building_index = -1; var highest_yield: float = -1.0
@@ -820,7 +842,7 @@ func _fire_random_buildings(count: int):
 	
 	if buildings_fired > 0:
 		recalculate_sps()
-	
+	#this is to check every single timer currently running at any given time
 func _check_persistent_timers():
 	var current_time = Time.get_unix_time_from_system()
 	if steroid_end_time > current_time:
@@ -843,7 +865,7 @@ func _check_persistent_timers():
 		var remaining = test_end_time - current_time
 		if not is_instance_valid(test_timer): test_timer = Timer.new(); test_timer.one_shot = true; test_timer.timeout.connect(_on_test_timer_timeout); add_child(test_timer)
 		test_debuff_multiplier = 0.90; test_timer.start(float(remaining))
-	
+	#another number formatting function, this time for dealing with absurdly large numbers, all the way up to and past a google.
 func format_number(number: float, allow_decimals: bool = false) -> String:
 	if is_equal_approx(number, 1.0e100): return "Googol!"
 	if number < 1000.0:
@@ -875,8 +897,27 @@ func format_number(number: float, allow_decimals: bool = false) -> String:
 	elif abbreviated_num < 100: formatted_string = "%.1f" % abbreviated_num
 	else: formatted_string = "%d" % int(abbreviated_num)
 	return formatted_string + suffix
-
+#check if you should still be able to spawn fazcoins or if the player already has all 5
 func update_spawnable_items():
 	if all_items.has("Fazcoin"):
 		if fazcoin_count < 5: all_items.Fazcoin.is_spawnable = true
 		else: all_items.Fazcoin.is_spawnable = false
+
+func play_ending_music():
+	if not ENDING_MUSIC:
+		return
+	music_player_a.finished.disconnect(play_next_song)
+	music_player_b.finished.disconnect(play_next_song)
+
+	if _music_tween and _music_tween.is_valid():
+		_music_tween.kill()
+	var fade_out_tween = create_tween()
+	fade_out_tween.set_parallel()
+	if music_player_a.playing:
+		fade_out_tween.tween_property(music_player_a, "volume_db", -80.0, 1.0)
+	if music_player_b.playing:
+		fade_out_tween.tween_property(music_player_b, "volume_db", -80.0, 1.0)
+		
+	ending_music_player.stream = ENDING_MUSIC
+	ending_music_player.volume_db = 0.0
+	ending_music_player.play()

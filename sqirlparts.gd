@@ -1,4 +1,5 @@
 # sqirlparts.gd
+#this is all my code for the squirrel spare parts section.
 extends Node2D
 const ITEM_DISPLAY_SIZE = Vector2(48, 48)
 const MAX_TOOLTIP_FONT_SIZE = 16
@@ -12,7 +13,7 @@ const MIN_TOOLTIP_FONT_SIZE = 8
 var item_slots = []
 const SQUIRREL_OPEN_SFX = preload("res://audios/squirrelopening.wav")
 const SQUIRREL_CLOSE_SFX = preload("res://audios/squirreclosing.wav")
-
+#this plays an intro animation and asks to populate the shop with random items.
 func _ready():
 	var sfx_player = AudioStreamPlayer.new()
 	sfx_player.stream = SQUIRREL_OPEN_SFX
@@ -29,19 +30,20 @@ func _ready():
 		if child is Marker2D: item_slots.append(child.position)
 	tooltip.visible = false
 	slots_animation.play("open_slots")
-
+#this shows the items when the first animation is done, and goes back to the main screen when the second one is.
 func _on_slots_animation_finished():
 	var anim_name = slots_animation.animation
 	if anim_name == "open_slots":
 		clear_shop(); populate_shop(); item_container.visible = true
 	elif anim_name == "close_slots":
 		SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
-
+#hides everything
 func clear_shop():
 	if is_instance_valid(item_container):
 		for child in item_container.get_children():
 			if child is TextureButton: child.queue_free()
-
+#generates the items from the list
+#i made it so it was kind of a gamble, where you could get enough items you had to choose a bad one once you got locked in.
 func populate_shop():
 	if not GameState.current_shop_items.is_empty():
 		_generate_buttons_from_list(GameState.current_shop_items); return
@@ -113,7 +115,7 @@ func _on_item_button_pressed(item_button):
 		sfx_player.play()
 		sfx_player.finished.connect(sfx_player.queue_free)
 		item_container.visible = false; tooltip.visible = false; slots_animation.play("close_slots")
-
+#tooltip code, the thing in the bottom corner when you mouse over an item.
 func _adjust_tooltip_font_size():
 	var container_height = tooltip.size.y - 10
 	var current_font_size = MAX_TOOLTIP_FONT_SIZE

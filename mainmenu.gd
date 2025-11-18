@@ -1,4 +1,5 @@
 # mainmenu.gd
+#this file is for the main menu. it handles button presses and options, and tells gamestate to do a bunch of stuff.
 extends Control
 
 @onready var mainbuttons: VBoxContainer = $mainbuttons
@@ -27,22 +28,22 @@ var confirm_reset = false
 var available_resolutions: Array[Vector2i] = []
 const MIN_DB = -40.0
 const MAX_DB = 0.0
-
+#this volume code is very confusing, i hate how decibels work
 func _value_to_db(value: float) -> float:
 	if value < 0.001:
 		return -80.0
 	return lerp(MIN_DB, MAX_DB, value)
-	
+	#the amount of times i opened the game to an earsplitting volume of music was horrific before all of this
 func _db_to_value(db: float) -> float:
 	if db < MIN_DB:
 		return 0.0
 	return remap(db, MIN_DB, MAX_DB, 0.0, 1.0)
-
+#the escape key thing again, this time it just quits because your on the main menu.
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		get_tree().quit()
-
+#check all hte settings, check all the buttons, that kind of stuff.
 func _ready() -> void:
 	mainbuttons_onscreen_pos = mainbuttons.position; options_onscreen_pos = options.position
 	mainbuttons_offscreen_pos = mainbuttons_onscreen_pos - Vector2(0, 400)
@@ -65,7 +66,7 @@ func _ready() -> void:
 
 func _process(_delta):
 	pass
-
+#code for the resolutions that the game can run at.
 func _populate_resolutions():
 	resolution_btn.clear()
 	available_resolutions.clear()
@@ -103,7 +104,7 @@ func _populate_resolutions():
 
 	if current_res_index != -1:
 		resolution_btn.select(current_res_index)
-
+#code ot make the options menu slide in, and to lay it out properly and connect the buttons.
 func _on_options_pressed() -> void:
 	is_options_open = not is_options_open
 	var tween = create_tween()
@@ -128,22 +129,22 @@ func _on_options_pressed() -> void:
 		tween.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(options, "position", options_offscreen_pos, 0.5)
 	options_button.release_focus()
-
+#code to hide the options button again
 func _on_back_pressed() -> void:
 	if is_options_open: _on_options_pressed()
 	confirm_reset = false; reset_button.text = "RESET SAVE"
-
+#fullscreen code
 func _on_fullscreen_toggled(toggled_on): 
 	GameState.is_fullscreen = toggled_on
 	resolution_btn.disabled = toggled_on
 	GameState.apply_settings()
 	GameState.save_settings()
-
+#antialiasing code (i am not 100% convinced this actually does anything, but if it doesent thats on godots end not mine.
 func _on_antialias_toggled(toggled_on): 
 	GameState.use_antialiasing = toggled_on
 	GameState.apply_settings()
 	GameState.save_settings()
-
+#this used to save the volume every frame while you were dragging, which really lagged the game. this fixes that.
 func _on_volume_value_changed(value): 
 	GameState.music_volume_db = _value_to_db(value)
 	GameState.apply_settings()
@@ -163,7 +164,7 @@ func _on_resolution_selected(index: int):
 			GameState.window_resolution = selected_res
 			GameState.apply_settings()
 			GameState.save_settings()
-
+#this plays the intro animation if you have never seen it on this save file, otherwise just opens the game.
 func _on_start_pressed() -> void:
 	start_button.disabled = true
 	reset_button.disabled = true
@@ -175,7 +176,7 @@ func _on_start_pressed() -> void:
 			SceneTransitioner.transition_to_scene("res://sqirlparts.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 		else:
 			SceneTransitioner.transition_to_scene("res://squirrelclicker.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
-
+#this makes the gamestate reset your save, and literally deletes the file.
 func _on_reset_pressed() -> void:
 	if confirm_reset == true:
 		if FileAccess.file_exists("user://savegame.dat"):
@@ -192,7 +193,7 @@ func _on_reset_pressed() -> void:
 
 func _on_exit_pressed() -> void: 
 	get_tree().quit()
-
+#these are the animations to make the fade to cutscene work
 func _on_animation_player_animation_finished(anim_name: String):
 	if anim_name == "fade_to_black":
 		GameState.opening_cutscene = true

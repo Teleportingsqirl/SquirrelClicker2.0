@@ -1,4 +1,6 @@
 #upgrade_node.gd
+#the nodes from the upgrade web, called individually and layed out based on the position data in gamestate
+#this also colors them and makes them clickable.
 extends Control
 
 signal hovered(data)

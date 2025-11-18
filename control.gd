@@ -1,4 +1,5 @@
 #control.gd
+#this file is the code for the main scene, the one with the squirrel.
 extends Control
 
 const BuffBarScene = preload("res://BuffBar.tscn")
@@ -38,7 +39,7 @@ var idle_float_tween: Tween; var idle_wobble_tween: Tween; var click_tween: Twee
 var buff_ui_nodes = {}
 var on_texture = preload("res://sqrlart/shopart/Sprite-shopcountdisplay.png")
 var off_texture = preload("res://sqrlart/shopart/Sprite-shopcountdisplayempty.png")
-
+#everything that happens at launch, like connecting buttons, restoring saved changes, and scaling things.
 func _ready():
 	texture_button.pivot_offset = texture_button.size / 2
 	create_idle_animation()
@@ -66,12 +67,12 @@ func _ready():
 	update_text(); update_sps_display(); update_building_display()
 	show_offline_progress_toast() 
 	GameState.game_won.connect(_on_game_won)
-
+#this is what makes the escape key send you to the last screen, it calls a function from scenetransitioner.gd.
 func _input(event):
 	if event.is_action_pressed("ui_cancel") and not GameState.is_in_shop:
 		get_viewport().set_input_as_handled()
 		SceneTransitioner.transition_to_scene("res://mainmenu.tscn", SceneTransitioner.TransitionMode.SLIDE_RIGHT)
-
+#this is the stuff that happens every frame of the game, like displaying toasts, checking if you are alive, and telling you how many squirrel boxes you have
 func _process(_delta):
 	if GameState.death_mailbox:
 		_start_death_sequence()
@@ -110,7 +111,7 @@ func _process(_delta):
 
 	update_text(); update_sps_display(); _update_buff_display()
 	texture_button.position = texture_button.position.round()
-
+#this is the simple little death animation for if you drink the liquid pain
 func _start_death_sequence():
 	GameState.death_mailbox = false
 	
@@ -137,7 +138,7 @@ func _start_death_sequence():
 	
 	GameState.save_game()
 	get_tree().quit()
-
+#this is what makes the timer bars update all the time
 func _update_buff_display():
 	var current_time = Time.get_unix_time_from_system()
 	
@@ -146,7 +147,7 @@ func _update_buff_display():
 	_update_single_buff("pie", "Nostalgia", int(GameState.pie_end_time - current_time), 600, Color.LIGHT_GREEN, true)
 	_update_single_buff("gyoza", "Gyoza", int(GameState.gyoza_end_time - current_time), 900, Color.RED, true)
 	_update_single_buff("test", "Infertility", int(GameState.test_end_time - current_time), 300, Color.RED, true)
-
+#this is what starts the timer bars
 func _update_single_buff(id: String, display_name: String, remaining: int, max_duration: int, color: Color, show_minutes: bool):
 	if remaining > 0:
 		var buff_bar: Control
@@ -161,7 +162,7 @@ func _update_single_buff(id: String, display_name: String, remaining: int, max_d
 	elif buff_ui_nodes.has(id):
 		buff_ui_nodes[id].queue_free()
 		buff_ui_nodes.erase(id)
-
+#this is the little animation for when you gain or lose sps
 func _handle_sps_change(old_sps, new_sps):
 	var diff = new_sps - old_sps
 	if abs(diff) < 0.01: return
@@ -186,7 +187,7 @@ func show_offline_progress_toast():
 
 func _on_toast_timer_timeout():
 	toast_popup.visible = false
-
+#the titular squirrels code, basically just plays the animation, adds however many you should add based on upgrades, and plays the sfx
 func _on_texture_button_pressed():
 	var click_gain = GameState.squirrels_per_click * GameState.click_multiplier
 	if GameState.owned_upgrade_ids.has("negative_squirrel"):
@@ -202,7 +203,7 @@ func _on_texture_button_pressed():
 	add_child(sfx_player)
 	sfx_player.play()
 	sfx_player.finished.connect(sfx_player.queue_free)
-
+#these are the buttons for the building holder
 func _on_next_building_pressed():
 	current_building_index = (current_building_index + 1) % GameState.buildings.size(); update_building_display()
 
@@ -212,7 +213,7 @@ func _on_prev_building_pressed():
 func _on_purchase_building_pressed():
 	GameState.purchase_building(current_building_index)
 	update_building_display()
-
+#this is the code for updating the numbers that are shown to the player (squirrel count, sps, how much buildings cost and what they should show)
 func update_text():
 	label.text = "Squirrels: " + GameState.format_number(GameState.squirrels)
 
@@ -236,16 +237,13 @@ func update_building_display():
 		building_price_label.visible = false
 		lock_title_label.text = "LOCKED"
 		lock_condition_label.text = current_building.unlock_condition_text
-
+#one of many number formating functions, this one for times
 func format_seconds_to_string(total_seconds: int) -> String:
 	if total_seconds < 60: return "%d seconds" % [total_seconds]
 	elif total_seconds < 3600: return "%d minutes" % [int(total_seconds / 60.0)]
 	elif total_seconds < 86400: return "%d hours" % [int(total_seconds / 3600.0)]
 	else: return "%d days" % [int(total_seconds / 86400.0)]
-
-func _on_3d_button_pressed():
-	get_tree().change_scene_to_file("res://3d squirrel.tscn")
-
+#simple scene transition buttons
 func _on_upgrade_button_pressed():
 	SceneTransitioner.transition_to_scene("res://upgrade_web.tscn", SceneTransitioner.TransitionMode.SLIDE_LEFT)
 
@@ -264,9 +262,10 @@ func _on_sqirlparts_button_pressed():
 	else:
 		return
 		
+#this one needs an extra button because of the tool tip
 func _on_close_parts_tooltip_pressed():
 	sqirlparts_tooltip.visible = false
-
+#heres the actual code for the animation that plays when the squirrel is not being clicked
 func create_idle_animation():
 	if (idle_float_tween and idle_float_tween.is_running()) or \
 	   (idle_wobble_tween and idle_wobble_tween.is_running()): return
@@ -278,14 +277,14 @@ func create_idle_animation():
 	idle_wobble_tween = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	idle_wobble_tween.tween_property(texture_button, "rotation_degrees", 8.0, 2.0)
 	idle_wobble_tween.tween_property(texture_button, "rotation_degrees", -8.0, 2.0)
-
+#heres the code for when it is being clicked
 func create_click_animation():
 	if click_tween and click_tween.is_valid(): click_tween.kill()
 	var original_scale = Vector2(1, 1); var pop_scale = Vector2(1.15, 1.15)
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
-
+#simple last minute function to play an ending when you win
 func _on_game_won():
-	print("Game won! Fading to ending cutscene.")
+	GameState.play_ending_music()
 	SceneTransitioner.transition_to_scene("res://ending_cutscene.tscn", SceneTransitioner.TransitionMode.FADE)

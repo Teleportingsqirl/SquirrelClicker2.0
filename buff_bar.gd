@@ -1,4 +1,5 @@
 # BuffBar.gd
+#this file is used to create the timer bars for effects, and is called in control.gd whenever needed.
 extends Control
 
 const FILL_START_X = 94
@@ -8,7 +9,7 @@ const MAX_FILL_WIDTH = 196
 @onready var name_label: Label = $NameLabel
 @onready var time_label: Label = $TimeLabel
 @onready var background_rect: TextureRect = $BackgroundRect
-
+#simple displays the bar, scaled to represent time, color coded to the effect type, underneath the shell and the text.
 func update_display(display_name: String, remaining: int, max_duration: int, color: Color, show_minutes: bool):
 	
 	name_label.text = display_name + ":"

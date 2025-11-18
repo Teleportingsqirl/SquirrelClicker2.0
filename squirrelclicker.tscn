@@ -256,14 +256,6 @@ layout_mode = 2
 [node name="BuffContainer" type="VBoxContainer" parent="Control building/BuffsBox/MarginContainer"]
 layout_mode = 2
 
-[node name="3DButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1103.0
-offset_top = 606.0
-offset_right = 1132.0
-offset_bottom = 637.0
-text = "3D"
-
 [node name="upgradeButton" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 971.7407
@@ -340,5 +332,4 @@ stretch_mode = 0
 
 [connection signal="pressed" from="Control building/sqrlcontainer/sqrlbutton" to="Control building" method="_on_texture_button_pressed"]
 [connection signal="timeout" from="Control building/ToastTimer" to="Control building" method="_on_toast_timer_timeout"]
-[connection signal="pressed" from="3DButton" to="Control building" method="_on_3d_button_pressed"]
 [connection signal="pressed" from="sqirlParts" to="Control building" method="_on_sqirlparts_button_pressed"]

@@ -1,4 +1,6 @@
 #upgrade_web.gd
+#code to display the background image and do the math on the sizing to fit the web on top of it.
+#this also has the alien secret easter egg.
 extends Control
 
 const UpgradeNodeScene = preload("res://upgrade_node.tscn")
@@ -46,12 +48,12 @@ func _ready():
 	info_label.clear()
 	update_all_nodes()
 	draw_all_lines()
-
+#makes you go back on escape pressed
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		_on_back_button_pressed()
-
+#it took a long time to make a scroll bar stop showing up on the sides of the screen when you scrolled here
 func _on_scroll_container_gui_input(event):
 	if event is InputEventMouseButton and (event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN):
 		accept_event()
@@ -114,3 +116,13 @@ func _on_node_purchased(data):
 		_on_node_hovered(data) 
 	else:
 		print("Not enough squirrels!")
+
+#secret alien code, mostly for my testing purposes, but i kept it in just in case. :3
+func _on_easter_egg_button_pressed() -> void:
+	if not GameState.has_found_alien_egg:
+		GameState.has_found_alien_egg = true
+		GameState.squirrels += 1.0e100
+		var reward = 1.0e100
+		GameState.squirrels += reward
+		GameState.total_squirrels_earned += reward
+		GameState.toast_mailbox.append("You found the secret alien!")

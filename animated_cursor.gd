@@ -1,4 +1,5 @@
 # animated_cursor.gd
+# this file simply displays an animated sprite on top of the mouse, with a click animation for when you click, and sfx.
 extends AnimatedSprite2D
 
 func _ready():

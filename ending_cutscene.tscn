@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://vee48pfh58tm"]
+[gd_scene load_steps=4 format=3 uid="uid://vee48pfh58tm"]
 
 [ext_resource type="Script" uid="uid://cj82yiacq3w13" path="res://ending_cutscene.gd" id="1_0tjsv"]
-[ext_resource type="SpriteFrames" uid="uid://cfdlgphip28m" path="res://endinganimation.tres" id="2_ic4ab"]
+[ext_resource type="SpriteFrames" uid="uid://nrad0we0t4v3" path="res://sqrlart/Sprite-endinganimation.aseprite" id="2_ic4ab"]
+[ext_resource type="FontFile" uid="uid://bypmfwxpy3ccb" path="res://fonts/HomeVideo-BLG6G.ttf" id="3_je444"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -13,11 +14,12 @@ grow_vertical = 2
 script = ExtResource("1_0tjsv")
 
 [node name="BlackBackground" type="ColorRect" parent="."]
-layout_mode = 0
-offset_left = 940.0
-offset_top = 520.0
-offset_right = 980.0
-offset_bottom = 560.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="EndingAnimation" type="AnimatedSprite2D" parent="."]
@@ -32,10 +34,107 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -956.0
+offset_top = -542.0
+offset_right = 965.0
+offset_bottom = 541.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("3_je444")
+theme_override_font_sizes/normal_font_size = 31
 bbcode_enabled = true
+text = "
+
+
+
+
+
+
+
+
+
+
+
+Thank you for playing Squirrel Clicker 2.0!
+We hope you had fun collecting squirrels. you will be shortlisted for future squirrel aquiration opportunities.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+After these credits end and the game closes, you should be able to reopen it and pick up right where you left off, in case you somehow want more squirrels still.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Lead design : Griffin Crooks Bourassa
+Head Coder : Griffin Crooks Bourassa
+Lead Artist : Finley McManus Euler
+Original squirrel drawing : Audrey Elizabeth Kensington Parker
+Extra Concept art : Elie Florea
+Beta Testing : so many people we can't even count, thank you all so much
+Sound Effects : Griffin Crooks Bourassa (by mouth, using Audacity)
+Music : The wonderfull Patricia Taxxon without whom this project would have felt souless
+
+
+
+
+
+
+
+And most of all....
+
+
+
+
+
+
+
+
+
+
+Squirrels, for existing.
+
+
+
+
+
+
+
+
+
+
+
+
+(Also you, the person playing the game, for playing our game. Thank you.)"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
