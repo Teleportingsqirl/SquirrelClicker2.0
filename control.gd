@@ -65,6 +65,7 @@ func _ready():
 		
 	update_text(); update_sps_display(); update_building_display()
 	show_offline_progress_toast() 
+	GameState.game_won.connect(_on_game_won)
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel") and not GameState.is_in_shop:
@@ -209,13 +210,8 @@ func _on_prev_building_pressed():
 	current_building_index = (current_building_index - 1 + GameState.buildings.size()) % GameState.buildings.size(); update_building_display()
 
 func _on_purchase_building_pressed():
-	if not GameState.buildings[current_building_index].unlocked:
-		return
-	
-	var cost = GameState.calculate_building_cost(current_building_index)
-	if GameState.squirrels >= cost:
-		GameState.squirrels -= cost; GameState.buildings[current_building_index].owned += 1
-		GameState.recalculate_sps(); update_building_display()
+	GameState.purchase_building(current_building_index)
+	update_building_display()
 
 func update_text():
 	label.text = "Squirrels: " + GameState.format_number(GameState.squirrels)
@@ -289,3 +285,7 @@ func create_click_animation():
 	click_tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	click_tween.tween_property(texture_button, "scale", pop_scale, 0.08)
 	click_tween.tween_property(texture_button, "scale", original_scale, 0.12)
+
+func _on_game_won():
+	print("Game won! Fading to ending cutscene.")
+	SceneTransitioner.transition_to_scene("res://ending_cutscene.tscn", SceneTransitioner.TransitionMode.FADE)

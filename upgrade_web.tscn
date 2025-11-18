@@ -70,3 +70,6 @@ theme_override_fonts/normal_font = ExtResource("4_fh8a2")
 
 [node name="AnimatedCursor" parent="UpgradeWeb/CanvasLayer" instance=ExtResource("3_xwn6h")]
 scale = Vector2(2.4755096, 2.4755096)
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(1612, 248)

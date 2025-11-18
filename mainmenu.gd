@@ -1,4 +1,4 @@
-#mainmenu.gd
+# mainmenu.gd
 extends Control
 
 @onready var mainbuttons: VBoxContainer = $mainbuttons
@@ -60,7 +60,8 @@ func _ready() -> void:
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	language_btn.item_selected.connect(_on_language_selected)
 	resolution_btn.item_selected.connect(_on_resolution_selected)
-	intro_sprite.sprite_frames.set_animation_loop("Animation", false)
+	if intro_sprite.sprite_frames.has_animation("Animation"):
+		intro_sprite.sprite_frames.set_animation_loop("Animation", false)
 
 func _process(_delta):
 	pass
@@ -138,17 +139,22 @@ func _on_fullscreen_toggled(toggled_on):
 	GameState.apply_settings()
 	GameState.save_settings()
 
-func _on_antialias_toggled(toggled_on): GameState.use_antialiasing = toggled_on; GameState.apply_settings(); GameState.save_settings()
+func _on_antialias_toggled(toggled_on): 
+	GameState.use_antialiasing = toggled_on
+	GameState.apply_settings()
+	GameState.save_settings()
 
 func _on_volume_value_changed(value): 
 	GameState.music_volume_db = _value_to_db(value)
 	GameState.apply_settings()
 	
 func _on_volume_drag_ended(value_changed):
-	if value_changed: GameState.save_settings()
+	if value_changed: 
+		GameState.save_settings()
 	
 func _on_language_selected(index):
-	if index == 1: get_tree().quit()
+	if index == 1: 
+		get_tree().quit()
 
 func _on_resolution_selected(index: int):
 	if index >= 0 and index < available_resolutions.size():
@@ -174,13 +180,18 @@ func _on_reset_pressed() -> void:
 	if confirm_reset == true:
 		if FileAccess.file_exists("user://savegame.dat"):
 			DirAccess.remove_absolute("user://savegame.dat")
-			reset_button.text = "Save Reset!"; GameState.reset_game_state()
-		else: reset_button.text = "No Save Found"
+			reset_button.text = "Save Reset!"
+			GameState.reset_game_state()
+		else: 
+			reset_button.text = "No Save Found"
 		confirm_reset = false
-	else: reset_button.text = "Are you sure?"; confirm_reset = true
+	else: 
+		reset_button.text = "Are you sure?"
+		confirm_reset = true
 	reset_button.release_focus()
 
-func _on_exit_pressed() -> void: get_tree().quit()
+func _on_exit_pressed() -> void: 
+	get_tree().quit()
 
 func _on_animation_player_animation_finished(anim_name: String):
 	if anim_name == "fade_to_black":

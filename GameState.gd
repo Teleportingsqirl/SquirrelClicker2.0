@@ -1,6 +1,8 @@
 #gamestate.gd
 extends Node
 
+signal game_won
+var has_won_game: bool = false
 var game_is_ready: bool = false
 var active_scene_path: String = ""
 var squirrels: float = 0.0
@@ -133,6 +135,24 @@ func _process(delta):
 				squirrelboxes += 1
 				
 				
+				
+func purchase_building(building_index: int):
+	if building_index < 0 or building_index >= buildings.size():
+		return
+
+	var building = buildings[building_index]
+	var cost = calculate_building_cost(building_index)
+
+	if squirrels >= cost:
+		squirrels -= cost
+		building.owned += 1
+		recalculate_sps()
+
+		if building.name == "Moose in Alaska" and not has_won_game:
+			has_won_game = true
+			emit_signal("game_won")
+			save_game()
+
 func save_settings():
 	config.set_value("audio", "sfx_volume_db", sfx_volume_db)
 	config.set_value("audio", "music_volume_db", music_volume_db)
@@ -643,7 +663,8 @@ func save_game():
 			"has_seen_parts_tooltip": has_seen_parts_tooltip,
 			"upgrade_slid_in": upgrade_slid_in,
 			"parts_slid_in": parts_slid_in,
-			"opening_cutscene": opening_cutscene
+			"opening_cutscene": opening_cutscene,
+			"has_won_game": has_won_game
 		}
 		file.store_var(save_data); print("Game Saved!")
 	else: print("Error writing save file: ", file_path)
@@ -685,6 +706,7 @@ func load_game():
 				upgrade_slid_in = loaded_data.get("upgrade_slid_in", false)
 				parts_slid_in = loaded_data.get("parts_slid_in", false)
 				opening_cutscene = loaded_data.get("opening_cutscene", false)
+				has_won_game = loaded_data.get("has_won_game", false)
 				
 				var saved_time = loaded_data.get("save_timestamp", 0)
 				if saved_time > 0:
@@ -712,6 +734,7 @@ func reset_game_state():
 	upgrade_slid_in = false
 	parts_slid_in = false
 	opening_cutscene = false
+	has_won_game = false
 	setup_buildings();
 	recalculate_sps()
 	
